@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+p:last-child {
+	margin-bottom: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+	* {
+		color-scheme: dark;
+	}
+
+	.shiki,
+	.shiki span {
+		color: var(--shiki-dark) !important;
+		background-color: var(--shiki-dark-bg) !important;
+		/* 可选，如果你还希望同步字体样式 */
+		font-style: var(--shiki-dark-font-style) !important;
+		font-weight: var(--shiki-dark-font-weight) !important;
+		text-decoration: var(--shiki-dark-text-decoration) !important;
+	}
+}
+
+/* 代码样式 */
+.shiki {
+	font-family: 'Fira Code', monospace;
+	font-size: 16px;
+	line-height: 1.5;
+	padding: 1em;
+	border-radius: 8px;
+	overflow-x: auto;
+	margin-bottom: 0.5rem;
+}
+
+/* markdown 渲染样式 */
+.mkd h1,
+.mkd h2,
+.mkd h3,
+.mkd h4,
+.mkd h5,
+.mkd h6 {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+.mkd h1 {
+	font-size: 2.25em;
+}
+
+.mkd h2 {
+	font-size: 1.875em;
+}
+
+.mkd h3 {
+	font-size: 1.5em;
+}
+
+.mkd h4 {
+	font-size: 1.25em;
+}
+
+.mkd h5 {
+	font-size: 1.125em;
+}
+
+.mkd h6 {
+	font-size: 1em;
+}
+
+.mkd p {
+	margin-bottom: 0.5em;
+	line-height: 1.6;
+	font-size: 1rem;
+}
+
+.mkd a {
+	color: #3b82f6;
+	text-decoration: underline;
+}
+
+/* header-anchor 的动画 */
+.header-anchor {
+	opacity: 0;
+	text-decoration: none !important;
+	text-decoration-color: transparent !important;
+	transition: opacity 0.2s, margin-left 0.2s, text-decoration-color 0.1s;
+}
+
+.header-anchor:hover {
+	text-decoration: underline !important;
+	text-decoration-color: currentColor !important;
+}
+
+.mkd h1:hover .header-anchor,
+.mkd h2:hover .header-anchor,
+.mkd h3:hover .header-anchor,
+.mkd h4:hover .header-anchor,
+.mkd h5:hover .header-anchor,
+.mkd h6:hover .header-anchor {
+	margin-left: 0.5rem;
+	opacity: 1;
+}
