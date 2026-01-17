@@ -12,18 +12,6 @@ p:last-child {
 	}
 
 	@import "highlight.js/styles/github-dark-dimmed.css";
-
-	/* 
-	.shiki,
-	.shiki span {
-		color: var(--shiki-dark) !important;
-		background-color: var(--shiki-dark-bg) !important;
-		/* 可选，如果你还希望同步字体样式 */
-	/*
-		font-style: var(--shiki-dark-font-style) !important;
-		font-weight: var(--shiki-dark-font-weight) !important;
-		text-decoration: var(--shiki-dark-text-decoration) !important;
-	} */
 }
 
 /* 代码样式 */
