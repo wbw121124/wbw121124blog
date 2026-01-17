@@ -1,7 +1,7 @@
 {
   "name": "wbw121124blog",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,15 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@shikijs/markdown-it": "^3.21.0",
     "@tailwindcss/vite": "^4.1.18",
+    "highlight.js": "^11.11.1",
+    "katex": "^0.16.27",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-emoji": "^3.0.0",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-highlightjs": "^4.2.0",
     "markdown-it-math": "^5.2.1",
-    "markdown-it-shiki": "^0.9.0",
+    "mathup": "^1.0.0",
     "tailwindcss": "^4.1.18",
     "vite-ssg": "^28.2.2",
     "vue": "^3.5.24",

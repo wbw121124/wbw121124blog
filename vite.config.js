@@ -14,10 +14,15 @@ export default defineConfig({
 	optimizeDeps: {
 		include: [
 			'markdown-it',
-			'@shikijs/markdown-it',
-			'markdown-it-katex-ex',
+			'markdown-it-math',
 			'markdown-it-footnote',
-			'markdown-it-anchor'
+			'markdown-it-anchor',
+			'markdown-it-highlightjs',
+			'mathup',
+			'katex',
+			'tailwindcss',
+			'highlight.js',
+			'markdown-it-emoji'
 		],
 		exclude: ['vite-ssg'] // 排除不需要预构建的包
 	},
@@ -27,8 +32,7 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks: {
-					vue: ['vue', 'vue-router'],
-					markdown: ['markdown-it', '@shikijs/markdown-it', 'markdown-it-katex', 'markdown-it-footnote', 'markdown-it-anchor']
+					vue: ['vue', 'vue-router']
 				},
 				chunkFileNames: 'assets/[name]-[hash].js',
 				entryFileNames: 'assets/[name]-[hash].js',

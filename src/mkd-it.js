@@ -1,10 +1,11 @@
 // src/mkd-it.js - Markdown-it 初始化模块
 import MarkdownIt from 'markdown-it';
 import MarkdownItEmoji from 'markdown-it-emoji/lib/bare.mjs';
-import Shiki from '@shikijs/markdown-it'
+import highlightjs from 'markdown-it-highlightjs'
 import MarkdownItFootnote from 'markdown-it-footnote';
 import markdownItMath from 'markdown-it-math';
 import MarkdownItAnchor from 'markdown-it-anchor';
+import katex from 'katex';
 
 // 全局markdown-it实例
 let mditInstance = null;
@@ -48,12 +49,7 @@ export const initMarkdownIt = async () => {
 			breaks: false
 		});
 		mditInstance.use(MarkdownItEmoji);
-		mditInstance.use(await Shiki({
-			themes: {
-				light: 'vitesse-light',
-				dark: 'vitesse-dark',
-			}
-		}));
+		mditInstance.use(highlightjs);
 		mditInstance.use(MarkdownItFootnote);
 		mditInstance.use(MarkdownItAnchor, {
 			permalink: MarkdownItAnchor.permalink.ariaHidden({
