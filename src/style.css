@@ -39,6 +39,18 @@ p:last-child {
 	line-height: 1.2;
 }
 
+@media (min-height: 301px) {
+
+	.mkd h1,
+	.mkd h2,
+	.mkd h3,
+	.mkd h4,
+	.mkd h5,
+	.mkd h6 {
+		scroll-margin-top: calc(var(--spacing) * 4 + 1.25em + 5px);
+	}
+}
+
 .mkd h1 {
 	font-size: 2.25em;
 }

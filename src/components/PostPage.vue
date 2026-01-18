@@ -8,8 +8,8 @@ const props = defineProps({
 		required: true  // 必需的 Props
 	}
 });
-import { onMounted, ref, nextTick } from 'vue';
-import { loadMarkdownIt } from '../main.js';
+import { onMounted, ref } from 'vue';
+import { loadMarkdownIt } from '/src/main.js';
 const postContent = ref('加载中...');
 const isLoading = ref(true);
 

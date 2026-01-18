@@ -52,11 +52,26 @@ export const initMarkdownIt = async () => {
 		mditInstance.use(highlightjs);
 		mditInstance.use(MarkdownItFootnote);
 		mditInstance.use(MarkdownItAnchor, {
-			permalink: MarkdownItAnchor.permalink.ariaHidden({
-				symbol: '¶',
-				placement: 'after'
-			}),
-			slugify: s => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
+			// 自定义 slugify：在 slug 前添加前缀
+			slugify: s => {
+				const slug = String(s).trim().toLowerCase().replace(/\s+/g, '-');
+				return encodeURIComponent(slug);
+			},
+			// 使用自定义 renderPermalink，把锚点链接设为 GET 查询参数形式（例如 ?anchor=post-xxx）
+			permalink: true,
+			permalinkSymbol: '¶',
+			renderPermalink: (slug, opts, state, idx) => {
+				const token = state.tokens[idx + 1];
+				if (!token || !token.children) return;
+				const text = new state.Token('text', '', 0);
+				text.content = ' ';
+				const linkOpen = new state.Token('link_open', 'a', 1);
+				linkOpen.attrs = [['href', location.href.split('#')[0] + `#${slug}`], ['class', 'header-anchor']];
+				const symbol = new state.Token('html_inline', '', 0);
+				symbol.content = opts.permalinkSymbol || '¶';
+				const linkClose = new state.Token('link_close', 'a', -1);
+				token.children.push(text, linkOpen, symbol, linkClose);
+			}
 		});
 		mditInstance.use(markdownItMath, {
 			inlineOpen: '$',
