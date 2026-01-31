@@ -29,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:shadow-md mt-6">
+	<main class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:shadow-md mt-6">
 		<h2 class="text-2xl font-bold mb-6">文章归档</h2>
 		<div v-if="Object.keys(archives).length === 0" class="text-center py-8">
 			<p class="text-gray-600 dark:text-gray-400">暂无文章</p>
@@ -62,5 +62,5 @@ onMounted(async () => {
 				</div>
 			</div>
 		</div>
-	</div>
+	</main>
 </template>

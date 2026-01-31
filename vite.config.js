@@ -24,7 +24,7 @@ export default defineConfig({
 			'highlight.js',
 			'markdown-it-emoji'
 		],
-		exclude: ['vite-ssg'] // 排除不需要预构建的包
+		exclude: ['vite-ssg', 'vite-router'], // 排除不需要预构建的包
 	},
 	build: {
 		minify: 'terser',
@@ -32,7 +32,15 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks: {
-					vue: ['vue', 'vue-router']
+					markdown: [
+						'markdown-it',
+						'markdown-it-emoji/lib/bare.mjs',
+						'markdown-it-footnote',
+						'markdown-it-math',
+						'markdown-it-anchor',
+						'markdown-it-highlightjs',
+						'katex'
+					],
 				},
 				chunkFileNames: 'assets/[name]-[hash].js',
 				entryFileNames: 'assets/[name]-[hash].js',

@@ -37,7 +37,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div class="mkd bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:shadow-md mt-6">
+	<main class="mkd bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:shadow-md mt-6">
 		<div v-if="isLoading" class="text-center py-8">
 			<div
 				class="animate-spin rounded-full h-8 w-8 border-2 border-transparent border-b-gray-900 dark:border-b-white mx-auto">
@@ -45,5 +45,5 @@ onMounted(async () => {
 			<p class="mt-2 text-gray-600 dark:text-gray-400">正在加载文章...</p>
 		</div>
 		<div v-else v-html="postContent"></div>
-	</div>
+	</main>
 </template>
