@@ -12,8 +12,7 @@ const posts = await fetch('./postlist.json').then(res => res.json()).then(data =
 			<div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
 				<span>{{ post.date }}</span>
 				<div class="flex flex-wrap gap-1">
-					<span v-for="tag in post.tags" :key="tag"
-						class="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded-full text-xs">
+					<span v-for="tag in post.tags" :key="tag" class="tag">
 						{{ tag }}
 					</span>
 				</div>

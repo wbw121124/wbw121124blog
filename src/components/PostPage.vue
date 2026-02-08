@@ -13,6 +13,56 @@ import { loadMarkdownIt } from '/src/main.js';
 const postContent = ref('加载中...');
 const isLoading = ref(true);
 
+// 解析 frontmatter
+function parseFrontmatter(content) {
+	if (!content.startsWith("<!--")) return { metadata: {}, content }
+
+	// kmp 算法
+	function getNext(pattern) {
+		const next = Array(pattern.length).fill(0)
+		for (let i = 1, j = 0; i < pattern.length; i++) {
+			while (j > 0 && pattern[i] !== pattern[j]) {
+				j = next[j - 1]
+			}
+			if (pattern[i] === pattern[j]) {
+				j++
+			}
+			next[i] = j
+		}
+		return next
+	}
+
+	const pattern = "-->"
+	const next = getNext(pattern)
+	let j = 0
+	let endIndex = -1
+	for (let i = 0; i < content.length; i++) {
+		while (j > 0 && content[i] !== pattern[j]) {
+			j = next[j - 1]
+		}
+		if (content[i] === pattern[j]) {
+			j++
+		}
+		if (j === pattern.length) {
+			endIndex = i + 1
+			break
+		}
+	}
+
+	const frontmatter = content.substring(4, endIndex - 3).trim()
+	const body = content.substring(endIndex).trim()
+	const metadata = {}
+
+	frontmatter.split('\n').forEach(line => {
+		const [key, ...values] = line.split(':')
+		if (key && values.length) {
+			metadata[key.trim()] = values.join(':').trim()
+		}
+	})
+
+	return { metadata, content: body }
+}
+
 // 异步加载并使用markdown-it
 onMounted(async () => {
 	try {
@@ -23,7 +73,9 @@ onMounted(async () => {
 			isLoading.value = false;
 			return;
 		}
-		const markdown = await response.text();
+		const text = await response.text();
+		const { metadata, content: markdown } = parseFrontmatter(text);
+		console.log(metadata);
 		const module = await loadMarkdownIt();
 		const mdit = await module.initMarkdownIt();
 		postContent.value = mdit.render(markdown);
