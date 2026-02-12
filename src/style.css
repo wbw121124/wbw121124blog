@@ -76,8 +76,8 @@ p:last-child {
 .mkd pre code.hljs,
 .mkd pre code {
 	display: block;
-	font-family: 'Fira Code', monospace;
-	font-size: 16px;
+	font-family: Consolas, 'Courier New', Fira Code, monospace;
+	font-size: 14px;
 	line-height: 1.5;
 	padding: 10px;
 	border-radius: 8px;
