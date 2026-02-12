@@ -51,5 +51,5 @@ export default defineConfig({
 		chunkSizeWarningLimit: 1000
 	},
 	// 设置基础路径，适用于部署到子路径的情况，注意测试时要注释
-	// base: '/wbw121124blog/'
+	base: '/wbw121124blog/'
 })
