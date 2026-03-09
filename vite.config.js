@@ -1,12 +1,21 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
+// import AutoImport from "unplugin-auto-import/vite";
+// import Components from "unplugin-vue-components/vite";
+// import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [
 		vue(),
-		tailwindcss()
+		tailwindcss(),
+		// AutoImport({
+		// 	resolvers: [ElementPlusResolver()],
+		// }),
+		// Components({
+		// 	resolvers: [ElementPlusResolver()],
+		// }),
 	],
 	define: {
 		process: { env: {} }
@@ -22,7 +31,8 @@ export default defineConfig({
 			'katex',
 			'tailwindcss',
 			'highlight.js',
-			'markdown-it-emoji'
+			'markdown-it-emoji',
+			"element-plus"
 		],
 		exclude: ['vite-ssg', 'vite-router'], // 排除不需要预构建的包
 	},
@@ -48,7 +58,7 @@ export default defineConfig({
 			}
 		},
 		cssCodeSplit: true,
-		chunkSizeWarningLimit: 1000
+		chunkSizeWarningLimit: 1024
 	},
 	// 设置基础路径，适用于部署到子路径的情况，注意测试时要注释
 	base: '/wbw121124blog/'

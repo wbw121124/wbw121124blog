@@ -22,6 +22,26 @@ const MyRoutes = [
 	{
 		"path": "/archive",
 		"component": "ArchivePage"
+	},
+	{
+		"path": "/tags",
+		"component": "TagsPage"
+	},
+	{
+		"path": "/tag/:name",
+		"component": "TagPage"
+	},
+	{
+		"path": "/posts/:year",
+		"component": "YearPage"
+	},
+	{
+		"path": "/search/:keys",
+		"component": "SearchPage"
+	},
+	{
+		"path": "/searchd/:keys",
+		"component": "SearchDPage"
 	}
 ];
 

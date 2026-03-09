@@ -12,7 +12,8 @@ import { onMounted, ref } from 'vue';
 import { loadMarkdownIt } from '/src/main.js';
 const postContent = ref('加载中...');
 const isLoading = ref(true);
-const metadata = ref({ ready: false });
+// start with empty metadata; 'ready' flag will be added after parsing
+const metadata = ref({});
 
 // 解析 frontmatter
 function parseFrontmatter(content, postName) {
@@ -61,6 +62,17 @@ function parseFrontmatter(content, postName) {
 		}
 	})
 
+	// convert tags string to array if present
+	if (metadata.tags) {
+		try {
+			// assume JSON-like list
+			metadata.tags = JSON.parse(metadata.tags.replace(/'/g, '"'))
+		} catch (e) {
+			// fallback comma split
+			metadata.tags = metadata.tags.replace(/\[|\]/g, '').split(/\s*,\s*/).filter(Boolean)
+		}
+	}
+
 	return { metadata, content: body }
 }
 
@@ -79,10 +91,20 @@ onMounted(async () => {
 		const module = await loadMarkdownIt();
 		const mdit = await module.initMarkdownIt();
 		postContent.value = mdit.render(markdown);
+		// mark metadata as ready so template can display it
+		_metadata.ready = true;
 		metadata.value = _metadata;
 		isLoading.value = false;
 	} catch (error) {
-		postContent.value = '加载文章时出错：' + error.message + '\n' + error.stack;
+		const message = error instanceof Error ? error.message + '\n' + error.stack : String(error);
+		// 转义 HTML 标签
+		const escapedMessage = message.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+
+		postContent.value = '加载文章时出错：<pre><code>' + escapedMessage + '</code></pre>';
 		isLoading.value = false;
 	}
 });
@@ -91,8 +113,13 @@ onMounted(async () => {
 
 <template>
 	<main class="mkd component mt-6">
-		<div v-if="metadata.ready != false || metadata.ready == undefined" class="metadata">
+		<div v-if="metadata !== null && metadata.ready === true" class="metadata">
 			<h2>{{ metadata.title }}</h2>
+			<div v-if="metadata.tags && metadata.tags.length" class="flex flex-wrap gap-1 mt-1">
+				<span v-for="t in metadata.tags" :key="t" class="tag">
+					<a :href="`?path=/tag/${encodeURIComponent(t)}`">{{ t }}</a>
+				</span>
+			</div>
 			<p>作者: {{ metadata.author || 'wbw121124' }}</p>
 			<p>发布时间: {{ metadata.date || 'Unknow' }}</p>
 			<p>协议: <a
@@ -105,6 +132,6 @@ onMounted(async () => {
 			</div>
 			<p class="mt-2 text-gray-600 dark:text-gray-400">正在加载文章...</p>
 		</div>
-		<div v-else v-html="postContent"></div>
+		<div v-else v-html="postContent || '内容加载失败。'"></div>
 	</main>
 </template>

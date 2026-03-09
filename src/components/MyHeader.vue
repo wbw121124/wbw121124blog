@@ -5,11 +5,22 @@ export default {
 		return {
 			menuItems: [
 				{ name: '主页', link: '?path=/' },
+				{ name: '归档', link: '?path=/archive' },
+				{ name: '标签', link: '?path=/tags' },
 				{ name: '关于', link: '?path=/about' },
 				{ name: '联系', link: '?path=/contact' },
 			],
+			searchQuery: ''
 		};
 	},
+	methods: {
+		doSearch() {
+			const q = this.searchQuery.trim();
+			if (q) {
+				window.location.href = `?path=/search/${encodeURIComponent(q)}`;
+			}
+		}
+	}
 };
 </script>
 
@@ -23,6 +34,19 @@ export default {
 				</li>
 				<li v-for="item in menuItems" :key="item.name" style="list-style: none;">
 					<a :href="item.link" class="hover:underline">{{ item.name }}</a>
+				</li>
+				<li style="list-style: none; margin-left:auto;">
+					<el-input v-model="searchQuery" placeholder="搜索文章" size="small" class="w-40"
+						@keyup.enter.native="doSearch">
+						<template #append>
+							<el-button size="small" @click="doSearch"
+								style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+								<el-icon>
+									<Search />
+								</el-icon>
+							</el-button>
+						</template>
+					</el-input>
 				</li>
 			</ul>
 		</nav>

@@ -3,7 +3,7 @@ const posts = await fetch('./postlist.json').then(res => res.json()).then(data =
 </script>
 
 <template>
-	<div v-for="post in posts" :key="post.id" class=" transition-shadow duration-300 mt-6">
+	<div v-for="post in posts" :key="post.id" class="transition-shadow duration-300 mt-6">
 		<a :href="`?path=/post/${post.id}`" class="block component transition-colors">
 			<h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-500 mb-2">
 				{{ post.title }}
