@@ -36,11 +36,10 @@ export default {
 					<a :href="item.link" class="hover:underline">{{ item.name }}</a>
 				</li>
 				<li style="list-style: none; margin-left:auto;">
-					<el-input v-model="searchQuery" placeholder="搜索文章" size="small" class="w-40"
+					<el-input v-model="searchQuery" placeholder="搜索文章" size="default" class="w-40"
 						@keyup.enter.native="doSearch">
 						<template #append>
-							<el-button size="small" @click="doSearch"
-								style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+							<el-button size="default" @click="doSearch">
 								<el-icon>
 									<Search />
 								</el-icon>

@@ -119,6 +119,36 @@ p:last-child {
 	background-color: var(--color-code-bg);
 }
 
+/* copy button placed inside code blocks */
+.mkd pre {
+	position: relative;
+}
+
+.mkd .copy-btn {
+	/* keep positioning, but let el-button classes handle appearance */
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	/* remove custom colors/edges when el-button is applied */
+	/* padding: 2px 6px; */
+	/* font-size: 1rem; */
+}
+
+.mkd .copy-btn:hover {
+	background-color: var(--color-bg-alt-alt);
+}
+
+.btn-copy-md {
+	background-color: var(--color-bg-alt);
+	border: 1px solid var(--color-border);
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.btn-copy-md:hover {
+	background-color: var(--color-bg-alt-alt);
+}
+
 .mkd .shiki::before,
 .mkd pre code.hljs::before,
 .mkd pre code::before {
@@ -303,10 +333,10 @@ header {
 	border: 1px var(--el-input-border-color, var(--el-border-color)) solid;
 	border-left: none;
 } */
-
-.el-input--small .el-input__inner {
+/* 
+.el-input--normal .el-input__inner {
 	padding: 0.4em 0.75em;
-}
+} */
 
 /* pagination styling for both light and dark */
 .el-input__wrapper,
@@ -372,4 +402,36 @@ mark {
 
 .links a {
 	margin-right: 0.2rem;
+}
+
+nav ul .el-input {
+	& .el-input__wrapper {
+		width: 0px;
+		transition: width 0.3s ease;
+		position: relative;
+		right: -30px;
+	}
+
+	& .el-input-group__append {
+		border-radius: var(--el-input-border-radius) !important;
+	}
+}
+
+nav ul .el-input:hover,
+nav ul .el-input:focus,
+nav ul .el-input:focus-within {
+	& .el-input__wrapper {
+		width: 160px;
+		position: initial;
+	}
+
+	& .el-input-group__append {
+		border-top-left-radius: 0 !important;
+		border-bottom-left-radius: 0 !important;
+	}
+
+	& .el-input-group__append * {
+		border-top-left-radius: 0 !important;
+		border-bottom-left-radius: 0 !important;
+	}
 }

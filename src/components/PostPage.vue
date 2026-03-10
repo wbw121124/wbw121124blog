@@ -8,9 +8,11 @@ const props = defineProps({
 		required: true  // 必需的 Props
 	}
 });
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch, nextTick, h, createApp } from 'vue';
+import { CopyDocument } from '@element-plus/icons-vue';
 import { loadMarkdownIt } from '/src/main.js';
 const postContent = ref('加载中...');
+const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
 // start with empty metadata; 'ready' flag will be added after parsing
 const metadata = ref({});
@@ -88,6 +90,8 @@ onMounted(async () => {
 		}
 		const text = await response.text();
 		const { metadata: _metadata, content: markdown } = parseFrontmatter(text, postName);
+		// 保存原始 markdown 以便复制
+		rawMarkdown.value = markdown;
 		const module = await loadMarkdownIt();
 		const mdit = await module.initMarkdownIt();
 		postContent.value = mdit.render(markdown);
@@ -95,6 +99,8 @@ onMounted(async () => {
 		_metadata.ready = true;
 		metadata.value = _metadata;
 		isLoading.value = false;
+		// 添加代码块复制按钮
+		addCopyButtons();
 	} catch (error) {
 		const message = error instanceof Error ? error.message + '\n' + error.stack : String(error);
 		// 转义 HTML 标签
@@ -107,6 +113,67 @@ onMounted(async () => {
 		postContent.value = '加载文章时出错：<pre><code>' + escapedMessage + '</code></pre>';
 		isLoading.value = false;
 	}
+});
+
+// 在文章渲染后查找所有代码块并加上复制按钮
+function addCopyButtons() {
+	nextTick(() => {
+		const container = document.querySelector('.mkd.component');
+		if (!container) return;
+		container.querySelectorAll('pre:has(code)').forEach(pre => {
+			if (pre.querySelector('.copy-btn')) return; // 避免重复添加
+			// 生成一个挂载容器，用于 Vue 挂载组件
+			const wrapper = document.createElement('div');
+			pre.style.position = 'relative'; // 确保父元素定位
+			pre.appendChild(wrapper);
+
+			// 点击逻辑抽成函数，作用于当前 pre
+			const copyCode = () => {
+				const codeElem = pre.querySelector('code');
+				const codeText = codeElem ? codeElem.innerText : pre.innerText;
+				navigator.clipboard.writeText(codeText).then(() => {
+					const btnEl = wrapper.querySelector('button');
+					if (btnEl) {
+						btnEl.innerText = '已复制';
+						setTimeout(() => (btnEl.innerText = '复制'), 2000);
+					}
+				});
+			};
+
+			// 创建 Vue 应用实例，渲染 el-button
+			const btnApp = createApp({
+				render() {
+					return h(
+						'el-button',
+						{
+							class: 'el-button copy-btn text-sm px-3 py-1',
+							onClick: copyCode
+						},
+						[
+							h('i',
+								{
+									class: 'el-icon'
+								}, h(CopyDocument))
+						]
+					);
+				}
+			});
+
+			// 直接挂载实例，后续 DOM 操作使用 wrapper
+			btnApp.mount(wrapper);
+		});
+	});
+}
+
+function copyMarkdown() {
+	if (!rawMarkdown.value) return;
+	navigator.clipboard.writeText(rawMarkdown.value).then(() => {
+		console.log('Markdown 已复制到剪贴板');
+	});
+}
+
+watch(postContent, () => {
+	addCopyButtons();
 });
 
 </script>
@@ -132,6 +199,15 @@ onMounted(async () => {
 			</div>
 			<p class="mt-2 text-gray-600 dark:text-gray-400">正在加载文章...</p>
 		</div>
-		<div v-else v-html="postContent || '内容加载失败。'"></div>
+		<div v-else>
+			<div class="mb-4 flex justify-end">
+				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1">
+					<el-icon>
+						<copy-document />
+					</el-icon>
+				</el-button>
+			</div>
+			<div v-html="postContent || '内容加载失败。'"></div>
+		</div>
 	</main>
 </template>

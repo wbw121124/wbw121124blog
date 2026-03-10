@@ -70,10 +70,10 @@ function doSearch() {
 	<main class="component">
 		<h2 class="text-2xl font-bold mb-4">搜索："{{ query }}"</h2>
 		<div class="mb-6 flex items-center gap-2">
-			<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="small"
+			<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="default"
 				@keyup.enter.native="doSearch">
 				<template #append>
-					<el-button size="small" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+					<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
 						@click="doSearch">
 						<el-icon>
 							<Search />
