@@ -49,9 +49,9 @@ const highlightedResults = computed(() =>
 );
 
 function parseFrontmatter(content) {
-	if (!content.startsWith("<!--"))
+	if (!content.startsWith("\<!--"))
 		return { metadata: {}, content };
-	const end = content.indexOf("-->");
+	const end = content.indexOf("--\>");
 	if (end === -1) return { metadata: {}, content };
 	const front = content.substring(4, end).trim();
 	const body = content.substring(end + 3).trim();

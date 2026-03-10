@@ -1,5 +1,7 @@
 <script setup>
-const posts = await fetch('./postlist.json').then(res => res.json()).then(data => data.posts);
+import { onMounted, ref } from 'vue';
+const posts = ref({});
+fetch('./postlist.json').then(res => res.json()).then(data => posts.value = data.posts);
 </script>
 
 <template>

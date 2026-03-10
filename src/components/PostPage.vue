@@ -1,6 +1,6 @@
 <script setup>
 // 获取组件 props
-import { defineProps } from 'vue';
+// import { defineProps } from 'vue';
 // 定义 Props
 const props = defineProps({
 	props: {
@@ -19,7 +19,8 @@ const metadata = ref({});
 
 // 解析 frontmatter
 function parseFrontmatter(content, postName) {
-	if (!content.startsWith("<!--")) return { metadata: { title: postName }, content }
+	if (!content.startsWith("\<!--"))
+		return { metadata: { title: postName }, content };
 
 	// kmp 算法
 	function getNext(pattern) {
@@ -36,7 +37,7 @@ function parseFrontmatter(content, postName) {
 		return next
 	}
 
-	const pattern = "-->"
+	const pattern = "--\>";
 	const next = getNext(pattern)
 	let j = 0
 	let endIndex = -1
@@ -172,6 +173,11 @@ function copyMarkdown() {
 	});
 }
 
+function editMarkdown() {
+	const postName = props.props.name;
+	window.open('https://github.com/wbw121124/wbw121124blog/edit/master/public/posts/' + postName + '.md');
+}
+
 watch(postContent, () => {
 	addCopyButtons();
 });
@@ -190,8 +196,8 @@ watch(postContent, () => {
 			<p>作者: {{ metadata.author || 'wbw121124' }}</p>
 			<p>发布时间: {{ metadata.date || 'Unknow' }}</p>
 			<p>协议: <a
-					:href="'https://creativecommons.org/licenses/' + (metadata.license || 'BY-NC-SA') + '/4.0/deed.zh-hans'">CC&ThinSpace;
-					{{ metadata.license || 'BY-NC-SA' }}&ThinSpace;4.0</a></p>
+					:href="'https://creativecommons.org/licenses/' + (metadata.license || 'BY-NC-SA') + '/4.0/deed.zh-hans'">CC&ThinSpace;{{
+						metadata.license || 'BY-NC-SA' }}&ThinSpace;4.0</a></p>
 		</div>
 		<div v-if="isLoading" class="text-center py-8">
 			<div
@@ -204,6 +210,11 @@ watch(postContent, () => {
 				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1">
 					<el-icon>
 						<copy-document />
+					</el-icon>
+				</el-button>
+				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1">
+					<el-icon>
+						<Edit />
 					</el-icon>
 				</el-button>
 			</div>
