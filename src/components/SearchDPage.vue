@@ -78,6 +78,7 @@ function doSearch() {
 		const summary = (p.summary || "").toLowerCase();
 		const tags = (p.tags || []).map(t => t.toLowerCase()).join(' ');
 		const text = (p.text || "").toLowerCase();
+		console.log(p, title.includes(k), summary.includes(k), tags.includes(k), text.includes(k));
 		return title.includes(k) || summary.includes(k) || tags.includes(k) || text.includes(k);
 	});
 	page.value = 1;
@@ -92,8 +93,8 @@ onMounted(async () => {
 			const resp = await fetch(`./posts/${p.id}.md`);
 			if (resp.ok) text = await resp.text();
 		} catch { }
-		const { metadata } = parseFrontmatter(text);
-		posts.value.push({ ...p, ...metadata, text });
+		const { metadata, content } = parseFrontmatter(text);
+		posts.value.push({ ...p, ...metadata, text: content });
 	}
 	posts.value.sort((a, b) => b.date.localeCompare(a.date));
 	if (props.props.keys) {
@@ -108,7 +109,7 @@ onMounted(async () => {
 		<h2 class="text-2xl font-bold mb-4">全文搜索："{{ query }}"</h2>
 		<div class="mb-6">
 			<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="default"
-				@keyup.enter.native="doSearch">
+				@keyup.enter.native="doSearch" @blur="doSearch">
 				<template #append>
 					<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
 						@click="doSearch">
