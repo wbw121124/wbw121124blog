@@ -12,12 +12,19 @@ let markdownItModule = null;
 const loadMarkdownIt = async () => {
 	if (!markdownItModule) {
 		markdownItModule = await import('./mkd-it.js');
+		window.markdownItModule = markdownItModule; // 可选：将模块暴露到全局以便调试
 	}
 	return markdownItModule;
 };
 
-// 导出异步加载函数
-export { loadMarkdownIt };
+loadMarkdownIt().then(module => {
+	console.log('Markdown-it module loaded');
+}).catch(err => {
+	console.error('Failed to load markdown-it module:', err);
+});
+
+// 不能导出异步加载函数，不然会多次 mount
+// export { loadMarkdownIt };
 
 // 初始化应用
 const app = createApp(App);
@@ -33,9 +40,9 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 	app.component(key, component);
 });
 
-// 后台预加载markdown-it（可选）
-loadMarkdownIt().then(module => {
-	console.log('Markdown-it module loaded');
-});
+// // 后台预加载markdown-it（可选）
+// loadMarkdownIt().then(module => {
+// 	console.log('Markdown-it module loaded');
+// });
 
 app.mount('#app')

@@ -1,11 +1,25 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-const posts = ref({});
-fetch('./postlist.json').then(res => res.json()).then(data => posts.value = data.posts);
+import { computed, ref } from 'vue';
+
+const posts = ref([]);
+const perPage = 10; // 默认每页10个
+const currentPage = ref(1);
+
+// load data
+fetch('./postlist.json')
+	.then(res => res.json())
+	.then(data => {
+		posts.value = data.posts || [];
+	});
+
+const pagedPosts = computed(() => {
+	const start = (currentPage.value - 1) * perPage;
+	return posts.value.slice(start, start + perPage);
+});
 </script>
 
 <template>
-	<div v-for="post in posts" :key="post.id" class="transition-shadow duration-300 mt-6">
+	<div v-for="post in pagedPosts" :key="post.id" class="transition-shadow duration-300 mt-6">
 		<a :href="`?path=/post/${post.id}`" class="block component transition-colors">
 			<h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-500 mb-2">
 				{{ post.title }}
@@ -20,5 +34,17 @@ fetch('./postlist.json').then(res => res.json()).then(data => posts.value = data
 				</div>
 			</div>
 		</a>
+	</div>
+
+
+	<!-- 分页控件 -->
+	<div class="mt-8 flex justify-center">
+		<el-pagination
+			background
+			small
+			:page-size="perPage"
+			:current-page="currentPage"
+			:total="posts.length"
+			@current-change="currentPage = $event" />
 	</div>
 </template>

@@ -8,14 +8,14 @@ const props = defineProps({
 		required: true  // 必需的 Props
 	}
 });
-import { onMounted, ref, watch, nextTick, h, createApp } from 'vue';
+import { onMounted, onUnmounted, ref, watch, nextTick, h, createApp } from 'vue';
 import { CopyDocument } from '@element-plus/icons-vue';
-import { loadMarkdownIt } from '/src/main.js';
+// import { loadMarkdownIt } from '/src/main.js';
 const postContent = ref('加载中...');
 const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
 // start with empty metadata; 'ready' flag will be added after parsing
-const metadata = ref({});
+const metadata = ref({ ready: false });
 
 // 解析 frontmatter
 function parseFrontmatter(content, postName) {
@@ -93,7 +93,7 @@ onMounted(async () => {
 		const { metadata: _metadata, content: markdown } = parseFrontmatter(text, postName);
 		// 保存原始 markdown 以便复制
 		rawMarkdown.value = markdown;
-		const module = await loadMarkdownIt();
+		const module = window.markdownItModule;
 		const mdit = await module.initMarkdownIt();
 		postContent.value = mdit.render(markdown);
 		// mark metadata as ready so template can display it
@@ -101,7 +101,7 @@ onMounted(async () => {
 		metadata.value = _metadata;
 		isLoading.value = false;
 		// 添加代码块复制按钮
-		addCopyButtons();
+		// addCopyButtons();
 	} catch (error) {
 		const message = error instanceof Error ? error.message + '\n' + error.stack : String(error);
 		// 转义 HTML 标签
@@ -116,11 +116,31 @@ onMounted(async () => {
 	}
 });
 
+// 存储所有创建的按钮应用实例
+const buttonApps = ref([]);
+
+// 销毁所有已存在的按钮应用
+function destroyAllButtonApps() {
+	buttonApps.value.forEach(app => {
+		try {
+			app.unmount();
+		} catch (e) {
+			console.warn('Failed to unmount button app:', e);
+		}
+	});
+	buttonApps.value = [];
+}
+
+
 // 在文章渲染后查找所有代码块并加上复制按钮
 function addCopyButtons() {
 	nextTick(() => {
 		const container = document.querySelector('.mkd.component');
 		if (!container) return;
+
+		// 在重新创建前销毁所有旧的按钮应用
+		destroyAllButtonApps();
+
 		container.querySelectorAll('pre:has(code)').forEach(pre => {
 			if (pre.querySelector('.copy-btn')) return; // 避免重复添加
 			// 生成一个挂载容器，用于 Vue 挂载组件
@@ -162,6 +182,7 @@ function addCopyButtons() {
 
 			// 直接挂载实例，后续 DOM 操作使用 wrapper
 			btnApp.mount(wrapper);
+			buttonApps.value.push(btnApp);
 		});
 	});
 }
@@ -182,13 +203,18 @@ watch(postContent, () => {
 	addCopyButtons();
 });
 
+// 组件卸载时清理所有按钮应用
+onUnmounted(() => {
+	destroyAllButtonApps();
+});
+
 </script>
 
 <template>
 	<main class="mkd component mt-6">
-		<div v-if="metadata !== null && metadata.ready === true" class="metadata">
+		<div v-if="metadata !== null && metadata.ready === true" class="metadata" key="loading">
 			<h2>{{ metadata.title }}</h2>
-			<div v-if="metadata.tags && metadata.tags.length" class="flex flex-wrap gap-1 mt-1">
+			<div v-if="metadata.tags && metadata.tags.length" class="flex flex-wrap gap-1 mt-1" key="tags">
 				<span v-for="t in metadata.tags" :key="t" class="tag">
 					<a :href="`?path=/tag/${encodeURIComponent(t)}`">{{ t }}</a>
 				</span>
@@ -199,20 +225,20 @@ watch(postContent, () => {
 					:href="'https://creativecommons.org/licenses/' + (metadata.license || 'BY-NC-SA') + '/4.0/deed.zh-hans'">CC&ThinSpace;{{
 						metadata.license || 'BY-NC-SA' }}&ThinSpace;4.0</a></p>
 		</div>
-		<div v-if="isLoading" class="text-center py-8">
+		<div v-if="isLoading" class="text-center py-8" key="loading">
 			<div
 				class="animate-spin rounded-full h-8 w-8 border-2 border-transparent border-b-gray-900 dark:border-b-white mx-auto">
 			</div>
 			<p class="mt-2 text-gray-600 dark:text-gray-400">正在加载文章...</p>
 		</div>
-		<div v-else>
+		<div v-else key="content">
 			<div class="mb-4 flex justify-end">
-				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1">
+				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="success">
 					<el-icon>
 						<copy-document />
 					</el-icon>
 				</el-button>
-				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1">
+				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="primary">
 					<el-icon>
 						<Edit />
 					</el-icon>

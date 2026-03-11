@@ -60,12 +60,12 @@
 	--text-color: #444;
 	--link-hover-color: #111;
 	--blockquote-color: #666;
-	--el-border-color: var(--color-bg) !important;
-	--el-input-border-color: var(--color-bg) !important;
 	/* --color-bg 和 --color-bg-alt 的平均颜色，不支持时 fallback --color-bg */
 	--color-bg-alt-alt: var(--color-bg);
 	--color-bg-alt-alt: color-mix(in srgb, var(--color-bg) 50%, var(--color-bg-alt) 50%) !important;
-	--el-text-color-disabled: var(--color-bg-alt-alt) !important;
+	--el-border-color: var(--color-bg-alt-alt) !important;
+	--el-input-border-color: var(--color-bg-alt-alt) !important;
+	--el-text-color-disabled: var(--color-bg) !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -352,7 +352,7 @@ header {
 }
 
 .el-pagination {
-	background-color: var(--color-bg-alt) !important;
+	background-color: transparent !important;
 	color: var(--text-color) !important;
 }
 
