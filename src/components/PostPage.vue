@@ -79,32 +79,46 @@ function parseFrontmatter(content, postName) {
 	return { metadata, content: body }
 }
 
-// 异步加载并使用markdown-it
+// 异步加载文章内容（使用服务端预渲染结果）
 onMounted(async () => {
 	try {
 		const postName = props.props.name;
-		const response = await fetch(`./posts/${postName}.md`);
-		if (!response.ok) {
-			postContent.value = '文章未找到。';
+		let data;
+		const response = await fetch(`./posts-html/${postName}.json`);
+		if (response.ok) {
+			data = await response.json();
+		} else {
+			// 兼容旧版：还没渲染时回退到 md
+			const mdResp = await fetch(`./posts/${postName}.md`);
+			if (!mdResp.ok) {
+				postContent.value = '文章未找到。';
+				isLoading.value = false;
+				return;
+			}
+			const text = await mdResp.text();
+			const { metadata: _metadata, content: markdown } = parseFrontmatter(text, postName);
+			rawMarkdown.value = markdown;
+			const module = window.markdownItModule;
+			const mdit = await module.initMarkdownIt();
+			postContent.value = mdit.render(markdown);
+			_metadata.ready = true;
+			metadata.value = _metadata;
 			isLoading.value = false;
 			return;
 		}
-		const text = await response.text();
-		const { metadata: _metadata, content: markdown } = parseFrontmatter(text, postName);
-		// 保存原始 markdown 以便复制
-		rawMarkdown.value = markdown;
-		const module = window.markdownItModule;
-		const mdit = await module.initMarkdownIt();
-		postContent.value = mdit.render(markdown);
-		// mark metadata as ready so template can display it
+
+		if (!data) {
+			throw new Error('文章预渲染数据加载失败');
+		}
+
+		rawMarkdown.value = data.markdown || '';
+		postContent.value = data.html || '文章内容为空。';
+		const _metadata = data.metadata || {};
 		_metadata.ready = true;
 		metadata.value = _metadata;
 		isLoading.value = false;
-		// 添加代码块复制按钮
-		// addCopyButtons();
 	} catch (error) {
 		const message = error instanceof Error ? error.message + '\n' + error.stack : String(error);
-		// 转义 HTML 标签
 		const escapedMessage = message.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
 			.replace(/>/g, '&gt;')

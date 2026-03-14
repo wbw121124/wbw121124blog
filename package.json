@@ -4,10 +4,12 @@
 	"version": "0.0.3",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "npm run render-posts && vite",
+		"prebuild": "npm run render-posts",
 		"build": "vite build",
 		"preview": "vite preview",
 		"br": "npm run build && npx serve dist",
+		"render-posts": "node ./scripts/renderPostsToHtml.js",
 		"post": "node ./scripts/addPost.js"
 	},
 	"dependencies": {

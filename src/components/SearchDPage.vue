@@ -86,17 +86,21 @@ function doSearch() {
 
 onMounted(async () => {
 	const data = await fetch('./postlist.json').then(r => r.json());
-	// fetch each post's markdown
-	for (const p of data.posts) {
-		let text = '';
+	for (const p of data.posts || []) {
 		try {
-			const resp = await fetch(`./posts/${p.id}.md`);
-			if (resp.ok) text = await resp.text();
-		} catch { }
-		const { metadata, content } = parseFrontmatter(text);
-		posts.value.push({ ...p, ...metadata, text: content });
+			const resp = await fetch(`./posts-html/${p.id}.json`);
+			if (!resp.ok) {
+				posts.value.push({ ...p, text: '' });
+				continue;
+			}
+			const json = await resp.json();
+			const metadata = json.metadata || {};
+			posts.value.push({ ...p, ...metadata, text: json.text || '' });
+		} catch (e) {
+			posts.value.push({ ...p, text: '' });
+		}
 	}
-	posts.value.sort((a, b) => b.date.localeCompare(a.date));
+	posts.value.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 	if (props.props.keys) {
 		query.value = decodeURIComponent(props.props.keys);
 		doSearch();

@@ -57,7 +57,7 @@ export const initMarkdownIt = async () => {
 				const slug = String(s).trim().toLowerCase().replace(/\s+/g, '-');
 				return encodeURIComponent(slug);
 			},
-			// 使用自定义 renderPermalink，把锚点链接设为 GET 查询参数形式（例如 ?anchor=post-xxx）
+			// 使用自定义 renderPermalink，把锚点链接设为 锚点链接
 			permalink: true,
 			permalinkSymbol: '¶',
 			renderPermalink: (slug, opts, state, idx) => {
@@ -66,7 +66,8 @@ export const initMarkdownIt = async () => {
 				const text = new state.Token('text', '', 0);
 				text.content = ' ';
 				const linkOpen = new state.Token('link_open', 'a', 1);
-				linkOpen.attrs = [['href', location.href.split('#')[0] + `#${slug}`], ['class', 'header-anchor']];
+				const hrefBase = typeof location !== 'undefined' && location.href ? location.href.split('#')[0] : '';
+				linkOpen.attrs = [['href', `${hrefBase}#${slug}`], ['class', 'header-anchor']];
 				const symbol = new state.Token('html_inline', '', 0);
 				symbol.content = opts.permalinkSymbol || '¶';
 				const linkClose = new state.Token('link_close', 'a', -1);
