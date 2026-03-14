@@ -17,12 +17,6 @@ const loadMarkdownIt = async () => {
 	return markdownItModule;
 };
 
-loadMarkdownIt().then(module => {
-	console.log('Markdown-it module loaded');
-}).catch(err => {
-	console.error('Failed to load markdown-it module:', err);
-});
-
 // 不能导出异步加载函数，不然会多次 mount
 // export { loadMarkdownIt };
 
@@ -46,3 +40,10 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 // });
 
 app.mount('#app')
+
+
+loadMarkdownIt().then(module => {
+	console.log('Markdown-it module loaded');
+}).catch(err => {
+	console.error('Failed to load markdown-it module:', err);
+});
