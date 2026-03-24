@@ -79,14 +79,26 @@ function parseFrontmatter(content, postName) {
 	return { metadata, content: body }
 }
 
+function isJSON(str) {
+	if (typeof str !== 'string') return false;
+	try {
+		const obj = JSON.parse(str);
+		return typeof obj === 'object' && obj !== null;
+	} catch (e) {
+		return false;
+	}
+}
+
 // 异步加载文章内容（使用服务端预渲染结果）
 onMounted(async () => {
 	try {
 		const postName = props.props.name;
 		let data;
 		const response = await fetch(`./posts-html/${postName}.json`);
-		if (response.ok) {
-			data = await response.json();
+		if (response.ok)
+			data = await response.text();
+		if (response.ok && isJSON(data)) {
+			data = JSON.parse(data);
 		} else {
 			// 兼容旧版：还没渲染时回退到 md
 			const mdResp = await fetch(`./posts/${postName}.md`);
@@ -98,6 +110,8 @@ onMounted(async () => {
 			const text = await mdResp.text();
 			const { metadata: _metadata, content: markdown } = parseFrontmatter(text, postName);
 			rawMarkdown.value = markdown;
+			await window.loadMarkdownIt();
+			console.log('Markdown-it module loaded');
 			const module = window.markdownItModule;
 			const mdit = await module.initMarkdownIt();
 			postContent.value = mdit.render(markdown);
