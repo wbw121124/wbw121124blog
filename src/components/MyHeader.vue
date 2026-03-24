@@ -39,7 +39,7 @@ export default {
 					<el-input v-model="searchQuery" placeholder="搜索文章" size="default" class="w-40"
 						@keyup.enter.native="doSearch">
 						<template #append>
-							<el-button size="default" @click="doSearch">
+							<el-button size="default" @click="doSearch" aria-label="搜索">
 								<el-icon>
 									<Search />
 								</el-icon>

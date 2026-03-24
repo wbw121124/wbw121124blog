@@ -116,7 +116,7 @@ onMounted(async () => {
 				@keyup.enter.native="doSearch" @blur="doSearch">
 				<template #append>
 					<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
-						@click="doSearch">
+						@click="doSearch" aria-label="搜索">
 						<el-icon>
 							<Search />
 						</el-icon>

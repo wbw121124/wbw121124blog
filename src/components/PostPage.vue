@@ -196,7 +196,8 @@ function addCopyButtons() {
 						'el-button',
 						{
 							class: 'el-button copy-btn text-sm px-3 py-1',
-							onClick: copyCode
+							onClick: copyCode,
+							'aria-label': '复制代码'
 						},
 						[
 							h('i',
@@ -261,12 +262,12 @@ onUnmounted(() => {
 		</div>
 		<div v-else key="content">
 			<div class="mb-4 flex justify-end">
-				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="success">
+				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="success" aria-label="复制 Markdown">
 					<el-icon>
 						<copy-document />
 					</el-icon>
 				</el-button>
-				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="primary">
+				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="primary" aria-label="编辑">
 					<el-icon>
 						<Edit />
 					</el-icon>
