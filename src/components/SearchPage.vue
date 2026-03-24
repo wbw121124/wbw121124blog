@@ -93,7 +93,7 @@ function doSearch() {
 				<span class="text-gray-500">（{{ post.date }}）</span>
 				<p class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
 			</div>
-			<el-pagination class="mt-4" background small :page-size="pageSize" :current-page="page" :total="total"
+			<el-pagination class="mt-4" background size="small" :page-size="pageSize" :current-page="page" :total="total"
 				@current-change="page = $event" />
 		</div>
 	</main>

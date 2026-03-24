@@ -134,7 +134,7 @@ onMounted(async () => {
 				<p v-if="post.snippet" class="text-gray-600 line-clamp-2" v-html="post.snippet"></p>
 				<p v-else class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
 			</div>
-			<el-pagination class="mt-4" background small :page-size="pageSize" :current-page="page" :total="total"
+			<el-pagination class="mt-4" background size="small" :page-size="pageSize" :current-page="page" :total="total"
 				@current-change="page = $event" />
 		</div>
 	</main>

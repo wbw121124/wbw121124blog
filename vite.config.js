@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
+import { rp2h } from './scripts/rp2h.js'
 // import AutoImport from "unplugin-auto-import/vite";
 // import Components from "unplugin-vue-components/vite";
 // import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
@@ -16,6 +17,24 @@ export default defineConfig({
 		// Components({
 		// 	resolvers: [ElementPlusResolver()],
 		// }),
+		{
+			name: 'custom-hmr-handler',
+			handleHotUpdate({ file, server }) {
+
+				// 当 posts 文件夹变化时重新构建
+				if (file.includes('/posts/')) {
+					// 当特定文件变化时执行自定义逻辑
+					console.log(`File changed: ${file}`);
+					// 执行你的自定义脚本
+					rp2h().then(() => {
+						console.log('Posts rebuilt on HMR');
+					});
+				}
+
+				// 返回 void 或模块数组来控制热更新行为
+				// 返回 undefined 表示使用默认行为
+			}
+		},
 	],
 	define: {
 		process: { env: {} }

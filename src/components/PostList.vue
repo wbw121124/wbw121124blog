@@ -41,7 +41,7 @@ const pagedPosts = computed(() => {
 	<div class="mt-8 flex justify-center">
 		<el-pagination
 			background
-			small
+			size="small"
 			:page-size="perPage"
 			:current-page="currentPage"
 			:total="posts.length"
