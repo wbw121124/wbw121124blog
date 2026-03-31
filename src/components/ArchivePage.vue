@@ -19,9 +19,9 @@ onMounted(async () => {
 	// sort years desc and months desc
 	const sorted = {};
 	Object.keys(map).sort((a, b) => b.localeCompare(a)).forEach(y => {
-		sorted[y] = {};
+		sorted[-y] = {};
 		Object.keys(map[y]).sort((a, b) => b.localeCompare(a)).forEach(m => {
-			sorted[y][m] = map[y][m];
+			sorted[-y][m] = map[y][m];
 		});
 	});
 	grouped.value = sorted;
@@ -32,7 +32,7 @@ onMounted(async () => {
 	<main class="component">
 		<h2 class="text-2xl font-bold mb-6">文章归档</h2>
 		<div v-for="(months, year) in grouped" :key="year" class="mb-6">
-			<h3 class="text-xl font-semibold">{{ year }}</h3>
+			<h3 class="text-xl font-semibold">{{ -year }}</h3>
 			<div v-for="(posts, ym) in months" :key="ym" class="ml-4 mb-4">
 				<h4 class="text-lg font-medium">{{ ym }}</h4>
 				<div v-for="post in posts" :key="post.id" class="mt-1 ml-4">

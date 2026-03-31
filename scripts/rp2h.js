@@ -43,7 +43,7 @@ function generateSummary(content, maxLength = 150) {
 	// 从第一个 \n 后面开始找第二个 \n
 	const secondIndex = content.indexOf('\n', firstIndex + 1);
 	if (firstIndex != -1 && secondIndex != -1)
-		maxLength = min(maxLength, secondIndex - 1)
+		maxLength = Math.min(maxLength, secondIndex - 1)
 
 	if (plainText.length <= maxLength) {
 		return plainText;
@@ -55,6 +55,8 @@ async function rp2h() {
 	const postsDir = path.join(__dirname, '../public/posts');
 	const outDir = path.join(__dirname, '../public/posts-html');
 	const postlistPath = path.join(__dirname, '../public/postlist.json');
+	const statisticsPath = path.join(__dirname, '../public/statistics.json');
+	const tagsPath = path.join(__dirname, '../public/tags.json');
 
 	// 创建输出目录
 	await fs.mkdir(outDir, { recursive: true });
@@ -77,6 +79,11 @@ async function rp2h() {
 
 	const md = await initMarkdownIt();
 	const posts = [];
+	const statistics = {
+		total: 0,
+		count: 0,
+		mem: 0
+	};
 
 	for (const file of mdFiles) {
 		const id = path.basename(file, '.md');
@@ -96,8 +103,15 @@ async function rp2h() {
 				summary: metadata.summary || generateSummary(content)
 			};
 
-			posts.push(post);
+			statistics.mem += raw.length;
 
+			if (!metadata.hasOwnProperty("hide") ||
+				metadata.hide == "false" ||
+				metadata.hide == "show") {
+				statistics.total += content.length;
+				statistics.count += content.replace(/\s/g, '').length;
+				posts.push(post);
+			}
 			// 生成文章 JSON 文件
 			const out = {
 				id,
@@ -114,7 +128,7 @@ async function rp2h() {
 			);
 			console.log(`Generated posts-html/${id}.json`);
 		} catch (err) {
-			console.warn(`Warning: failed rendering post ${id}:`, err.message || err);
+			console.warn(`Warning: failed rendering post ${id}:`, err.message + err.stack || err);
 		}
 	}
 
@@ -123,8 +137,29 @@ async function rp2h() {
 
 	// 生成 postlist.json
 	const postlist = { posts };
+	const set = new Set();
+	posts.forEach(p => {
+		if (p.tags && Array.isArray(p.tags)) {
+			p.tags.forEach(t => set.add(t));
+		}
+	});
+	const tags = { tags: Array.from(set).sort() };
 	await fs.writeFile(postlistPath, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
 	console.log(`Generated postlist.json with ${posts.length} posts`);
+	await fs.writeFile(statisticsPath, JSON.stringify(statistics, null, 2) + '\n', 'utf-8');
+	console.log(`Generated statistics.json with ${posts.length} posts`);
+	await fs.writeFile(tagsPath, JSON.stringify(tags, null, 2) + '\n', 'utf-8');
+	console.log(`Generated tags.json with ${posts.length} posts`);
+	for (const tag of tags.tags) {
+		let hasTagPosts = { posts: [] };
+		posts.filter(x => x.tags && x.tags.includes(tag))
+			.forEach(x => {
+				hasTagPosts.posts.push(x.id);
+			})
+		let tagJsonPath = path.join(__dirname, `../public/tag/${encodeURIComponent(tag)}.json`);
+		await fs.writeFile(tagJsonPath, JSON.stringify(hasTagPosts, null, 2) + '\n', 'utf-8');
+		console.log(`Generated tag/${encodeURIComponent(tag)}.json with ${hasTagPosts.posts.length} posts`);
+	}
 	console.log('Finished renderPostsToHtml.');
 }
 

@@ -66,6 +66,7 @@
 	--el-border-color: var(--color-bg-alt-alt) !important;
 	--el-input-border-color: var(--color-bg-alt-alt) !important;
 	--el-text-color-disabled: var(--color-bg) !important;
+	--el-fill-color: var(--color-bg-alt-alt) !important;
 }
 
 @media (prefers-color-scheme: dark) {
