@@ -156,7 +156,7 @@ async function rp2h() {
 	console.log(`Generated statistics.json with ${posts.length} posts`);
 	await fs.writeFile(tagsPath, JSON.stringify(tags, null, 2) + '\n', 'utf-8');
 	console.log(`Generated tags.json with ${posts.length} posts`);
-	for (const tag of Object.keys(tagCountMap)) {
+	for (const tag of Object.keys(map)) {
 		let hasTagPosts = { posts: [] };
 		posts.filter(x => x.tags && x.tags.includes(tag))
 			.forEach(x => {
