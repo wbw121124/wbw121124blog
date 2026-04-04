@@ -1,2 +1,0 @@
-import{i as t,o as a,c as s,b as o,m as e}from"./copy-tex.min-Dn_oEa8D.js";const r={class:"component"};const n=t({},[["render",function(t,n){return a(),s("main",r,[...n[0]||(n[0]=[o("h2",{class:"text-2xl font-bold mb-6"},"联系",-1),o("p",{class:"text-gray-600 dark:text-gray-400"},[e("可以通过 GitHub 联系，或通过邮箱"),o("a",{href:"mailto:wbw121124@126.com",class:"href hover:underline"},"wbw121124@126.com"),e("联系。")],-1)])])}]]);export{n as default};
-//# sourceMappingURL=ContactPage-DhbhWGXs.js.map
