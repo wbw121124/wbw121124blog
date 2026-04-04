@@ -82,14 +82,14 @@ function doSearch() {
 				</template>
 			</el-input>
 			<a v-if="query" :href="`?path=/searchd/${encodeURIComponent(query)}`"
-				class="text-sm text-indigo-600 hover:underline">全文搜索</a>
+				class="text-sm href hover:underline">全文搜索</a>
 		</div>
 		<div v-if="results.length === 0">
 			<p class="text-gray-600">没有找到匹配的文章。</p>
 		</div>
 		<div v-else>
 			<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
-				<a :href="`?path=/post/${post.id}`" class="text-indigo-600 hover:underline" v-html="post.title"></a>
+				<a :href="`?path=/post/${post.id}`" class="href hover:underline" v-html="post.title"></a>
 				<span class="text-gray-500">（{{ post.date }}）</span>
 				<p class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
 			</div>

@@ -29,7 +29,7 @@ export default {
 		<nav class="mx-auto">
 			<ul class="flex space-x-4 flex-row items-center">
 				<li style="list-style: none;">
-					<a href="?path=/" class="hover:underline font-bold text-indigo-600"><img src="/logo.svg" alt="Logo"
+					<a href="?path=/" class="hover:underline font-bold href"><img src="/logo.svg" alt="Logo"
 							style="height: 1.25em;" /></a>
 				</li>
 				<li v-for="item in menuItems" :key="item.name" style="list-style: none;">

@@ -23,7 +23,7 @@ onMounted(async () => {
 		<h2 class="text-2xl font-bold mb-6">标签：{{ tagName }}</h2>
 		<div v-if="posts.length === 0" class="text-gray-600">暂无相关文章。</div>
 		<div v-for="post in posts" :key="post.id" class="mt-4">
-			<a :href="`?path=/post/${post.id}`" class="text-indigo-600 hover:underline">{{ post.title }}</a>
+			<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
 			<span class="text-gray-500">（{{ post.date }}）</span>
 		</div>
 	</main>

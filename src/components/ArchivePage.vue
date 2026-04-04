@@ -36,7 +36,7 @@ onMounted(async () => {
 			<div v-for="(posts, ym) in months" :key="ym" class="ml-4 mb-4">
 				<h4 class="text-lg font-medium">{{ ym }}</h4>
 				<div v-for="post in posts" :key="post.id" class="mt-1 ml-4">
-					<a :href="`?path=/post/${post.id}`" class="text-indigo-600 hover:underline">{{ post.title }}</a>
+					<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
 					<span class="text-gray-500">（{{ post.date }}）</span>
 				</div>
 			</div>
