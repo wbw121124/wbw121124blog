@@ -9,7 +9,11 @@
 }
 
 .LXGWNeoXiHeiPlus {
-	font-family: LXGWNeoXiHeiPlus !important;
+	font-family: LXGWNeoXiHeiPlus,
+		Lato,
+		'PingFang SC',
+		'Microsoft YaHei',
+		sans-serif !important;
 }
 
 /* XiaolaiMono */
@@ -19,7 +23,11 @@
 }
 
 .XiaolaiMono {
-	font-family: XiaolaiMono !important;
+	font-family: XiaolaiMono,
+		Lato,
+		'PingFang SC',
+		'Microsoft YaHei',
+		sans-serif !important;
 }
 
 :root {

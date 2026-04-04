@@ -5,6 +5,16 @@
 		<p>
 			使用作者自己编写的博客框架。
 		</p>
+		<p>
+			<a href="https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml"><img
+					src="https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml/badge.svg"
+					alt="Optimized Blog CI/CD"></a>
+		</p>
+		<p>
+			<a href="https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment"><img
+					src="https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment/badge.svg"
+					alt="pages-build-deployment"></a>
+		</p>
 	</div>
 
 	<!--作者介绍-->
