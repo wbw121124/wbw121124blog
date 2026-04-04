@@ -41,16 +41,16 @@ export default defineConfig({
 	},
 	optimizeDeps: {
 		include: [
-			'markdown-it',
-			'markdown-it-math',
-			'markdown-it-footnote',
-			'markdown-it-anchor',
-			'markdown-it-highlightjs',
-			'mathup',
-			'katex',
+			// 'markdown-it',
+			// 'markdown-it-math',
+			// 'markdown-it-footnote',
+			// 'markdown-it-anchor',
+			// 'markdown-it-highlightjs',
+			// 'mathup',
+			// 'katex',
 			'tailwindcss',
-			'highlight.js',
-			'markdown-it-emoji',
+			// 'highlight.js',
+			// 'markdown-it-emoji',
 			"element-plus"
 		],
 		exclude: ['vite-ssg', 'vite-router'], // 排除不需要预构建的包
@@ -61,15 +61,15 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks: {
-					markdown: [
-						'markdown-it',
-						'markdown-it-emoji/lib/bare.mjs',
-						'markdown-it-footnote',
-						'markdown-it-math',
-						'markdown-it-anchor',
-						'markdown-it-highlightjs',
-						'katex'
-					],
+					// markdown: [
+					// 	'markdown-it',
+					// 	'markdown-it-emoji/lib/bare.mjs',
+					// 	'markdown-it-footnote',
+					// 	'markdown-it-math',
+					// 	'markdown-it-anchor',
+					// 	'markdown-it-highlightjs',
+					// 	'katex'
+					// ],
 				},
 				chunkFileNames: 'assets/[name]-[hash].js',
 				entryFileNames: 'assets/[name]-[hash].js',

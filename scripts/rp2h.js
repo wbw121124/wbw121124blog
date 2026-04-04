@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { initMarkdownIt } from '../src/mkd-it.js';
+import { initMarkdownIt } from '../lib/mkd-it.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
