@@ -217,12 +217,14 @@ p:last-child {
 	margin-block-end: 1em;
 }
 
-.mkd a {
+.mkd a,
+.tag a {
 	text-decoration: none;
 	border-bottom: 1px solid #999;
 }
 
-.mkd a:hover {
+.mkd a:hover,
+.tag a:hover {
 	color: var(--link-hover-color);
 	border-bottom: 1px solid var(--link-hover-color);
 }
