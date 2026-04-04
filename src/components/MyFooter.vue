@@ -1,6 +1,6 @@
 <template>
 	<footer class="my-footer" role="contentinfo">
-		<div class="border-t border-t-gray-100 py-4 px-6 flex justify-between items-center text-gray-600">
+		<div class="border-t border-t-gray-100 py-4 px-6 flex justify-between items-center text-gray-600 dark:text-gray-400">
 			<div class="left">
 				<nav class="links" aria-label="footer links">
 					<a href="?path=/">首页</a>

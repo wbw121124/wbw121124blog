@@ -99,7 +99,7 @@ onMounted(async () => {
 			data = await response.text();
 		if (response.ok && isJSON(data)) {
 			data = JSON.parse(data);
-		} else {
+		} /*else {
 			// 兼容旧版：还没渲染时回退到 md
 			const mdResp = await fetch(`./posts/${postName}.md`);
 			if (!mdResp.ok) {
@@ -119,7 +119,7 @@ onMounted(async () => {
 			metadata.value = _metadata;
 			isLoading.value = false;
 			return;
-		}
+		}*/
 
 		if (!data) {
 			throw new Error('文章预渲染数据加载失败');
