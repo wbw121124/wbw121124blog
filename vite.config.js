@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import { rp2h } from './scripts/rp2h.js'
+import { resolve } from 'path';
 // import AutoImport from "unplugin-auto-import/vite";
 // import Components from "unplugin-vue-components/vite";
 // import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
@@ -74,6 +75,10 @@ export default defineConfig({
 				chunkFileNames: 'assets/[name]-[hash].js',
 				entryFileNames: 'assets/[name]-[hash].js',
 				assetFileNames: 'assets/[name]-[hash].[ext]'
+			},
+			input: {
+				main: resolve(__dirname, 'index.html'),
+				notFound: resolve(__dirname, '404.html')
 			}
 		},
 		cssCodeSplit: true,
