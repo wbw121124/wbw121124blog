@@ -3,21 +3,26 @@ import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import { rp2h } from './scripts/rp2h.js'
 import { resolve } from 'path';
-// import AutoImport from "unplugin-auto-import/vite";
-// import Components from "unplugin-vue-components/vite";
-// import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import AutoImport from "unplugin-auto-import/vite";
+import Components from "unplugin-vue-components/vite";
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [
 		vue(),
 		tailwindcss(),
-		// AutoImport({
-		// 	resolvers: [ElementPlusResolver()],
-		// }),
-		// Components({
-		// 	resolvers: [ElementPlusResolver()],
-		// }),
+		AutoImport({
+			imports: ['vue'],
+			resolvers: [
+				ElementPlusResolver(),
+			],
+		}),
+		Components({
+			resolvers: [
+				ElementPlusResolver(),
+			],
+		}),
 		{
 			name: 'custom-hmr-handler',
 			handleHotUpdate({ file, server }) {
