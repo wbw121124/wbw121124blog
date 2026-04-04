@@ -5,7 +5,7 @@
 /* LXGWNeoXiHeiPlus */
 @font-face {
 	font-family: LXGWNeoXiHeiPlus;
-	src: url(.\font\LXGWNeoXiHeiPlus.ttf);
+	src: url("/font/LXGWNeoXiHeiPlus.ttf");
 }
 
 .LXGWNeoXiHeiPlus {
@@ -15,7 +15,7 @@
 /* XiaolaiMono */
 @font-face {
 	font-family: XiaolaiMono;
-	src: url(.\font\XiaolaiMono-Regular.ttf);
+	src: url("/font/XiaolaiMono-Regular.ttf");
 }
 
 .XiaolaiMono {
