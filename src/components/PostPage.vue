@@ -239,6 +239,8 @@ onUnmounted(() => {
 
 </script>
 
+<script type="module" src="/src/katex/copy-tex.min.js"></script>
+
 <template>
 	<main class="mkd component mt-6">
 		<div v-if="metadata !== null && metadata.ready === true" class="metadata" key="loading">
