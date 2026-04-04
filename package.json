@@ -17,6 +17,7 @@
 		"@octokit/rest": "^22.0.1",
 		"@tailwindcss/vite": "^4.1.18",
 		"element-plus": "^2.13.5",
+		"fuse.js": "^7.2.0",
 		"highlight.js": "^11.11.1",
 		"jsdom": "^29.0.1",
 		"katex": "^0.16.27",

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { defineProps } from 'vue';
+import Fuse from 'fuse.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -10,6 +11,7 @@ const posts = ref([]);
 const results = ref([]);
 const page = ref(1);
 const pageSize = 5;
+let fuse = null;
 
 function highlight(text) {
 	if (!text) return '';
@@ -20,18 +22,56 @@ function highlight(text) {
 	return text.replace(/ /g, '').replace(regex, '<mark>$1</mark>');
 }
 
-function snippetFrom(text) {
+function highlightByMatches(text, matchObj) {
 	if (!text) return '';
-	const k = query.value.trim().toLowerCase();
-	const lower = text.toLowerCase();
-	const idx = lower.indexOf(k);
-	if (idx === -1) return '';
-	const start = Math.max(0, idx - 30);
-	const end = Math.min(text.length, idx + k.length + 30);
+	if (!matchObj || !matchObj.indices || !matchObj.indices.length) {
+		return highlight(text);
+	}
+	const chars = Array.from(text);
+	const markers = new Array(chars.length).fill(false);
+	for (const [s, e] of matchObj.indices) {
+		for (let i = s; i <= e && i < markers.length; i++) markers[i] = true;
+	}
+	let out = '';
+	let inMark = false;
+	for (let i = 0; i < chars.length; i++) {
+		if (markers[i] && !inMark) { out += '<mark>'; inMark = true; }
+		if (!markers[i] && inMark) { out += '</mark>'; inMark = false; }
+		out += chars[i];
+	}
+	if (inMark) out += '</mark>';
+	return out;
+}
+
+function snippetFrom(text, matchObj) {
+	if (!text) return '';
+	if (!matchObj || !matchObj.indices || !matchObj.indices.length) {
+		const k = query.value.trim().toLowerCase();
+		const lower = text.toLowerCase();
+		const idx = lower.indexOf(k);
+		if (idx === -1) return '';
+		const start = Math.max(0, idx - 30);
+		const end = Math.min(text.length, idx + k.length + 30);
+		let sn = text.slice(start, end);
+		if (start > 0) sn = '...' + sn;
+		if (end < text.length) sn = sn + '...';
+		return highlight(sn);
+	}
+	// use first match to build snippet window
+	const [s, e] = matchObj.indices[0];
+	const start = Math.max(0, s - 30);
+	const end = Math.min(text.length, e + 30);
 	let sn = text.slice(start, end);
 	if (start > 0) sn = '...' + sn;
 	if (end < text.length) sn = sn + '...';
-	return highlight(sn);
+	// adjust match indices to snippet-relative
+	const adj = { indices: [] };
+	for (const [ms, me] of matchObj.indices) {
+		const rs = Math.max(ms - start, 0);
+		const re = Math.min(me - start, sn.length - 1);
+		if (re >= 0 && rs < sn.length) adj.indices.push([rs, re]);
+	}
+	return highlightByMatches(sn, adj);
 }
 
 const pagedResults = computed(() => {
@@ -42,9 +82,9 @@ const total = computed(() => results.value.length);
 const highlightedResults = computed(() =>
 	pagedResults.value.map(p => ({
 		...p,
-		title: highlight(p.title),
-		summary: highlight(p.summary),
-		snippet: snippetFrom(p.text)
+		title: highlightByMatches(p.title, (p._matches || []).find(m => m.key === 'title')),
+		summary: highlightByMatches(p.summary, (p._matches || []).find(m => m.key === 'summary')),
+		snippet: snippetFrom(p.text, (p._matches || []).find(m => m.key === 'text'))
 	}))
 );
 
@@ -68,19 +108,19 @@ function parseFrontmatter(content) {
 }
 
 function doSearch() {
-	if (!query.value.trim()) {
+	const q = query.value.trim();
+	if (!q || !fuse) {
 		results.value = [];
+		page.value = 1;
 		return;
 	}
-	const k = query.value.trim().toLowerCase();
-	results.value = posts.value.filter(p => {
-		const title = p.title.toLowerCase().replace(/ /g,'');
-		const summary = (p.summary || "").toLowerCase().replace(/ /g,'');
-		const tags = (p.tags || []).map(t => t.toLowerCase()).join(' ');
-		const text = (p.text || "").toLowerCase().replace(/ /g,'');
-		console.log(p, title.includes(k), summary.includes(k), tags.includes(k), text.includes(k));
-		return title.includes(k.replace(/ /g,'')) || summary.includes(k.replace(/ /g,'')) || tags.includes(k) || text.includes(k.replace(/ /g,''));
-	});
+	try {
+		let res = fuse.search(q);
+		res = res.sort((a, b) => (b.score ?? 1) - (a.score ?? 1));
+		results.value = res.map(r => ({ ...r.item, _score: r.score, _matches: r.matches || [] }));
+	} catch (e) {
+		results.value = [];
+	}
 	page.value = 1;
 }
 
@@ -101,6 +141,17 @@ onMounted(async () => {
 		}
 	}
 	posts.value.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+	fuse = new Fuse(posts.value, {
+		keys: [
+			{ name: 'title', weight: 0.6 },
+			{ name: 'summary', weight: 0.15 },
+			{ name: 'tags', weight: 0.05 },
+			{ name: 'text', weight: 0.2 }
+		],
+		includeScore: true,
+		includeMatches: true,
+		threshold: 0.4
+	});
 	if (props.props.keys) {
 		query.value = decodeURIComponent(props.props.keys);
 		doSearch();
