@@ -4,6 +4,7 @@
 
 /* LXGWNeoXiHeiPlus */
 @font-face {
+	font-display: swap !important;
 	font-family: LXGWNeoXiHeiPlus;
 	src: url("/font/LXGWNeoXiHeiPlus.ttf");
 }
@@ -18,6 +19,7 @@
 
 /* XiaolaiMono */
 @font-face {
+	font-display: swap !important;
 	font-family: XiaolaiMono;
 	src: url("/font/XiaolaiMono-Regular.ttf");
 }
