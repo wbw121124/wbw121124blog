@@ -13,11 +13,11 @@ const pageSize = 5;
 
 function highlight(text) {
 	if (!text) return '';
-	const k = query.value.trim();
+	const k = query.value.trim().replace(/ /g, '');
 	if (!k) return text;
 	const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	const regex = new RegExp(`(${esc})`, 'gi');
-	return text.replace(regex, '<mark>$1</mark>');
+	return text.replace(/ /g, '').replace(regex, '<mark>$1</mark>');
 }
 
 const pagedResults = computed(() => {
@@ -36,15 +36,15 @@ const highlightedResults = computed(() =>
 const total = computed(() => results.value.length);
 
 function runSearch(keys) {
-	const k = keys.trim().toLowerCase();
+	const k = keys.trim().toLowerCase().replace(/ /g,'');
 	if (!k) {
 		results.value = [];
 		return;
 	}
 	results.value = posts.value.filter(p => {
-		const inTitle = p.title && p.title.toLowerCase().includes(k);
-		const inSummary = p.summary && p.summary.toLowerCase().includes(k);
-		const inTags = p.tags && p.tags.some(t => t.toLowerCase().includes(k));
+		const inTitle = p.title && p.title.toLowerCase().replace(/ /g,'').includes(k);
+		const inSummary = p.summary && p.summary.toLowerCase().replace(/ /g,'').includes(k);
+		const inTags = p.tags && p.tags.some(t => t.toLowerCase().replace(/ /g,'').includes(k));
 		return inTitle || inSummary || inTags;
 	});
 }

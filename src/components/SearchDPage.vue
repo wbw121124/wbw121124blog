@@ -13,11 +13,11 @@ const pageSize = 5;
 
 function highlight(text) {
 	if (!text) return '';
-	const k = query.value.trim();
+	const k = query.value.trim().replace(/ /g, '');
 	if (!k) return text;
 	const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	const regex = new RegExp(`(${esc})`, 'gi');
-	return text.replace(regex, '<mark>$1</mark>');
+	return text.replace(/ /g, '').replace(regex, '<mark>$1</mark>');
 }
 
 function snippetFrom(text) {
@@ -74,12 +74,12 @@ function doSearch() {
 	}
 	const k = query.value.trim().toLowerCase();
 	results.value = posts.value.filter(p => {
-		const title = p.title.toLowerCase();
-		const summary = (p.summary || "").toLowerCase();
+		const title = p.title.toLowerCase().replace(/ /g,'');
+		const summary = (p.summary || "").toLowerCase().replace(/ /g,'');
 		const tags = (p.tags || []).map(t => t.toLowerCase()).join(' ');
-		const text = (p.text || "").toLowerCase();
+		const text = (p.text || "").toLowerCase().replace(/ /g,'');
 		console.log(p, title.includes(k), summary.includes(k), tags.includes(k), text.includes(k));
-		return title.includes(k) || summary.includes(k) || tags.includes(k) || text.includes(k);
+		return title.includes(k.replace(/ /g,'')) || summary.includes(k.replace(/ /g,'')) || tags.includes(k) || text.includes(k.replace(/ /g,''));
 	});
 	page.value = 1;
 }

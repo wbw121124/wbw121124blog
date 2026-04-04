@@ -2,6 +2,71 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initMarkdownIt } from '../lib/mkd-it.js';
+import pangu from 'pangu/browser';
+import { JSDOM } from 'jsdom';
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+	url: "http://localhost",
+	pretendToBeVisual: true,  // 模拟浏览器视觉环境
+	runScripts: "dangerously", // 允许运行脚本
+	resources: "usable"
+});
+const { window } = dom;
+const {
+	document,
+	Node,
+	DocumentFragment,
+	XPathResult,
+	NodeFilter,
+	Element,
+	HTMLElement,
+	Text,           // 添加 Text
+	Comment,        // 添加 Comment
+	CDATASection,   // 添加 CDATASection
+	ProcessingInstruction, // 添加 ProcessingInstruction
+	DocumentType,   // 添加 DocumentType
+	MutationObserver,
+	CustomEvent,
+	Event,
+	getComputedStyle
+} = window;
+global.document = document;
+global.window = window;
+global.Node = Node;
+global.DocumentFragment = DocumentFragment;
+global.XPathResult = XPathResult;
+global.NodeFilter = NodeFilter;
+global.Element = Element;
+global.HTMLElement = HTMLElement;
+global.Text = Text;
+global.Comment = Comment;
+global.CDATA_SECTION_NODE = window.CDATA_SECTION_NODE;
+global.COMMENT_NODE = window.COMMENT_NODE;
+global.DOCUMENT_FRAGMENT_NODE = window.DOCUMENT_FRAGMENT_NODE;
+global.DOCUMENT_NODE = window.DOCUMENT_NODE;
+global.DOCUMENT_TYPE_NODE = window.DOCUMENT_TYPE_NODE;
+global.ELEMENT_NODE = window.ELEMENT_NODE;
+global.TEXT_NODE = window.TEXT_NODE;
+global.ProcessingInstruction = ProcessingInstruction;
+global.DocumentType = DocumentType;
+global.MutationObserver = MutationObserver;
+global.CustomEvent = CustomEvent;
+global.Event = Event;
+global.getComputedStyle = getComputedStyle;
+global.requestIdleCallback = global.requestIdleCallback || function (callback, options) {
+	const start = Date.now();
+	return setTimeout(function () {
+		callback({
+			didTimeout: false,
+			timeRemaining: function () {
+				return Math.max(0, 50 - (Date.now() - start));
+			}
+		});
+	}, 1);
+};
+
+global.cancelIdleCallback = global.cancelIdleCallback || function (id) {
+	clearTimeout(id);
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,6 +116,17 @@ function generateSummary(content, maxLength = 150) {
 	return plainText.slice(0, maxLength) + '...';
 }
 
+function spacingTextNodes(node) {
+	if (node.nodeType === Node.TEXT_NODE) {
+		if (node.textContent && node.textContent.trim()) {
+			node.textContent = pangu.spacingText(node.textContent);
+		}
+	} else if (node.nodeType === Node.ELEMENT_NODE &&
+		!['SCRIPT', 'STYLE', 'CODE', 'PRE', 'NOSCRIPT'].includes(node.tagName)) {
+		Array.from(node.childNodes).forEach(spacingTextNodes);
+	}
+}
+
 async function rp2h() {
 	const postsDir = path.join(__dirname, '../public/posts');
 	const outDir = path.join(__dirname, '../public/posts-html');
@@ -91,8 +167,13 @@ async function rp2h() {
 
 		try {
 			const raw = await fs.readFile(mdPath, 'utf-8');
-			const { metadata, content } = parseFrontmatter(raw);
-			const html = md.render(content);
+			let { metadata, content } = parseFrontmatter(raw);
+			let html = md.render(content);
+			document.body.innerHTML = html;
+			await new Promise(resolve => setTimeout(resolve, 0));
+			spacingTextNodes(document.body);
+			html = document.body.innerHTML;
+			metadata.title = pangu.spacingText(metadata.title);
 
 			// 生成 post 对象
 			const post = {
@@ -100,7 +181,7 @@ async function rp2h() {
 				title: metadata.title || id,
 				date: metadata.date || new Date().toISOString().split('T')[0],
 				tags: metadata.tags || [],
-				summary: metadata.summary || generateSummary(content)
+				summary: pangu.spacingText(metadata.summary || generateSummary(content))
 			};
 
 			statistics.mem += raw.length;

@@ -242,7 +242,7 @@ onUnmounted(() => {
 <template>
 	<main class="mkd component mt-6">
 		<div v-if="metadata !== null && metadata.ready === true" class="metadata" key="loading">
-			<h2>{{ metadata.title }}</h2>
+			<h2 class="LXGWNeoXiHeiPlus">{{ metadata.title }}</h2>
 			<div v-if="metadata.tags && metadata.tags.length" class="flex flex-wrap gap-1 mt-1" key="tags">
 				<span v-for="t in metadata.tags" :key="t" class="tag">
 					<a :href="`?path=/tag/${encodeURIComponent(t)}`">{{ t }}</a>
