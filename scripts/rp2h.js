@@ -137,20 +137,26 @@ async function rp2h() {
 
 	// 生成 postlist.json
 	const postlist = { posts };
-	const set = new Set();
+	const map = {};
 	posts.forEach(p => {
 		if (p.tags && Array.isArray(p.tags)) {
-			p.tags.forEach(t => set.add(t));
+			p.tags.forEach(t => {
+				if (map.hasOwnProperty(t))
+					map[t] = map[t] + 1;
+				else
+					map[t] = 1;
+			});
 		}
 	});
-	const tags = { tags: Array.from(set).sort() };
+	console.log(map);
+	const tags = { tags: map };
 	await fs.writeFile(postlistPath, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
 	console.log(`Generated postlist.json with ${posts.length} posts`);
 	await fs.writeFile(statisticsPath, JSON.stringify(statistics, null, 2) + '\n', 'utf-8');
 	console.log(`Generated statistics.json with ${posts.length} posts`);
 	await fs.writeFile(tagsPath, JSON.stringify(tags, null, 2) + '\n', 'utf-8');
 	console.log(`Generated tags.json with ${posts.length} posts`);
-	for (const tag of tags.tags) {
+	for (const tag of Object.keys(tagCountMap)) {
 		let hasTagPosts = { posts: [] };
 		posts.filter(x => x.tags && x.tags.includes(tag))
 			.forEach(x => {
