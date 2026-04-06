@@ -106,7 +106,8 @@ function generateSummary(content, maxLength = 150) {
 	// 移除 Markdown 标记，提取纯文本
 	const plainText = content.trim()
 		.replace(/\n{2,}/g, '\n') // 合并连续的空行
-		.replace(/[#*`~>_\[\]()\- \t\f\r\v]/g, '') // 移除部分 Markdown 标记
+		.replace(/[#*`~>_\[\]()\- \t\f\r\v]/g, ' ') // 移除部分 Markdown 标记
+		.replace(/ {2,}/g, ' ')
 		.replace(/\n{2,}/g, '\n')
 		.trim();
 
