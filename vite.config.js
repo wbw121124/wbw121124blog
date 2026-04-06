@@ -57,7 +57,9 @@ export default defineConfig({
 			'tailwindcss',
 			// 'highlight.js',
 			// 'markdown-it-emoji',
-			"element-plus"
+			"element-plus",
+			'vue',
+			'fuse.js',
 		],
 		exclude: ['vite-ssg', 'vite-router'], // 排除不需要预构建的包
 	},
