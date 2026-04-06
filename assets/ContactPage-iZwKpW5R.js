@@ -1,2 +1,0 @@
-import{j as a,o as s,i as t,b as o,n as e}from"./zh-cn-DiPXjkLB.js";const n={class:"component"};const r=a({},[["render",function(a,r){return s(),t("main",n,[...r[0]||(r[0]=[o("h2",{class:"text-2xl font-bold mb-6"},"联系",-1),o("p",{class:"text-gray-600 dark:text-gray-400"},[e("可以通过 GitHub 联系，或通过邮箱"),o("a",{href:"mailto:wbw121124@126.com",class:"href hover:underline"},"wbw121124@126.com"),e("联系。")],-1)])])}]]);export{r as default};
-//# sourceMappingURL=ContactPage-iZwKpW5R.js.map
