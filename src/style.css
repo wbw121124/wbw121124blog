@@ -6,7 +6,6 @@
 @font-face {
 	font-display: swap !important;
 	font-family: LXGWNeoXiHeiPlus;
-	/* src: url("/font/LXGWNeoXiHeiPlus.ttf"); */
 	src: url("/font/LXGWNeoXiHeiPlus.woff2") format("woff2"),
 		url("/font/LXGWNeoXiHeiPlus.woff") format("woff"),
 		url("/font/LXGWNeoXiHeiPlus.ttf") format("truetype");
@@ -21,17 +20,17 @@
 }
 
 /* XiaolaiMono */
-@font-face {
+/* @font-face {
 	font-display: swap !important;
 	font-family: XiaolaiMono;
-	/* src: url("/font/XiaolaiMono-Regular.ttf"); */
 	src: url("/font/XiaolaiMono-Regular.woff2") format("woff2"),
 		url("/font/XiaolaiMono-Regular.woff") format("woff"),
 		url("/font/XiaolaiMono-Regular.ttf") format("truetype");
-}
+} */
 
 .XiaolaiMono {
 	font-family: XiaolaiMono,
+		LXGWNeoXiHeiPlus,
 		Lato,
 		'PingFang SC',
 		'Microsoft YaHei',
