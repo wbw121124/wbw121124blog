@@ -98,22 +98,29 @@ function parseFrontmatter(content) {
 }
 
 function generateSummary(content, maxLength = 150) {
+	// 移除开头的标题行（如果存在）
+	content = content.trim().replace(/#[^\n]*\n/g, '');
+
+	// console.log('Content for summary:', content.slice(0, 200) + (content.length > 200 ? '...' : ''));
+
 	// 移除 Markdown 标记，提取纯文本
-	const plainText = content
+	const plainText = content.trim()
+		.replace(/\n{2,}/g, '\n') // 合并连续的空行
 		.replace(/[#*`~>_\[\]()\- \t\f\r\v]/g, '') // 移除部分 Markdown 标记
+		.replace(/\n{2,}/g, '\n')
 		.trim();
 
 	// 找到第一个 \n 的位置
-	const firstIndex = content.indexOf('\n');
+	const firstIndex = plainText.indexOf('\n');
 	// 从第一个 \n 后面开始找第二个 \n
-	const secondIndex = content.indexOf('\n', firstIndex + 1);
+	const secondIndex = plainText.indexOf('\n', firstIndex + 1);
 	if (firstIndex != -1 && secondIndex != -1)
 		maxLength = Math.min(maxLength, secondIndex - 1)
 
 	if (plainText.length <= maxLength) {
 		return plainText;
 	}
-	return plainText.slice(0, maxLength) + '...';
+	return plainText.replace('\n', ' ').slice(0, maxLength) + '...';
 }
 
 function spacingTextNodes(node) {
@@ -186,9 +193,7 @@ async function rp2h() {
 
 			statistics.mem += raw.length;
 
-			if (!metadata.hasOwnProperty("hide") ||
-				metadata.hide == "false" ||
-				metadata.hide == "show") {
+			if (!metadata.hasOwnProperty("hide")) {
 				statistics.total += content.length;
 				statistics.count += content.replace(/\s/g, '').length;
 				posts.push(post);

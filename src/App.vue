@@ -1,8 +1,7 @@
 <script setup>
 import MyHeader from './components/MyHeader.vue';
-import MyFooter from './components/MyFooter.vue';
-import { ElConfigProvider } from 'element-plus'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import { ElConfigProvider } from 'element-plus';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 const MyRoutes = [
 	{
@@ -104,6 +103,7 @@ const routeInfo = resolveRoute(path);
 // 动态按需导入 routeInfo.component，并创建异步组件
 import { defineAsyncComponent } from 'vue';
 const MyComponent = defineAsyncComponent(() => import(`./components/${routeInfo.component}.vue`));
+import MyFooter from './components/MyFooter.vue';
 </script>
 
 <template>

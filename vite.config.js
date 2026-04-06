@@ -27,7 +27,7 @@ export default defineConfig({
 			name: 'custom-hmr-handler',
 			handleHotUpdate({ file, server }) {
 
-				// 当 posts 文件夹变化时重新构建
+				// 当 posts 文件夹变化时重新构建，注意不能是 posts-html、postlist.json、statistics.json、tags.json，因为它是输出的文件（夹）
 				if (file.includes('/posts/')) {
 					// 当特定文件变化时执行自定义逻辑
 					console.log(`File changed: ${file}`);
