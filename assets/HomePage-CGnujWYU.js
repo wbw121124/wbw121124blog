@@ -1,0 +1,3 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/PostList-BMp4L4Wg.js","assets/el-pagination-CMrzi8o8.js","assets/style-QZ7_f5ri.js","assets/style-B6OJ6dN4.css","assets/el-pagination-CLX36ud9.css"])))=>i.map(i=>d[i]);
+import{o as s,i as a,b as t,a as o,u as e,F as l,d as i,f as n}from"./style-QZ7_f5ri.js";const m={__name:"HomePage",setup(m){const r=i(()=>n(()=>import("./PostList-BMp4L4Wg.js"),__vite__mapDeps([0,1,2,3,4])));return(i,n)=>(s(),a(l,null,[n[0]||(n[0]=t("main",{class:"component XiaolaiMono"},[t("h2",{class:"text-2xl font-bold mb-6 LXGWNeoXiHeiPlus"},"欢迎来到 wbw121124blog"),t("p",{class:"text-gray-600 dark:text-gray-400 mb-4"},"这是一个基于 Vue 3 和 Vite 构建的博客网站。")],-1)),o(e(r))],64))}};export{m as default};
+//# sourceMappingURL=HomePage-CGnujWYU.js.map
