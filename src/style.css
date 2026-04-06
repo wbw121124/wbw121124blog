@@ -2,41 +2,6 @@
 @import "katex/dist/katex.min.css";
 @import "highlight.js/styles/github.css";
 
-/* LXGWNeoXiHeiPlus */
-/* @font-face {
-	font-display: swap !important;
-	font-family: LXGWNeoXiHeiPlus;
-	src: url("/font/LXGWNeoXiHeiPlus.woff2") format("woff2"),
-		url("/font/LXGWNeoXiHeiPlus.woff") format("woff"),
-		url("/font/LXGWNeoXiHeiPlus.ttf") format("truetype");
-}
-
-.LXGWNeoXiHeiPlus {
-	font-family: LXGWNeoXiHeiPlus,
-		Lato,
-		'PingFang SC',
-		'Microsoft YaHei',
-		sans-serif !important;
-} */
-
-/* XiaolaiMono */
-/* @font-face {
-	font-display: swap !important;
-	font-family: XiaolaiMono;
-	src: url("/font/XiaolaiMono-Regular.woff2") format("woff2"),
-		url("/font/XiaolaiMono-Regular.woff") format("woff"),
-		url("/font/XiaolaiMono-Regular.ttf") format("truetype");
-}
-		
-.XiaolaiMono {
-	font-family: XiaolaiMono,
-		LXGWNeoXiHeiPlus,
-		Lato,
-		'PingFang SC',
-		'Microsoft YaHei',
-		sans-serif !important;
-} */
-
 :root {
 	color-scheme: light !important;
 	--color-primary: #646cff;
