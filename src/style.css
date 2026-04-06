@@ -3,7 +3,7 @@
 @import "highlight.js/styles/github.css";
 
 /* LXGWNeoXiHeiPlus */
-@font-face {
+/* @font-face {
 	font-display: swap !important;
 	font-family: LXGWNeoXiHeiPlus;
 	src: url("/font/LXGWNeoXiHeiPlus.woff2") format("woff2"),
@@ -17,7 +17,7 @@
 		'PingFang SC',
 		'Microsoft YaHei',
 		sans-serif !important;
-}
+} */
 
 /* XiaolaiMono */
 /* @font-face {
@@ -26,8 +26,8 @@
 	src: url("/font/XiaolaiMono-Regular.woff2") format("woff2"),
 		url("/font/XiaolaiMono-Regular.woff") format("woff"),
 		url("/font/XiaolaiMono-Regular.ttf") format("truetype");
-} */
-
+}
+		
 .XiaolaiMono {
 	font-family: XiaolaiMono,
 		LXGWNeoXiHeiPlus,
@@ -35,7 +35,7 @@
 		'PingFang SC',
 		'Microsoft YaHei',
 		sans-serif !important;
-}
+} */
 
 :root {
 	color-scheme: light !important;
