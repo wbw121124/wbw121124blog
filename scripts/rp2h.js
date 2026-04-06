@@ -97,7 +97,7 @@ function parseFrontmatter(content) {
 	return { metadata, content: body };
 }
 
-function generateSummary(content, maxLength = 150) {
+function generateSummary(content, maxLength = 200) {
 	// 移除开头的标题行（如果存在）
 	content = content.trim().replace(/#[^\n]*\n/g, '');
 
@@ -109,6 +109,8 @@ function generateSummary(content, maxLength = 150) {
 		.replace(/[#*`~>_\[\]()\- \t\f\r\v]/g, ' ') // 移除部分 Markdown 标记
 		.replace(/ {2,}/g, ' ')
 		.replace(/\n{2,}/g, '\n')
+		.replace(/ \n/g, '\n')
+		.replace(/\n /g, '\n')
 		.trim();
 
 	// 找到第一个 \n 的位置
@@ -121,7 +123,7 @@ function generateSummary(content, maxLength = 150) {
 	if (plainText.length <= maxLength) {
 		return plainText;
 	}
-	return plainText.replace('\n', ' ').slice(0, maxLength) + '...';
+	return plainText.replace('\n', ' ').replace(/ {2,}/g, ' ').slice(0, maxLength) + '...';
 }
 
 function spacingTextNodes(node) {
