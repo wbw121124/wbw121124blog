@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import '../style.css'
 
 // 初始化应用
 const app = createApp(App);
@@ -11,5 +12,3 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 });
 
 app.mount('#app')
-
-import '../style.css'
