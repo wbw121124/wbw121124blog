@@ -79,7 +79,7 @@
 	@import "highlight.js/styles/github-dark-dimmed.css";
 }
 
-.medium-zoom--opened .medium-zoom-overlay {
+.medium-zoom-overlay {
 	background: rgba(0, 0, 0, 0.5) !important;
 	z-index: 2;
 }
