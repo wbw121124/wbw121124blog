@@ -1,6 +1,10 @@
+import mediumZoom from 'medium-zoom/dist/pure'
+window.mediumZoom=mediumZoom;
+document.addEventListener('DOMContentLoaded',()=>{
+	mediumZoom('component img');
+})
 import { createApp } from 'vue'
 import App from './App.vue'
-import mediumZoom from 'medium-zoom/dist/pure'
 import 'medium-zoom/dist/style.css'
 import './style.css'
 
@@ -15,8 +19,4 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 
 app.mount('#app')
 
-window.mediumZoom=mediumZoom;
-document.addEventListener('DOMContentLoaded',()=>{
-	mediumZoom('component img');
-	setTimeout(()=>{mediumZoom('component img')},1000);
-})
+setTimeout(()=>{mediumZoom('component img')},1000);
