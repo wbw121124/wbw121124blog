@@ -80,7 +80,7 @@
 }
 
 .medium-zoom--opened .medium-zoom-overlay {
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(0, 0, 0, 0.5) !important;
 	z-index: 2;
 }
 
