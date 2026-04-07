@@ -79,6 +79,15 @@
 	@import "highlight.js/styles/github-dark-dimmed.css";
 }
 
+.medium-zoom--opened .medium-zoom-overlay {
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 2;
+}
+
+.medium-zoom-image--opened {
+	z-index: 3;
+}
+
 /* mirror text/blockquote colors for manual dark class */
 .dark :root {
 	--text-color: #ddd;
