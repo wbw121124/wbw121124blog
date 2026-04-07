@@ -15,4 +15,6 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 
 app.mount('#app')
 
+window.mediumZoom=mediumZoom;
+
 setTimeout(()=>{mediumZoom('img')},1000);
