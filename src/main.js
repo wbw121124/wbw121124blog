@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import mediumZoom from 'medium-zoom/dist/pure'
+import 'medium-zoom/dist/style.css'
 import './style.css'
 
 // 初始化应用
@@ -12,3 +14,5 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 });
 
 app.mount('#app')
+
+mediumZoom('img')
