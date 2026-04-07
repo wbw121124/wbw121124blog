@@ -1,7 +1,7 @@
 import mediumZoom from 'medium-zoom/dist/pure'
 window.mediumZoom=mediumZoom;
 document.addEventListener('DOMContentLoaded',()=>{
-	mediumZoom('.component :not(a)>img');
+	mediumZoom('.component :not(a)>img:not(.medium-zoom-image)');
 })
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -19,4 +19,4 @@ Object.entries(ElementPlusIconsVue).forEach(([key, component]) => {
 
 app.mount('#app')
 
-setTimeout(()=>{mediumZoom('.component :not(a)>img')},1000);
+setTimeout(()=>{mediumZoom('.component :not(a)>img:not(.medium-zoom-image)')},1000);
