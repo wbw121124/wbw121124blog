@@ -25,66 +25,138 @@
 <script setup>
 const year = new Date().getFullYear();
 
-{
+onMounted(() => {
 	/*
-	copy form https://github.com/anzhiyu-c/hexo-theme-anzhiyu;
+	copy from https://github.com/anzhiyu-c/hexo-theme-anzhiyu;
 	GPL-v3.0
 	*/
-	function dark() {
+	function initUniverse() {
 		window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-		var n, e, i, h, t = .05, s = document.getElementById("universe"), o = !0, a = "180,184,240", r = "226,225,142", d = "226,225,224", c = [];
+		
+		const canvas = document.getElementById("universe");
+		if (!canvas) return;
+		
+		let n, e, i, h;
+		const t = 0.05;
+		let o = true;
+		const a = "180,184,240";
+		const r = "226,225,142";
+		const d = "226,225,224";
+		const c = [];
+		
 		function f() {
-			n = window.innerWidth, e = window.innerHeight, i = .114514 * n, s.setAttribute("width", n), s.setAttribute("height", e)
+			n = window.innerWidth;
+			e = window.innerHeight;
+			i = 0.114514 * n;
+			canvas.setAttribute("width", n);
+			canvas.setAttribute("height", e);
 		}
+		
 		function u() {
+			if (!h) return;
 			h.clearRect(0, 0, n, e);
-			for (var t = c.length, i = 0; i < t; i++) {
-				var s = c[i];
-				s.move(), s.fadeIn(), s.fadeOut(), s.draw()
+			for (let idx = 0; idx < c.length; idx++) {
+				const star = c[idx];
+				star.move();
+				star.fadeIn();
+				star.fadeOut();
+				star.draw();
 			}
 		}
+		
 		function y() {
 			this.reset = function () {
-				this.giant = m(3), this.comet = !this.giant && !o && m(10), this.x = l(0, n - 10), this.y = l(0, e), this.r = l(1.1, 2.6), this.dx = l(t, 6 * t) + (this.comet + 1 - 1) * t * l(50, 120) + 2 * t, this.dy = -l(t, 6 * t) - (this.comet + 1 - 1) * t * l(50, 120), this.fadingOut = null, this.fadingIn = !0, this.opacity = 0, this.opacityTresh = l(.2, 1 - .4 * (this.comet + 1 - 1)), this.do = l(5e-4, .002) + .001 * (this.comet + 1 - 1)
-			}, this.fadeIn = function () {
-				this.fadingIn && (this.fadingIn = !(this.opacity > this.opacityTresh), this.opacity += this.do)
-			}, this.fadeOut = function () {
-				this.fadingOut && (this.fadingOut = !(this.opacity < 0), this.opacity -= this.do / 2, (this.x > n || this.y < 0) && (this.fadingOut = !1, this.reset()))
-			}, this.draw = function () {
-	
-				if (h.beginPath(), this.giant) h.fillStyle = "rgba(" + a + "," + this.opacity + ")", h.arc(this.x, this.y, 2, 0, 2 * Math.PI, !1);
-				else
-					if (this.comet) {
-						h.fillStyle = "rgba(" + d + "," + this.opacity + ")", h.arc(this.x, this.y, 1.5, 0, 2 * Math.PI, !1);
-						for (var t = 0; t < 30; t++)
-							h.fillStyle = "rgba(" + d + "," + (this.opacity - this.opacity / 20 * t) + ")", h.rect(this.x - this.dx / 4 * t, this.y - this.dy / 4 * t - 2, 2, 2), h.fill()
+				this.giant = m(3);
+				this.comet = !this.giant && !o && m(10);
+				this.x = l(0, n - 10);
+				this.y = l(0, e);
+				this.r = l(1.1, 2.6);
+				this.dx = l(t, 6 * t) + (this.comet ? t * l(50, 120) : 0) + 2 * t;
+				this.dy = -l(t, 6 * t) - (this.comet ? t * l(50, 120) : 0);
+				this.fadingOut = null;
+				this.fadingIn = true;
+				this.opacity = 0;
+				this.opacityTresh = l(0.2, 1 - 0.4 * (this.comet ? 1 : 0));
+				this.do = l(5e-4, 0.002) + 0.001 * (this.comet ? 1 : 0);
+			};
+			
+			this.fadeIn = function () {
+				if (this.fadingIn) {
+					if (this.opacity > this.opacityTresh) this.fadingIn = false;
+					this.opacity += this.do;
+				}
+			};
+			
+			this.fadeOut = function () {
+				if (this.fadingOut) {
+					if (this.opacity < 0) this.fadingOut = false;
+					this.opacity -= this.do / 2;
+					if ((this.x > n || this.y < 0)) {
+						this.fadingOut = false;
+						this.reset();
 					}
-					else
-						h.fillStyle = "rgba(" + r + "," + this.opacity + ")", h.rect(this.x, this.y, this.r, this.r);
-				h.closePath(), h.fill()
-			}, this.move = function () {
-				this.x += this.dx, this.y += this.dy, !1 === this.fadingOut && this.reset(), (this.x > n - n / 4 || this.y < 0) && (this.fadingOut = !0)
-			}, setTimeout(function () {
-				o = !1
-			}, 50)
+				}
+			};
+			
+			this.draw = function () {
+				if (!h) return;
+				h.beginPath();
+				if (this.giant) {
+					h.fillStyle = "rgba(" + a + "," + this.opacity + ")";
+					h.arc(this.x, this.y, 2, 0, 2 * Math.PI, false);
+				} else if (this.comet) {
+					h.fillStyle = "rgba(" + d + "," + this.opacity + ")";
+					h.arc(this.x, this.y, 1.5, 0, 2 * Math.PI, false);
+					for (let t2 = 0; t2 < 30; t2++) {
+						h.fillStyle = "rgba(" + d + "," + (this.opacity - this.opacity / 20 * t2) + ")";
+						h.rect(this.x - this.dx / 4 * t2, this.y - this.dy / 4 * t2 - 2, 2, 2);
+						h.fill();
+					}
+				} else {
+					h.fillStyle = "rgba(" + r + "," + this.opacity + ")";
+					h.rect(this.x, this.y, this.r, this.r);
+				}
+				h.closePath();
+				h.fill();
+			};
+			
+			this.move = function () {
+				this.x += this.dx;
+				this.y += this.dy;
+				if (this.fadingOut === false) this.reset();
+				if ((this.x > n - n / 4 || this.y < 0)) this.fadingOut = true;
+			};
+			
+			setTimeout(function () {
+				o = false;
+			}, 50);
 		}
-		function m(t) {
-			return Math.floor(1e3 * Math.random()) + 1 < 10 * t
+		
+		function m(threshold) {
+			return Math.floor(1000 * Math.random()) + 1 < 10 * threshold;
 		}
-		function l(t, i) {
-			return Math.random() * (i - t) + t
+		
+		function l(min, max) {
+			return Math.random() * (max - min) + min;
 		}
-		f(), window.addEventListener("resize", f, !1), function () {
+		
+		f();
+		window.addEventListener("resize", f, false);
+		
+		h = canvas.getContext("2d");
+		for (let idx = 0; idx < i; idx++) {
+			c[idx] = new y();
+			c[idx].reset();
+		}
+		u();
+		
+		function animate() {
+			u();
+			window.requestAnimationFrame(animate);
+		}
+		animate();
+	}
 	
-			h = s.getContext("2d");
-			for (var t = 0;
-				t < i;
-				t++) c[t] = new y, c[t].reset();
-			u()
-		}(), function t() {
-	 /*document.getElementsByTagName('html')[0].getAttribute('data-theme') == 'dark' &&*/ u(), window.requestAnimationFrame(t)
-		}()
-	};
-	dark();
-}
+	initUniverse();
+});
 </script>
