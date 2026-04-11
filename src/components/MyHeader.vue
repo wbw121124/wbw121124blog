@@ -30,7 +30,7 @@ export default {
 			<ul class="flex space-x-4 flex-row items-center">
 				<li style="list-style: none;">
 					<a href="?path=/" class="hover:underline font-bold href"><img src="/logo.svg" alt="Logo"
-							style="height: 1.25em;" /></a>
+							style="height: 1.25em; width: 2.5em;" /></a>
 				</li>
 				<li v-for="item in menuItems" :key="item.name" style="list-style: none;">
 					<a :href="item.link" class="hover:underline">{{ item.name }}</a>

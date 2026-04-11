@@ -120,7 +120,7 @@ const getMinHeightByRoute = (component) => {
 		'SearchDPage': '100vh',
 		'404': '100vh'
 	};
-	return heights[component] || '500px';
+	return heights[component] || '100vh';
 };
 </script>
 
@@ -128,7 +128,8 @@ const getMinHeightByRoute = (component) => {
 	<el-config-provider :locale="zhCn">
 		<MyHeader />
 		<!-- 主内容区域 - 设置min-height防止footer布局偏移 -->
-		<div class="mx-auto px-4 pb-8" :style="{ minHeight: getMinHeightByRoute(routeInfo.component) }">
+		<div class="mx-auto px-4 pb-8"
+			:style="{ minHeight: 'calc(' + getMinHeightByRoute(routeInfo.component) + ' - 8px - var(--spacing) * 16 - 2em)' }">
 			<!-- Suspense 用于处理异步组件加载 -->
 			<Suspense>
 				<!-- 实际内容 -->
