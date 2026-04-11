@@ -1,6 +1,5 @@
 <script setup>
 import MyHeader from './components/MyHeader.vue';
-import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 const MyRoutes = [
@@ -104,14 +103,58 @@ const routeInfo = resolveRoute(path);
 import { defineAsyncComponent } from 'vue';
 const MyComponent = defineAsyncComponent(() => import(`./components/${routeInfo.component}.vue`));
 import MyFooter from './components/MyFooter.vue';
+
+	
+// 为不同页面预设最小高度，防止CLS布局偏移
+const getMinHeightByRoute = (component) => {
+	const heights = {
+		'HomePage': '500px',
+		'AboutPage': '400px',
+		'ContactPage': '450px',
+		'PostPage': '700px',
+		'ArchivePage': '600px',
+		'TagsPage': '500px',
+		'TagPage': '550px',
+		'YearPage': '600px',
+		'SearchPage': '600px',
+		'SearchDPage': '600px',
+		'404': '400px'
+	};
+	return heights[component] || '500px';
+};
 </script>
 
 <template>
 	<el-config-provider :locale="zhCn">
 		<MyHeader />
-		<div class="mx-auto px-4 pb-8">
-			<MyComponent :props="routeInfo.props" />
+		<!-- 主内容区域 - 设置min-height防止footer布局偏移 -->
+		<div class="mx-auto px-4 pb-8" :style="{ minHeight: getMinHeightByRoute(routeInfo.component) }">
+			<!-- Suspense 用于处理异步组件加载 -->
+			<Suspense>
+				<!-- 实际内容 -->
+				<template #default>
+					<MyComponent :props="routeInfo.props" />
+				</template>
+				<!-- 加载中显示骨架屏 - 占用相同高度防止CLS -->
+				<template #fallback>
+					<div class="skeleton-container">
+						<!-- 标题骨架 -->
+						<el-skeleton :rows="1" animated />
+						<!-- 内容骨架 -->
+						<el-skeleton :rows="3" animated style="margin-top: 16px;" />
+						<el-skeleton :rows="4" animated style="margin-top: 16px;" />
+						<el-skeleton :rows="5" animated style="margin-top: 16px;" />
+					</div>
+				</template>
+			</Suspense>
 		</div>
 		<MyFooter />
 	</el-config-provider>
 </template>
+
+
+<style scoped>
+.skeleton-container {
+	padding: 24px 0;
+}
+</style>
