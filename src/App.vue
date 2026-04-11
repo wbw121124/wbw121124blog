@@ -128,7 +128,7 @@ const getMinHeightByRoute = (component) => {
 	<el-config-provider :locale="zhCn">
 		<MyHeader />
 		<!-- 主内容区域 - 设置min-height防止footer布局偏移 -->
-		<div class="mx-auto px-4 pb-8" :style="{ minHeight: getMinHeightByRoute(routeInfo.component) }">
+		<div class="mx-auto px-4 pb-8">
 			<!-- Suspense 用于处理异步组件加载 -->
 			<Suspense>
 				<!-- 实际内容 -->
@@ -137,7 +137,7 @@ const getMinHeightByRoute = (component) => {
 				</template>
 				<!-- 加载中显示骨架屏 - 占用相同高度防止CLS -->
 				<template #fallback>
-					<div class="skeleton-container">
+					<div class="skeleton-container" :style="{ minHeight: getMinHeightByRoute(routeInfo.component) }">
 						<!-- 标题骨架 -->
 						<el-skeleton :rows="1" animated />
 						<!-- 内容骨架 -->
