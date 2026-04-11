@@ -108,17 +108,17 @@ import MyFooter from './components/MyFooter.vue';
 // 为不同页面预设最小高度，防止CLS布局偏移
 const getMinHeightByRoute = (component) => {
 	const heights = {
-		'HomePage': '500px',
-		'AboutPage': '400px',
-		'ContactPage': '450px',
-		'PostPage': '700px',
-		'ArchivePage': '600px',
-		'TagsPage': '500px',
-		'TagPage': '550px',
-		'YearPage': '600px',
-		'SearchPage': '600px',
-		'SearchDPage': '600px',
-		'404': '400px'
+		'HomePage': '100vh',
+		'AboutPage': '100vh',
+		'ContactPage': '100vh',
+		'PostPage': '100vh',
+		'ArchivePage': '100vh',
+		'TagsPage': '100vh',
+		'TagPage': '100vh',
+		'YearPage': '100vh',
+		'SearchPage': '100vh',
+		'SearchDPage': '100vh',
+		'404': '100vh'
 	};
 	return heights[component] || '500px';
 };
