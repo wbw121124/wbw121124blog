@@ -19,7 +19,7 @@
 	    position: fixed;
 	    pointer-events: none;
 	    z-index: -1;
-	"></canvas>
+		top: 0;" />
 </template>
 
 <script setup>
@@ -156,6 +156,8 @@ onMounted(() => {
 		}
 		animate();
 	}
+
+	window.initUniverse = initUniverse;
 	
 	initUniverse();
 });
