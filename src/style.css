@@ -316,6 +316,7 @@ table tr>:first-child {
 }
 
 table {
+	border-spacing: 0px;
 	width: 100%;
 	border-collapse: separate;
 	margin-bottom: 1rem;
