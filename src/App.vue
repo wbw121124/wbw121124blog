@@ -113,16 +113,17 @@ const MyComponent = defineAsyncComponent(() => import(`./components/${routeInfo.
 		<Suspense>
 			<!-- 实际内容 -->
 			<template #default>
-			<div class="mx-auto px-4 pb-8">
-						<MyComponent :props="routeInfo.props" />
-			</div>
-			<MyFooter />
+				<div class="mx-auto px-4 pb-8">
+					<MyComponent :props="routeInfo.props" />
+				</div>
 			</template>
 			<!-- 加载中显示骨架屏 - 占用相同高度防止CLS -->
 			<template #fallback>
-				加载中
+				<div class="mx-auto px-4 pb-8" style="height: 100vh !important;">
+				</div>
 			</template>
 		</Suspense>
+		<MyFooter />
 	</el-config-provider>
 </template>
 
