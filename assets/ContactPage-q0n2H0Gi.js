@@ -1,2 +1,0 @@
-import{j as s,o as t,i as a,b as e,n as o}from"./style-PBKRZ59H.js";const r={class:"component"};const n=s({},[["render",function(s,n){return t(),a("main",r,[...n[0]||(n[0]=[e("h2",{class:"text-2xl font-bold mb-6"},"联系",-1),e("p",{class:"text-gray-600 dark:text-gray-400"},[o("可以通过 GitHub 联系，或通过邮箱"),e("a",{href:"mailto:wbw121124@126.com",class:"href hover:underline"},"wbw121124@126.com"),o("联系。")],-1)])])}]]);export{n as default};
-//# sourceMappingURL=ContactPage-q0n2H0Gi.js.map
