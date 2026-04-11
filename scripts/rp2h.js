@@ -141,6 +141,7 @@ async function rp2h() {
 	const postsDir = path.join(__dirname, '../public/posts');
 	const outDir = path.join(__dirname, '../public/posts-html');
 	const postlistPath = path.join(__dirname, '../public/postlist.json');
+	const postlistPath2 = path.join(__dirname, '../src/assets/postlist.json');
 	const statisticsPath = path.join(__dirname, '../public/statistics.json');
 	const tagsPath = path.join(__dirname, '../public/tags.json');
 
@@ -240,6 +241,7 @@ async function rp2h() {
 	console.log(map);
 	const tags = { tags: map };
 	await fs.writeFile(postlistPath, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
+	await fs.writeFile(postlistPath2, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
 	console.log(`Generated postlist.json with ${posts.length} posts`);
 	await fs.writeFile(statisticsPath, JSON.stringify(statistics, null, 2) + '\n', 'utf-8');
 	console.log(`Generated statistics.json with ${posts.length} posts`);

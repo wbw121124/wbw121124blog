@@ -5,12 +5,16 @@ const posts = ref([]);
 const perPage = 10; // 默认每页10个
 const currentPage = ref(1);
 
-// load data
-fetch('./postlist.json')
-	.then(res => res.json())
-	.then(data => {
-		posts.value = data.posts || [];
-	});
+import postlist from '../assets/postlist.json';
+
+posts.value = postlist.posts || [];
+
+// // load data
+// fetch('./postlist.json')
+// 	.then(res => res.json())
+// 	.then(data => {
+// 		posts.value = data.posts || [];
+// 	});
 
 const pagedPosts = computed(() => {
 	const start = (currentPage.value - 1) * perPage;

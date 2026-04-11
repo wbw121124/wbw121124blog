@@ -124,8 +124,10 @@ function doSearch() {
 	page.value = 1;
 }
 
+import data from '../assets/postlist.json';
+
 onMounted(async () => {
-	const data = await fetch('./postlist.json').then(r => r.json());
+	// const data = await fetch('./postlist.json').then(r => r.json());
 	for (const p of data.posts || []) {
 		try {
 			const resp = await fetch(`./posts-html/${p.id}.json`);

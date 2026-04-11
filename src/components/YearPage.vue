@@ -9,8 +9,10 @@ const posts = ref([]);
 const year = ref('');
 const grouped = ref({});
 
+import data from '../assets/postlist.json';
+
 onMounted(async () => {
-	const data = await fetch('./postlist.json').then(r => r.json());
+	// const data = await fetch('./postlist.json').then(r => r.json());
 	let arr = data.posts.sort((a, b) => b.date.localeCompare(a.date));
 	if (props.props.year) {
 		year.value = props.props.year;
