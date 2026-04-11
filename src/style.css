@@ -296,10 +296,47 @@ blockquote {
 	list-style-type: lower-roman;
 }
 
-.mkd table {
+table *, table {
+	--table-border-radius: 8px;
+	--table-border: var(--color-border) 1px solid;
+}
+
+table td, th {
+    padding: .125em .5em;
+    border: var(--table-border);
+    border-left: none;
+}
+
+table td {
+    border-top: none;
+}
+
+table tr>:first-child {
+    border-left: var(--table-border);
+}
+
+table {
 	width: 100%;
-	border-collapse: collapse;
+	border-collapse: separate;
 	margin-bottom: 1rem;
+	background: var(--color-code-bg);
+	border-radius: var(--table-border-radius);
+}
+
+table>:last-child>:last-child>:last-child {
+	border-bottom-right-radius: var(--table-border-radius);
+}
+
+table>:last-child>:last-child>:first-child {
+	border-bottom-left-radius: var(--table-border-radius);
+}
+
+table>:first-child>:first-child>:first-child {
+	border-top-left-radius: var(--table-border-radius);
+}
+
+table>:first-child>:first-child>:last-child {
+	border-top-right-radius: var(--table-border-radius);
 }
 
 header {
