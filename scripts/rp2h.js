@@ -241,7 +241,7 @@ async function rp2h() {
 	console.log(map);
 	const tags = { tags: map };
 	await fs.writeFile(postlistPath, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
-	await fs.writeFile(postlistPath2, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
+	// await fs.writeFile(postlistPath2, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
 	console.log(`Generated postlist.json with ${posts.length} posts`);
 	await fs.writeFile(statisticsPath, JSON.stringify(statistics, null, 2) + '\n', 'utf-8');
 	console.log(`Generated statistics.json with ${posts.length} posts`);

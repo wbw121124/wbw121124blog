@@ -3,10 +3,10 @@ import { ref, onMounted } from 'vue';
 const posts = ref([]);
 const grouped = ref({});
 
-import data from '../assets/postlist.json';
+// import data from '../assets/postlist.json';
 
 onMounted(async () => {
-	// const data = await fetch('./postlist.json').then(r => r.json());
+	const data = await fetch('./postlist.json').then(r => r.json());
 	const arr = data.posts.sort((a, b) => b.date.localeCompare(a.date));
 	// nest by year-month
 	const map = {};

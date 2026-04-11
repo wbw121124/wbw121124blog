@@ -73,10 +73,10 @@ function runSearch(keys) {
 	}
 }
 
-import data from '../assets/postlist.json';
+// import data from '../assets/postlist.json';
 
 onMounted(async () => {
-	// const data = await fetch('./postlist.json').then(res => res.json());
+	const data = await fetch('./postlist.json').then(res => res.json());
 	posts.value = data.posts.sort((a, b) => b.date.localeCompare(a.date));
 	fuse = new Fuse(posts.value, {
 		keys: [
