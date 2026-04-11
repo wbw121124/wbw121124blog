@@ -120,6 +120,7 @@ const MyComponent = defineAsyncComponent(() => import(`./components/${routeInfo.
 			</template>
 			<!-- 加载中显示骨架屏 - 占用相同高度防止CLS -->
 			<template #fallback>
+				加载中
 			</template>
 		</Suspense>
 	</el-config-provider>
