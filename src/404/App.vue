@@ -1,6 +1,7 @@
 <script setup>
 import MyHeader from '../components/MyHeader.vue';
-import { ElConfigProvider } from 'element-plus';
+import MyFooter from '../components/MyFooter.vue';
+import MyComponent from '../components/404.vue';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 // 获取 ?path=... 查询参数
@@ -11,11 +12,6 @@ const routeInfo = {
 	"props": {},
 	"path": path
 };
-
-// 动态按需导入 routeInfo.component，并创建异步组件
-import { defineAsyncComponent } from 'vue';
-const MyComponent = defineAsyncComponent(() => import(`../components/${routeInfo.component}.vue`));
-import MyFooter from '../components/MyFooter.vue';
 </script>
 
 <template>
