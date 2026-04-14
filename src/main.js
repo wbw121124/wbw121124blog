@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 })
 import { createApp } from 'vue'
 import App from './App.vue'
-import 'medium-zoom/dist/style.css'
 import './style.css'
 
 // 初始化应用

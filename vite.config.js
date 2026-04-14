@@ -6,6 +6,8 @@ import { resolve } from 'path';
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import postcssNesting from 'postcss-nesting'
+import autoprefixer from 'autoprefixer'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -90,6 +92,14 @@ export default defineConfig({
 		},
 		cssCodeSplit: true,
 		chunkSizeWarningLimit: 1024
+	},
+	css: {
+		postcss: {
+			plugins: [
+				postcssNesting(),
+				autoprefixer()
+			]
+		}
 	},
 	// 设置基础路径，适用于部署到子路径的情况，注意测试时要注释
 	base: '/wbw121124blog/'

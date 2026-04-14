@@ -1,6 +1,8 @@
+@import 'sanitize.css';
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 @import "highlight.js/styles/github.css";
+@import "medium-zoom/dist/style.css";
 
 :root {
 	color-scheme: light !important;
@@ -129,6 +131,13 @@ p:last-child {
 	background-color: var(--color-code-bg);
 }
 
+.mkd .highlighted-line {
+	display: block;
+	background-color: var(--color-bg-alt);
+	margin: 0 -10px;
+	padding: 0 10px;
+}
+
 /* copy button placed inside code blocks */
 .mkd pre {
 	position: relative;
@@ -226,11 +235,19 @@ p:last-child {
 	margin-block-end: 1em;
 }
 
+.mkd img {
+	display: inline;
+}
+
 .mkd a,
 .tag a,
 .href {
 	text-decoration: none;
 	border-bottom: 1px solid #999;
+}
+
+.mkd a:has(> img:only-child):not(:has(*:not(img))) {
+	border-bottom: none !important;
 }
 
 .mkd a:hover,
@@ -296,23 +313,25 @@ blockquote {
 	list-style-type: lower-roman;
 }
 
-table *, table {
+table *,
+table {
 	--table-border-radius: 8px;
 	--table-border: var(--color-border) 1px solid;
 }
 
-table td, th {
-    padding: .125em .5em;
-    border: var(--table-border);
-    border-left: none;
+table td,
+th {
+	padding: .125em .5em;
+	border: var(--table-border);
+	border-left: none;
 }
 
 table td {
-    border-top: none;
+	border-top: none;
 }
 
 table tr>:first-child {
-    border-left: var(--table-border);
+	border-left: var(--table-border);
 }
 
 table {
