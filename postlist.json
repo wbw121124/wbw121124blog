@@ -1,6 +1,17 @@
 {
   "posts": [
     {
+      "id": "另一个about",
+      "title": "另一个 about",
+      "date": "2026-04-14",
+      "tags": [
+        "关于",
+        "杂谈",
+        "言论"
+      ],
+      "summary": "快去点个 star！ 采用 GNU 通用公共许可证 GPL 第 3 版 授权。详见 LICENSE.md ../../LICENSE.md 文件..."
+    },
+    {
       "id": "树链剖分",
       "title": "树链剖分",
       "date": "2026-03-01",
