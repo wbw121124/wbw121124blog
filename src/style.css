@@ -133,7 +133,7 @@ p:last-child {
 
 .mkd .highlighted-line {
 	display: block;
-	background-color: var(--color-bg-alt);
+	background-color: var(--color-tag-bg);
 	margin: 0 -10px;
 	padding: 0 10px;
 }
