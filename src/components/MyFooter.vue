@@ -27,8 +27,10 @@ const year = new Date().getFullYear();
 
 onMounted(() => {
 	/*
-	copy from https://github.com/anzhiyu-c/hexo-theme-anzhiyu;
-	GPL-v3.0
+	以下代码基于以下 ISC 许可代码修改而来：
+	原始来源：https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js
+	原始许可证：ISC License
+	修改内容：已进行修改以适应本项目的需要。
 	*/
 	function initUniverse() {
 		window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -47,7 +49,7 @@ onMounted(() => {
 		function f() {
 			n = window.innerWidth;
 			e = window.innerHeight;
-			i = 0.114514 * n;
+			i = 0.1919810 * n;
 			canvas.setAttribute("width", n);
 			canvas.setAttribute("height", e);
 		}

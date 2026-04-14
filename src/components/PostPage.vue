@@ -252,8 +252,8 @@ onUnmounted(() => {
 			<p>作者: {{ metadata.author || 'wbw121124' }}</p>
 			<p>发布时间: {{ metadata.date || 'Unknow' }}</p>
 			<p>协议: <a
-					:href="'https://creativecommons.org/licenses/' + (metadata.license || 'BY-NC-SA') + '/4.0/deed.zh-hans'">CC&ThinSpace;{{
-						metadata.license || 'BY-NC-SA' }}&ThinSpace;4.0</a></p>
+					:href="'https://creativecommons.org/licenses/' + (metadata.license || 'BY-SA') + '/4.0/deed.zh-hans'">CC&ThinSpace;{{
+						metadata.license || 'BY-SA' }}&ThinSpace;4.0</a></p>
 		</div>
 		<div v-if="isLoading" class="text-center py-8" key="loading">
 			<div
