@@ -78,7 +78,17 @@
 		--blockquote-color: #bbb;
 	}
 
-	@import "highlight.js/styles/github-dark-dimmed.css";
+	@import "highlight.js/styles/github-dark.css";
+
+	.shiki,
+	.shiki span {
+		color: var(--shiki-dark) !important;
+		background-color: var(--shiki-dark-bg) !important;
+		/* 可选，用于定义字体样式 */
+		/* font-style: var(--shiki-dark-font-style) !important;
+		font-weight: var(--shiki-dark-font-weight) !important;
+		text-decoration: var(--shiki-dark-text-decoration) !important; */
+	}
 }
 
 .medium-zoom-overlay {
@@ -115,7 +125,7 @@ p:last-child {
 }
 
 /* 代码样式 */
-.mkd .shiki,
+.mkd pre code.shiki,
 .mkd pre code.hljs,
 .mkd pre code {
 	display: block;
@@ -128,11 +138,11 @@ p:last-child {
 	padding-top: 20px;
 	margin-block-start: 1em;
 	margin-block-end: 1em;
-	background-color: var(--color-code-bg);
+	background-color: var(--color-code-bg) !important;
 }
 
 .mkd .highlighted-line {
-	background-color: var(--color-tag-bg);
+	background-color: var(--color-tag-bg) !important;
 	margin: 0 -10px;
 	padding: 0 10px;
 }
