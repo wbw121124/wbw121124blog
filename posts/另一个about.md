@@ -18,7 +18,7 @@ tags: [关于,杂谈,言论]
 
 [![Optimized Blog CI/CD](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml/badge.svg)](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml)[![pages-build-deployment](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment)
 
-```cpp {157-188}
+```cpp {157-188} [shiki]
 #include<bits/stdc++.h>
 typedef int int32;
 #define int long long
