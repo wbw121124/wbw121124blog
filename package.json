@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "npm run render-posts && vite",
 		"prebuild": "npm run render-posts",
-		"build": "npm run render-posts && vite build",
+		"build": "vite build",
 		"preview": "vite preview",
 		"br": "npm run build && npx serve dist",
 		"render-posts": "node ./scripts/renderPostsToHtml.js",
