@@ -6,6 +6,8 @@ tags: [关于,杂谈,言论]
 
 # 另一个about
 
+::: info[快去点个 star！]{open}
+
 快去点个 star！
 
 采用 GNU通用公共许可证 (GPL) 第3版 授权。详见 [LICENSE.md](https://github.com/wbw121124/wbw121124blog/blob/master/LICENSE.md) 文件。
@@ -13,6 +15,8 @@ tags: [关于,杂谈,言论]
 ~~light mode 让我眼睛瞎了~~
 
 这是一个基于 Vue 3 和 Vite 构建的博客网站，使用作者自己编写的博客框架。
+
+:::
 
 [![Optimized Blog CI/CD](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml/badge.svg)](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml)[![pages-build-deployment](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment)
 
