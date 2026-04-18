@@ -447,7 +447,7 @@ header {
 /* highlight term styling */
 mark {
 	background-color: #ffe58f;
-	color: inherit;
+	color: oklch(44.6% 0.03 256.802);
 	padding: 0 0.1em;
 }
 

@@ -137,7 +137,7 @@ function spacingTextNodes(node) {
 	}
 }
 
-async function rp2h() {
+async function rp2h(list = []) {
 	const postsDir = path.join(__dirname, '../public/posts');
 	const outDir = path.join(__dirname, '../public/posts-html');
 	const postlistPath = path.join(__dirname, '../public/postlist.json');

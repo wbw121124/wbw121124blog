@@ -9,7 +9,7 @@
         "杂谈",
         "言论"
       ],
-      "summary": "快去点个 star！..."
+      "summary": "::: info == 快去点个 star！== {open}..."
     },
     {
       "id": "树链剖分",
@@ -132,16 +132,6 @@
         "区间dp"
       ],
       "summary": "P1880 NOI1995 石子合并 洛谷 https://www.luogu.com.cn/problem/P1880..."
-    },
-    {
-      "id": "区间dp（二）",
-      "title": "区间 dp（二）",
-      "date": "2025-01-01",
-      "tags": [
-        "动态规划",
-        "区间dp"
-      ],
-      "summary": "P1220 关路灯 https://www.luogu.com.cn/problem/P1220..."
     },
     {
       "id": "连通性问题",
