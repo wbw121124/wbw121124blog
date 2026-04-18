@@ -45,7 +45,26 @@ export default defineConfig({
 				}
 				// 返回 void 或模块数组来控制热更新行为
 				// 返回 undefined 表示使用默认行为
-			}
+			},
+			// onFileChange(file) {
+			// 	console.log(`File changed: ${file}`);
+			// 	// 当 posts 文件夹变化时重新构建，注意**不能**是 posts-html、postlist.json、statistics.json、tags.json，因为它是输出的文件（夹）
+			// 	if (file.includes('/posts/') ||
+			// 		file.includes('scripts/rp2h.js') ||
+			// 		file.includes('lib/cast.js') ||
+			// 		file.includes('lib/mkd-it.js') ||
+			// 		file.includes('lib/markdown-it-highlight-lines-with-line-numbers.js') ||
+			// 		file.includes('vite.config.js')) {
+			// 		// 当特定文件变化时执行自定义逻辑
+			// 		console.log(`${file}: Detected change, rebuilding posts...`);
+			// 		// 执行你的自定义脚本
+			// 		rp2h([file]).then(() => {
+			// 			console.log('Posts rebuilt on HMR');
+			// 		});
+			// 	}
+			// 	// 返回 void 或模块数组来控制热更新行为
+			// 	// 返回 undefined 表示使用默认行为
+			// }
 		},
 	],
 	define: {
