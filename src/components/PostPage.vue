@@ -132,6 +132,19 @@ onMounted(async () => {
 		_metadata.ready = true;
 		metadata.value = _metadata;
 		isLoading.value = false;
+		// 跳转到锚点
+		nextTick(() => {
+			const hash = window.location.hash;
+			if (hash) {
+				setTimeout(() => {
+					const target = document.querySelector(hash.replace(/%/g, '\\%'));
+					console.log(hash.replace(/%/g, '\\%'), target);
+					if (target) {
+						window.smoothScrollToElement(target);
+					}
+				}, 500);
+			}
+		});
 	} catch (error) {
 		const message = error instanceof Error ? error.message + '\n' + error.stack : String(error);
 		const escapedMessage = message.replace(/&/g, '&amp;')
@@ -263,12 +276,14 @@ onUnmounted(() => {
 		</div>
 		<div v-else key="content">
 			<div class="mb-4 flex justify-end">
-				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="success" aria-label="复制 Markdown">
+				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="success"
+					aria-label="复制 Markdown">
 					<el-icon>
 						<copy-document />
 					</el-icon>
 				</el-button>
-				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="primary" aria-label="编辑">
+				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="primary"
+					aria-label="编辑">
 					<el-icon>
 						<Edit />
 					</el-icon>

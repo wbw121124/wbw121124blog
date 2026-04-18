@@ -28,8 +28,9 @@ export default {
 	<header class="shadow-sm mb-8 p-4" style="position: sticky; top: 0; z-index: 1;">
 		<nav class="mx-auto">
 			<ul class="flex space-x-4 flex-row items-center">
-				<li style="list-style: none;">
-					<a href="?path=/" class="hover:underline font-bold href"><img src="/logo.svg" alt="Logo"
+				<li
+					style="list-style: none; display: inline-flex; align-content: center; flex-wrap: wrap; justify-content: center; align-items: center;">
+					<a href="?path=/" class="font-bold"><img src="/logo.svg" alt="Logo"
 							style="height: 1.25em; width: 2.5em;" /></a>
 				</li>
 				<li v-for="item in menuItems" :key="item.name" style="list-style: none;">

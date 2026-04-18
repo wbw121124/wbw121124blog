@@ -129,7 +129,7 @@ const getMinHeightByRoute = (component) => {
 		<MyHeader />
 		<!-- 主内容区域 - 设置min-height防止footer布局偏移 -->
 		<div class="mx-auto px-4 pb-8"
-			:style="{ minHeight: 'calc(' + getMinHeightByRoute(routeInfo.component) + ' - 8px - var(--spacing) * 16 - 2em)' }">
+			:style="{ minHeight: 'calc(' + getMinHeightByRoute(routeInfo.component) + ' - var(--spacing) * 18 - 1.25em)' }">
 			<!-- Suspense 用于处理异步组件加载 -->
 			<Suspense>
 				<!-- 实际内容 -->
