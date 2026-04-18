@@ -138,6 +138,10 @@ p:last-child {
 	padding: 0 10px;
 }
 
+.mkd .code-line {
+	display: block;
+}
+
 /* copy button placed inside code blocks */
 .mkd pre {
 	position: relative;
