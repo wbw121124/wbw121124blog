@@ -276,14 +276,13 @@ onUnmounted(() => {
 		</div>
 		<div v-else key="content">
 			<div class="mb-4 flex justify-end">
-				<el-button @click="copyMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="success"
+				<el-button @click="copyMarkdown" class="text-sm px-3 py-1" circle type="success"
 					aria-label="复制 Markdown">
 					<el-icon>
 						<copy-document />
 					</el-icon>
 				</el-button>
-				<el-button @click="editMarkdown" class="btn-copy-md text-sm px-3 py-1" circle type="primary"
-					aria-label="编辑">
+				<el-button @click="editMarkdown" class="text-sm px-3 py-1" circle type="primary" aria-label="编辑">
 					<el-icon>
 						<Edit />
 					</el-icon>
