@@ -3,18 +3,12 @@
 import hljs from 'highlight.js'
 import { createHighlighter, bundledLanguages } from 'shiki'
 
-let shikiHighlighter = null
-let shikiReady = false
-
-// 同步初始化 Shiki（在模块加载时就开始）
-const shikiInitPromise = createHighlighter({
+// 初始化 Shiki（在模块加载时就开始）
+let shikiHighlighter = await createHighlighter({
 	themes: ['github-dark', 'github-light'],
 	langs: Object.keys(bundledLanguages)
-}).then(highlighter => {
-	shikiHighlighter = highlighter
-	shikiReady = true
-	return highlighter
-})
+});
+let shikiReady = true;
 
 const RE = /{([\d,-]+)}/
 const SHIKI_FLAG = /\[shiki\]/
@@ -86,8 +80,6 @@ function wrapLines(processedHtml) {
 function highlightWithShikiSync(code, lang) {
 	if (!shikiReady || !shikiHighlighter) {
 		return highlightWithHljs(code, lang);
-		// Shiki 还未准备好，返回纯文本
-		// return code.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 	}
 
 	const loadedLanguages = shikiHighlighter.getLoadedLanguages()
@@ -123,14 +115,24 @@ function highlightWithHljs(code, lang) {
 			highlighted = hljs.highlight(code, { language: lang }).value
 		} catch (err) {
 			console.error(err.message, err.stack)
-			highlighted = hljs.highlight(code).value
 		}
 	} else {
-		highlighted = hljs.highlight(code).value
+		highlighted = hljs.highlightAuto(code).value
 	}
 	return highlighted
 }
 
+export var getShikiHighlighter = () => {
+	return shikiHighlighter;
+};
+// 释放 Shiki 资源（如果需要）
+export var disposeShikiHighlighter = () => {
+	if (shikiHighlighter) {
+		shikiHighlighter.dispose();
+		shikiHighlighter = null;
+		shikiReady = false;
+	}
+};
 export default (md) => {
 	const fence = md.renderer.rules.fence
 	md.renderer.rules.fence = (...args) => {
@@ -171,12 +173,21 @@ export default (md) => {
 				return lineNumber === start
 			})
 			if (inRange) {
+				if (useShiki)
+					return {
+						// Shiki 已经包裹了 span.line，直接添加高亮类
+						code: split.replace('<span class="line"', '<span class="line highlighted-line"')
+					}
 				return {
-					code: `<span class="code-line highlighted-line">${split}</span>`
+					code: `<span class="line highlighted-line">${split}</span>`
 				}
 			}
+			if (useShiki)
+				return {
+					code: `${split}`
+				}
 			return {
-				code: `<span class="code-line">${split}</span>`
+				code: `<span class="line">${split}</span>`
 			}
 		})
 
@@ -192,14 +203,13 @@ export default (md) => {
 
 		const tmpToken = {
 			attrs: [
-				['class', (langName ? `language-${langName}` : '') +
-					(useShiki ? ' shiki' : 'hljs')],
+				['class',
+					[langName ? `language-${langName}` : '',
+					useShiki ? 'shiki' : 'hljs'].filter(Boolean).join(' ')
+				],
 			]
 		}
 		const attrs = self.renderAttrs(tmpToken)
-		return `<pre${attrs}><code${attrs}>${finalCode}</code></pre>`
+		return `<pre ${attrs}><code ${attrs}>${finalCode}</code></pre>`
 	}
-
-	// 返回一个 Promise，确保 Shiki 初始化完成
-	return shikiInitPromise.then(() => md)
 }

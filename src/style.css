@@ -126,9 +126,9 @@ p:last-child {
 }
 
 /* 代码样式 */
-.mkd pre code.shiki,
-.mkd pre code.hljs,
-.mkd pre code {
+.mkd pre.shiki:has(code),
+.mkd pre.hljs:has(code),
+.mkd pre:has(code) {
 	display: block;
 	font-family: Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
@@ -148,7 +148,7 @@ p:last-child {
 	padding: 0 10px;
 }
 
-.mkd .code-line {
+.mkd .line {
 	display: block;
 }
 

@@ -5,6 +5,7 @@ import MarkdownItFootnote from 'markdown-it-footnote';
 import markdownItMath from 'markdown-it-math';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import highlightLines from './markdown-it-highlight-lines-with-line-numbers.js';
+import { disposeShikiHighlighter } from './markdown-it-highlight-lines-with-line-numbers.js';
 import markdownItMark from 'markdown-it-mark';
 import markdownItContainer from 'markdown-it-container';
 import katex from 'katex';
@@ -55,7 +56,10 @@ function setupContainers(md) {
 		});
 	});
 }
-
+export const disposeMarkdownIt = () => {
+	mditInstance = null;
+	disposeShikiHighlighter();
+}
 export const initMarkdownIt = async () => {
 	if (!mditInstance) {
 		// Katex 渲染器配置

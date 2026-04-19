@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { initMarkdownIt } from '../lib/mkd-it.js';
+import { initMarkdownIt, disposeMarkdownIt } from '../src/lib/mkd-it.js';
 import pangu from 'pangu/browser';
 import { JSDOM } from 'jsdom';
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
@@ -258,6 +258,8 @@ async function rp2h(list = []) {
 		console.log(`Generated tag/${encodeURIComponent(tag)}.json with ${hasTagPosts.posts.length} posts`);
 	}
 	console.log('Finished renderPostsToHtml.');
+	disposeMarkdownIt();
+	console.log('Disposed MarkdownIt instance.');
 }
 
 export {
