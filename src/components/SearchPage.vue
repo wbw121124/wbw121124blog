@@ -125,8 +125,7 @@ function doSearch() {
 		</div>
 		<div v-else>
 			<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
-				<a :href="`?path=/post/${post.id}`" class="text-indigo-600 dark:text-indigo-500 hover:underline"
-					v-html="post.title"></a>
+				<a :href="`?path=/post/${post.id}`" class="text-primary hover:underline" v-html="post.title"></a>
 				<span class="text-gray-500">（{{ post.date }}）</span>
 				<p class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
 			</div>

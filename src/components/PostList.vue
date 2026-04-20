@@ -25,7 +25,7 @@ const pagedPosts = computed(() => {
 <template>
 	<div v-for="post in pagedPosts" :key="post.id" class="transition-shadow duration-300 mt-6">
 		<a :href="`?path=/post/${post.id}`" class="block component transition-colors">
-			<h3 class="LXGWNeoXiHeiPlus text-xl font-bold text-indigo-600 dark:text-indigo-500 mb-2">
+			<h3 class="LXGWNeoXiHeiPlus text-xl font-bold text-primary mb-2">
 				{{ post.title }}
 			</h3>
 			<p class="text-gray-600 dark:text-gray-300 mb-3 line-clamp-3">{{ post.summary }}</p>

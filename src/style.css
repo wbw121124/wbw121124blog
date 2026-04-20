@@ -85,11 +85,15 @@
 	.shiki span {
 		color: var(--shiki-dark) !important;
 		background-color: var(--shiki-dark-bg) !important;
-		/* 可选，用于定义字体样式 */
-		/* font-style: var(--shiki-dark-font-style) !important;
-		font-weight: var(--shiki-dark-font-weight) !important;
-		text-decoration: var(--shiki-dark-text-decoration) !important; */
 	}
+}
+
+.text-primary {
+	color: var(--color-primary);
+}
+
+.text-primary:hover {
+	color: var(--color-primary-hover);
 }
 
 .medium-zoom-overlay {
@@ -519,4 +523,43 @@ nav ul .el-input:focus-within {
 		border-top-left-radius: 0 !important;
 		border-bottom-left-radius: 0 !important;
 	}
+}
+
+.custom-container {
+	position: relative;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: calc(var(--spacing) * 4);
+	margin-block: calc(var(--spacing) * 4);
+}
+
+.custom-container summary::marker {
+	list-style-type: none !important;
+	list-style: none;
+	display: none;
+	content: '';
+}
+
+.custom-container summary::after {
+	--md-details-icon: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>');
+	background-color: currentcolor;
+	content: "";
+	height: 1em;
+	width: 1em;
+	mask-image: var(--md-details-icon);
+	mask-position: center;
+	mask-repeat: no-repeat;
+	mask-size: contain;
+	position: absolute;
+	right: calc(var(--spacing) * 4);
+	transform: rotate(180deg);
+	transition: transform .25s;
+}
+
+.custom-container[open] summary::after {
+	transform: rotate(90deg);
+}
+
+.custom-container :last-child {
+	margin-bottom: 0;
 }
