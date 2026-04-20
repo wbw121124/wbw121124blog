@@ -5,7 +5,7 @@ import MarkdownItFootnote from 'markdown-it-footnote';
 import markdownItMath from 'markdown-it-math';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import highlightLines from './markdown-it-highlight-lines-with-line-numbers.js';
-import { disposeShikiHighlighter } from './markdown-it-highlight-lines-with-line-numbers.js';
+import { disposeShikiHighlighter, initHighlighter } from './markdown-it-highlight-lines-with-line-numbers.js';
 import markdownItMark from 'markdown-it-mark';
 import markdownItContainer from 'markdown-it-container';
 import katex from 'katex';
@@ -62,6 +62,8 @@ export const disposeMarkdownIt = () => {
 }
 export const initMarkdownIt = async () => {
 	if (!mditInstance) {
+		await initHighlighter();
+
 		// Katex 渲染器配置
 		const katexOptions = {
 			throwOnError: false,

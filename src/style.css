@@ -1,7 +1,7 @@
 @import 'sanitize.css';
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
-@import "highlight.js/styles/github.css";
+@import "./hljs/light-plus.css";
 @import "medium-zoom/dist/style.css";
 
 :root {
@@ -79,7 +79,7 @@
 		--blockquote-color: #bbb;
 	}
 
-	@import "highlight.js/styles/github-dark.css";
+	@import "./hljs/dark-plus.css";
 
 	.shiki,
 	.shiki span {
@@ -126,9 +126,7 @@ p:last-child {
 }
 
 /* 代码样式 */
-.mkd pre.shiki:has(code),
-.mkd pre.hljs:has(code),
-.mkd pre:has(code) {
+.mkd pre code {
 	display: block;
 	font-family: Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
@@ -140,6 +138,10 @@ p:last-child {
 	margin-block-start: 1em;
 	margin-block-end: 1em;
 	background-color: var(--color-code-bg) !important;
+}
+
+.mkd pre {
+	background-color: transparent;
 }
 
 .mkd .highlighted-line {
@@ -182,8 +184,6 @@ p:last-child {
 	background-color: var(--color-bg-alt-alt);
 }
 
-.mkd .shiki::before,
-.mkd pre code.hljs::before,
 .mkd pre code::before {
 	background: #fc625d;
 	box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;

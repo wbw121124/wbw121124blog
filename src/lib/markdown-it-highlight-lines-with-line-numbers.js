@@ -3,15 +3,21 @@
 import hljs from 'highlight.js'
 import { createHighlighter, bundledLanguages } from 'shiki'
 
-// 初始化 Shiki（在模块加载时就开始）
-let shikiHighlighter = await createHighlighter({
-	themes: ['github-dark', 'github-light'],
+// 初始化 Shiki 高亮器
+let shikiHighlighter = null;
+let shikiReady = false;
+const initShiki = createHighlighter({
+	themes: ['light-plus', 'dark-plus'],
 	langs: Object.keys(bundledLanguages)
+}).then(highlighter => {
+	shikiHighlighter = highlighter;
+	shikiReady = true;
+}).catch(err => {
+	console.error('Failed to initialize Shiki highlighter:', err);
 });
-let shikiReady = true;
 
 const RE = /{([\d,-]+)}/
-const SHIKI_FLAG = /\[shiki\]/
+const HLJS_FLAG = /\[hljs\]/
 
 function extractNewlines(html) {
 	let result = '';
@@ -89,16 +95,16 @@ function highlightWithShikiSync(code, lang) {
 		highlighted = shikiHighlighter.codeToHtml(code, {
 			lang,
 			themes: {
-				light: 'github-light',
-				dark: 'github-dark',
+				light: 'light-plus',
+				dark: 'dark-plus',
 			}
 		})
 	} else {
 		highlighted = shikiHighlighter.codeToHtml(code, {
 			lang: 'text',
 			themes: {
-				light: 'github-light',
-				dark: 'github-dark',
+				light: 'light-plus',
+				dark: 'dark-plus',
 			}
 		})
 	}
@@ -120,6 +126,11 @@ function highlightWithHljs(code, lang) {
 		highlighted = hljs.highlightAuto(code).value
 	}
 	return highlighted
+}
+
+export var initHighlighter = async () => {
+	await initShiki;
+	return;
 }
 
 export var getShikiHighlighter = () => {
@@ -144,18 +155,18 @@ export default (md) => {
 		}
 
 		// 检查是否使用 hljs
-		const useShiki = SHIKI_FLAG.test(token.info)
+		const useHljs = HLJS_FLAG.test(token.info)
 		// 清理 token.info，移除 [hljs] 标记
-		const cleanInfo = token.info.replace(SHIKI_FLAG, '').trim()
+		const cleanInfo = token.info.replace(HLJS_FLAG, '').trim()
 
 		const lineNumbers = RE.exec(cleanInfo)[1]
 			.split(',')
 			.map(v => v.split('-').map(v => parseInt(v, 10)))
-		const langName = cleanInfo.replace(RE, '').trim()
+		const langName = cleanInfo.replace(RE, '').trim().split(' ')[0]
 
 		// 根据配置选择高亮器（同步）
 		let highlightedCode
-		if (useShiki) {
+		if (!useHljs) {
 			const highlighted = highlightWithShikiSync(token.content, langName)
 			highlightedCode = wrapLines(highlighted)
 		} else {
@@ -173,7 +184,7 @@ export default (md) => {
 				return lineNumber === start
 			})
 			if (inRange) {
-				if (useShiki)
+				if (!useHljs)
 					return {
 						// Shiki 已经包裹了 span.line，直接添加高亮类
 						code: split.replace('<span class="line"', '<span class="line highlighted-line"')
@@ -182,7 +193,7 @@ export default (md) => {
 					code: `<span class="line highlighted-line">${split}</span>`
 				}
 			}
-			if (useShiki)
+			if (!useHljs)
 				return {
 					code: `${split}`
 				}
@@ -205,7 +216,7 @@ export default (md) => {
 			attrs: [
 				['class',
 					[langName ? `language-${langName}` : '',
-					useShiki ? 'shiki' : 'hljs'].filter(Boolean).join(' ')
+					!useHljs ? 'shiki' : 'hljs'].filter(Boolean).join(' ')
 				],
 			]
 		}

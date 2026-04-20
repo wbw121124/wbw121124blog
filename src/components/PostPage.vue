@@ -207,16 +207,18 @@ function addCopyButtons() {
 			const btnApp = createApp({
 				render() {
 					return h(
-						'el-button',
+						'button',
 						{
-							class: 'el-button copy-btn text-sm px-3 py-1',
+							class: 'el-button el-button--default copy-btn text-sm px-3 py-1',
 							onClick: copyCode,
-							'aria-label': '复制代码'
+							'aria-label': '复制代码',
+							'aria-disabled': false
 						},
 						[
 							h('i',
 								{
-									class: 'el-icon'
+									class: 'el-icon',
+									'aria-hidden': true
 								}, h(CopyDocument))
 						]
 					);
