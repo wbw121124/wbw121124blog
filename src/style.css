@@ -15,7 +15,7 @@
 	--color-border: #eaeaea;
 	--color-bg: #ffffff;
 	--color-bg-alt: #f8f8f8;
-	--color-code-bg: #f5f5f5;
+	--color-code-bg: #ffffff;
 	--color-tag-bg: #f0f0f0;
 	--color-tag: #666;
 }
@@ -31,7 +31,7 @@
 		--color-border: #333;
 		--color-bg: #1a1a1a;
 		--color-bg-alt: #242424;
-		--color-code-bg: #2a2a2a;
+		--color-code-bg: #1e1e1e;
 		--color-tag-bg: #333;
 		--color-tag: rgba(255, 255, 255, 0.87);
 	}
