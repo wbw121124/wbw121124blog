@@ -158,76 +158,46 @@ onMounted(async () => {
 	}
 });
 
-// 存储所有创建的按钮应用实例
-const buttonApps = ref([]);
-
-// 销毁所有已存在的按钮应用
-function destroyAllButtonApps() {
-	buttonApps.value.forEach(app => {
-		try {
-			app.unmount();
-		} catch (e) {
-			console.warn('Failed to unmount button app:', e);
-		}
-	});
-	buttonApps.value = [];
-}
-
-
 // 在文章渲染后查找所有代码块并加上复制按钮
 function addCopyButtons() {
 	nextTick(() => {
 		const container = document.querySelector('.mkd.component');
 		if (!container) return;
 
-		// 在重新创建前销毁所有旧的按钮应用
-		destroyAllButtonApps();
-
 		container.querySelectorAll('pre:has(code)').forEach(pre => {
 			if (pre.querySelector('.copy-btn')) return; // 避免重复添加
 			// 生成一个挂载容器，用于 Vue 挂载组件
 			const wrapper = document.createElement('div');
-			pre.style.position = 'relative'; // 确保父元素定位
-			pre.appendChild(wrapper);
+			const btn = document.createElement('button');
+			const codeElem = pre.querySelector('code');
+			const codeText = codeElem ? codeElem.innerText : pre.innerText;
+			btn.className = "el-button el-button--default copy-btn text-sm px-3 py-1";
+			btn.ariaLabel = "复制代码";
+			btn.ariaDisabled = false;
+			btn.innerHTML = `<i class="el-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="M768 832a128 128 0 0 1-128 128H192A128 128 0 0 1 64 832V384a128 128 0 0 1 128-128v64a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64z"></path><path fill="currentColor" d="M384 128a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64zm0-64h448a128 128 0 0 1 128 128v448a128 128 0 0 1-128 128H384a128 128 0 0 1-128-128V192A128 128 0 0 1 384 64"></path></svg></i>`;
 
 			// 点击逻辑抽成函数，作用于当前 pre
 			const copyCode = () => {
-				const codeElem = pre.querySelector('code');
-				const codeText = codeElem ? codeElem.innerText : pre.innerText;
 				navigator.clipboard.writeText(codeText).then(() => {
-					const btnEl = wrapper.querySelector('button');
-					if (btnEl) {
-						btnEl.innerText = '已复制';
-						setTimeout(() => (btnEl.innerText = '复制'), 2000);
-					}
+					ElNotification({
+						title: '代码已复制到剪贴板',
+						type: 'success',
+					})
+					console.log("代码已复制到剪贴板");
+				}).catch((e) => {
+					console.error(e);
+					console.info(e.message, e.stack);
+					ElNotification({
+						title: '错误',
+						type: 'error',
+						message: e.message + e.stack
+					})
 				});
 			};
 
-			// 创建 Vue 应用实例，渲染 el-button
-			const btnApp = createApp({
-				render() {
-					return h(
-						'button',
-						{
-							class: 'el-button el-button--default copy-btn text-sm px-3 py-1',
-							onClick: copyCode,
-							'aria-label': '复制代码',
-							'aria-disabled': false
-						},
-						[
-							h('i',
-								{
-									class: 'el-icon',
-									'aria-hidden': true
-								}, h(CopyDocument))
-						]
-					);
-				}
-			});
-
-			// 直接挂载实例，后续 DOM 操作使用 wrapper
-			btnApp.mount(wrapper);
-			buttonApps.value.push(btnApp);
+			btn.onclick = copyCode;
+			wrapper.appendChild(btn);
+			pre.appendChild(wrapper);
 		});
 	});
 }
@@ -235,7 +205,19 @@ function addCopyButtons() {
 function copyMarkdown() {
 	if (!rawMarkdown.value) return;
 	navigator.clipboard.writeText(rawMarkdown.value).then(() => {
-		console.log('Markdown 已复制到剪贴板');
+		ElNotification({
+			title: 'Markdown 已复制到剪贴板',
+			type: 'success',
+		})
+		console.log("Markdown 已复制到剪贴板");
+	}).catch((e) => {
+		console.error(e);
+		console.info(e.message, e.stack);
+		ElNotification({
+			title: '错误',
+			type: 'error',
+			message: e.message + e.stack
+		})
 	});
 }
 
@@ -247,12 +229,6 @@ function editMarkdown() {
 watch(postContent, () => {
 	addCopyButtons();
 });
-
-// 组件卸载时清理所有按钮应用
-onUnmounted(() => {
-	destroyAllButtonApps();
-});
-
 </script>
 
 <template>

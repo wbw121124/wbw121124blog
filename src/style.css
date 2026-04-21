@@ -21,6 +21,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
+	@import './el/css-vars.css';
+
 	:root {
 		color-scheme: dark !important;
 		--color-primary: #646cff;
@@ -138,14 +140,10 @@ p:last-child {
 	padding: 10px;
 	border-radius: 8px;
 	overflow-x: auto;
-	padding-top: 20px;
+	padding-top: 24px;
 	margin-block-start: 1em;
 	margin-block-end: 1em;
 	background-color: var(--color-code-bg) !important;
-}
-
-.mkd pre {
-	background-color: transparent;
 }
 
 .mkd .highlighted-line {
@@ -161,6 +159,7 @@ p:last-child {
 /* copy button placed inside code blocks */
 .mkd pre {
 	position: relative;
+	background-color: transparent;
 }
 
 .mkd .copy-btn {
@@ -544,8 +543,8 @@ nav ul .el-input:focus-within {
 	--md-details-icon: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>');
 	background-color: currentcolor;
 	content: "";
-	height: 1em;
-	width: 1em;
+	height: 1.5em;
+	width: 1.5em;
 	mask-image: var(--md-details-icon);
 	mask-position: center;
 	mask-repeat: no-repeat;
@@ -562,4 +561,22 @@ nav ul .el-input:focus-within {
 
 .custom-container :last-child {
 	margin-bottom: 0;
+}
+
+.custom-container-info {
+	--color-border: var(--el-color-primary);
+
+	& ::after,
+	::before {
+		color: var(--el-color-primary);
+	}
+}
+
+.custom-container-success {
+	--color-border: var(--el-color-success);
+
+	& ::after,
+	::before {
+		color: var(--el-color-success);
+	}
 }
