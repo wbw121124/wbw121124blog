@@ -128,20 +128,24 @@ function highlightWithHljs(code, lang) {
 	return highlighted
 }
 
-export var initHighlighter = async () => {
-	await initShiki;
-	return;
+export const isShikiReady = () => {
+	return shikiReady;
+}
+
+export const initHighlighter = () => {
+	return initShiki;
 }
 
 export var getShikiHighlighter = () => {
 	return shikiHighlighter;
 };
 // 释放 Shiki 资源（如果需要）
-export var disposeShikiHighlighter = () => {
-	if (shikiHighlighter) {
+export const disposeShikiHighlighter = () => {
+	if (shikiHighlighter || shikiReady) {
 		shikiHighlighter.dispose();
 		shikiHighlighter = null;
 		shikiReady = false;
+		console.log("shiki:", shikiHighlighter);
 	}
 };
 export default (md) => {

@@ -16,9 +16,33 @@ tags: [关于,杂谈,言论]
 
 :::
 
+::: info
+hi
+:::
+
+::: success
+hi
+:::
+
+::: warning
+hi
+:::
+
+::: error
+hi
+:::
+
+::: danger
+hi
+:::
+
+::: details
+hi
+:::
+
 [![Optimized Blog CI/CD](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml/badge.svg)](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages.yml)[![pages-build-deployment](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/wbw121124/wbw121124blog/actions/workflows/pages/pages-build-deployment)
 
-hljs：
+::: details[hljs]
 ```cpp {157-188} [hljs]
 #include<bits/stdc++.h>
 typedef int int32;
@@ -209,8 +233,9 @@ signed main()
 	return 0;
 }
 ```
+:::
 
-shiki：
+::: details[shiki]
 ```cpp {157-188} [shiki]
 #include<bits/stdc++.h>
 typedef int int32;
@@ -401,6 +426,7 @@ signed main()
 	return 0;
 }
 ```
+:::
 
 | ${\Huge\color{red}\text{\textcircled{}}{\huge\hspace{-.71cm}\not}\footnotesize\overset{\small\hspace{-.1cm}\color{black}Fake}{\color{transparent}.}}\newline\color{black}\footnotesize\text{Fake has been forbidden.}$ |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |

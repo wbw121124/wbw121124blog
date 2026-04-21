@@ -528,8 +528,25 @@ nav ul .el-input:focus-within {
 	position: relative;
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-lg);
-	padding: calc(var(--spacing) * 4);
 	margin-block: calc(var(--spacing) * 4);
+}
+
+.custom-container>* {
+	margin-inline: calc(var(--spacing) * 4);
+}
+
+.custom-container[open] {
+	padding-bottom: calc(var(--spacing) * 4);
+}
+
+.custom-container summary {
+	display: block;
+	margin-inline: 0;
+	padding: calc(var(--spacing) * 4);
+}
+
+.custom-container[open] summary {
+	border-bottom: 1px solid var(--color-border);
 }
 
 .custom-container summary::marker {
@@ -555,6 +572,14 @@ nav ul .el-input:focus-within {
 	transition: transform .25s;
 }
 
+.custom-container:focus-within,
+.custom-container:focus-visible,
+.custom-container:focus {
+	--color-outline-mix: rgb(from var(--color-outline) r g b / 0.102) !important;
+	--color-outline-mix: color-mix(in srgb, var(--color-outline) 10.2%, transparent);
+	box-shadow: 0 0 0 .2rem var(--color-outline-mix);
+}
+
 .custom-container[open] summary::after {
 	transform: rotate(90deg);
 }
@@ -564,7 +589,18 @@ nav ul .el-input:focus-within {
 }
 
 .custom-container-info {
+	--color-border: var(--el-color-info);
+	--color-outline: var(--el-color-info);
+
+	& ::after,
+	::before {
+		color: var(--el-color-info);
+	}
+}
+
+.custom-container-details {
 	--color-border: var(--el-color-primary);
+	--color-outline: var(--el-color-primary);
 
 	& ::after,
 	::before {
@@ -574,9 +610,40 @@ nav ul .el-input:focus-within {
 
 .custom-container-success {
 	--color-border: var(--el-color-success);
+	--color-outline: var(--el-color-success);
 
 	& ::after,
 	::before {
 		color: var(--el-color-success);
+	}
+}
+
+.custom-container-warning {
+	--color-border: var(--el-color-warning);
+	--color-outline: var(--el-color-warning);
+
+	& ::after,
+	::before {
+		color: var(--el-color-warning);
+	}
+}
+
+.custom-container-error {
+	--color-border: var(--el-color-error);
+	--color-outline: var(--el-color-error);
+
+	& ::after,
+	::before {
+		color: var(--el-color-error);
+	}
+}
+
+.custom-container-danger {
+	--color-border: var(--el-color-danger);
+	--color-outline: var(--el-color-danger);
+
+	& ::after,
+	::before {
+		color: var(--el-danger-error);
 	}
 }

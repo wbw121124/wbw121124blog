@@ -5,7 +5,7 @@ import MarkdownItFootnote from 'markdown-it-footnote';
 import markdownItMath from 'markdown-it-math';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import highlightLines from './markdown-it-highlight-lines-with-line-numbers.js';
-import { disposeShikiHighlighter, initHighlighter } from './markdown-it-highlight-lines-with-line-numbers.js';
+import { disposeShikiHighlighter, initHighlighter, isShikiReady } from './markdown-it-highlight-lines-with-line-numbers.js';
 import markdownItMark from 'markdown-it-mark';
 import markdownItContainer from 'markdown-it-container';
 import katex from 'katex';
@@ -29,9 +29,17 @@ function parseContainerInfo(info) {
 
 function setupContainers(md) {
 	// 支持的容器类型列表
-	const containers = ['info', 'success', 'warning', 'error', 'details'];
+	const containers = [
+		['info', '信息'],
+		['success', '成功'],
+		['warning', '警告'],
+		['error', '错误'],
+		['details', '详情'],
+		['danger', '危险']];
 
-	containers.forEach(containerType => {
+	containers.forEach(c => {
+		const containerType = c[0];
+		const name = c.length > 1 ? c[1] : null;
 		md.use(markdownItContainer, containerType, {
 			// 验证函数：确保标记以容器类型开头
 			validate(params) {
@@ -46,7 +54,7 @@ function setupContainers(md) {
 
 				// 开始标签
 				if (token.nesting === 1) {
-					const summary = title || type || '详细信息';
+					const summary = title || name || type || '详细信息';
 					return `<details ${openAttr} class="custom-container custom-container-${type}"><summary>${md.render(summary).replace('<p>', '').replace('</p>', '')}</summary>\n`;
 				}
 
@@ -62,7 +70,8 @@ export const disposeMarkdownIt = () => {
 }
 export const initMarkdownIt = async () => {
 	if (!mditInstance) {
-		await initHighlighter();
+		if (!isShikiReady())
+			await initHighlighter();
 
 		// Katex 渲染器配置
 		const katexOptions = {
