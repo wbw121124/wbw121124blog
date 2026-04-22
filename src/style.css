@@ -156,6 +156,7 @@ p:last-child {
 
 .mkd .use-focus .line {
 	position: relative;
+	transition: background-color .0625s;
 }
 
 .mkd .use-focus:not(:has(.line:not(.focus):hover)) .line:not(.focus) {
@@ -182,7 +183,6 @@ p:last-child {
 	display: block;
 	margin: 0 -10px;
 	padding: 0 10px;
-	transition: background-color .0625s;
 }
 
 /* copy button placed inside code blocks */
