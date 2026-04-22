@@ -135,32 +135,18 @@ p:last-child {
 }
 
 .mkd .use-focus .line:not(.focus) {
-	transition: opacity .0625s;
+	transition: opacity .3s, filter .3s;
 }
 
 .mkd .use-focus .line {
 	position: relative;
-	transition: background-color .0625s;
+	transition: background-color .3s;
 }
 
 .mkd .use-focus:not(:has(.line:not(.focus):hover)) .line:not(.focus) {
 	background-color: var(--color-code-bg) !important;
 	opacity: .6;
-}
-
-.mkd .use-focus .line:not(.focus)::after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	pointer-events: none;
-	transition: backdrop-filter .0625s;
-}
-
-.mkd .use-focus:not(:has(.line:not(.focus):hover)) .line:not(.focus)::after {
-	backdrop-filter: blur(2px);
+	filter: blur(2px);
 }
 
 .mkd .line {
