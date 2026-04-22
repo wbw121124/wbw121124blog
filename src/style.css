@@ -39,22 +39,6 @@
 	}
 }
 
-/* mirror the same variable overrides when using the `dark` class */
-.dark :root {
-	color-scheme: dark !important;
-	--color-primary: #646cff;
-	--color-primary-hover: #747bff;
-	--color-heading: rgba(255, 255, 255, 0.87);
-	--color-text: rgba(255, 255, 255, 0.87);
-	--color-text-light: rgba(255, 255, 255, 0.6);
-	--color-border: #333;
-	--color-bg: #1a1a1a;
-	--color-bg-alt: #242424;
-	--color-code-bg: #2a2a2a;
-	--color-tag-bg: #333;
-	--color-tag: rgba(255, 255, 255, 0.87);
-}
-
 #app {
 	background-color: var(--color-bg);
 	color: var(--text-color);
