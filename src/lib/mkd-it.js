@@ -9,6 +9,7 @@ import { disposeShikiHighlighter, initHighlighter, isShikiReady } from './markdo
 import markdownItMark from 'markdown-it-mark';
 import markdownItContainer from 'markdown-it-container';
 import katex from 'katex';
+import 'katex/contrib/mhchem';
 
 // 全局markdown-it实例
 let mditInstance = null;
@@ -77,7 +78,28 @@ export const initMarkdownIt = async () => {
 		const katexOptions = {
 			throwOnError: false,
 			errorColor: '#cc0000',
-			strict: false
+			strict: false,
+			macros: {
+				// 定义一个 \resetcolor 宏，等同于切换到 var(--text-color)
+				"\\resetcolor": "\\htmlClass{reset-color}"
+			},
+			trust: (context) => {
+				// 1. 允许 htmlClass 和 htmlStyle 命令
+				if (context.command === '\\htmlClass' || context.command === '\\htmlStyle') {
+					return true;
+				}
+
+				// 2. 对于 URL 类命令（如 \href），需校验协议
+				if (context.command === '\\href' || context.command === '\\url') {
+					const protocol = context.protocol?.toLowerCase();
+					// 允许列表：仅放行 http, https, mailto, ftp 等安全协议
+					const allowedProtocols = ['http:', 'https:', 'mailto:', 'ftp:'];
+					return allowedProtocols.includes(protocol);
+				}
+
+				// 3. 默认拒绝其他命令
+				return false;
+			},
 		};
 
 		const katexRenderer = {

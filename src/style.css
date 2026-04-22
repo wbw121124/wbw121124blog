@@ -647,3 +647,15 @@ nav ul .el-input:focus-within {
 		color: var(--el-danger-error);
 	}
 }
+
+.reset-color {
+	color: var(--text-color) !important;
+}
+
+.reset-color * {
+	color: var(--text-color) !important;
+}
+
+.custom-container pre:has(code) {
+	margin-top: calc(var(--spacing) * 4);
+}

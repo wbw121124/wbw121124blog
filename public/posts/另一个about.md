@@ -428,5 +428,5 @@ signed main()
 ```
 :::
 
-| ${\Huge\color{red}\text{\textcircled{}}{\huge\hspace{-.71cm}\not}\footnotesize\overset{\small\hspace{-.1cm}\color{black}Fake}{\color{transparent}.}}\newline\color{black}\footnotesize\text{Fake has been forbidden.}$ |
+| ${\Huge\color{red}\text{\textcircled{}}{\huge\hspace{-.71cm}\not}\footnotesize\overset{\small\hspace{-.1cm}\resetcolor{Fake}}{\color{transparent}.}}\newline\resetcolor{\footnotesize\text{Fake has been forbidden.}}$ |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
