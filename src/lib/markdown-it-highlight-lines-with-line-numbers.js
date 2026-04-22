@@ -18,6 +18,7 @@ const initShiki = createHighlighter({
 
 const RE = /{([\d,-]+)}/
 const HLJS_FLAG = /\[hljs\]/
+const FOCUS = /\/([\d,-]+)\//
 
 function extractNewlines(html) {
 	let result = '';
@@ -161,12 +162,24 @@ export default (md) => {
 		// 检查是否使用 hljs
 		const useHljs = HLJS_FLAG.test(token.info)
 		// 清理 token.info，移除 [hljs] 标记
-		const cleanInfo = token.info.replace(HLJS_FLAG, '').trim()
+		let cleanInfo = token.info.replace(HLJS_FLAG, '').trim()
+
+		let isFocus = false, focusLines = [];
+
+		if (FOCUS.test(token.info)) {
+			isFocus = true;
+			focusLines = FOCUS.exec(cleanInfo)[1]
+				.split(',')
+				.map(v => v.split('-').map(v => parseInt(v, 10)));
+			cleanInfo = cleanInfo.replace(FOCUS, '').trim();
+			console.log(focusLines)
+		}
 
 		const lineNumbers = RE.exec(cleanInfo)[1]
 			.split(',')
 			.map(v => v.split('-').map(v => parseInt(v, 10)))
-		const langName = cleanInfo.replace(RE, '').trim().split(' ')[0]
+		cleanInfo = cleanInfo.replace(RE, '').trim();
+		const langName = cleanInfo.split(' ')[0]
 
 		// 根据配置选择高亮器（同步）
 		let highlightedCode
@@ -181,28 +194,26 @@ export default (md) => {
 		// 处理行高亮
 		const codeSplits = highlightedCode.split('\n').map((split, index) => {
 			const lineNumber = index + 1
-			const inRange = lineNumbers.some(([start, end]) => {
-				if (start && end) {
-					return lineNumber >= start && lineNumber <= end
-				}
-				return lineNumber === start
-			})
-			if (inRange) {
-				if (!useHljs)
-					return {
-						// Shiki 已经包裹了 span.line，直接添加高亮类
-						code: split.replace('<span class="line"', '<span class="line highlighted-line"')
+			function isInRanges(lineNumber, ranges) {
+				return ranges.some(([start, end]) => {
+					if (start && end) {
+						return lineNumber >= start && lineNumber <= end
 					}
-				return {
-					code: `<span class="line highlighted-line">${split}</span>`
-				}
+					return lineNumber === start
+				});
 			}
-			if (!useHljs)
-				return {
-					code: `${split}`
-				}
+			const highlighted = isInRanges(lineNumber, lineNumbers)
+			const inFocus = isFocus && isInRanges(lineNumber, focusLines)
+			let code = !useHljs ? split.replace(/^<span class="line">/, '').replace(/<\/span>$/, '') : split;
+			let className = ['line'];
+			if (highlighted) {
+				className.push('highlighted-line');
+			}
+			if (inFocus) {
+				className.push('focus');
+			}
 			return {
-				code: `<span class="line">${split}</span>`
+				code: `<span class="${className.join(' ')}">${code}</span>`
 			}
 		})
 
@@ -220,7 +231,8 @@ export default (md) => {
 			attrs: [
 				['class',
 					[langName ? `language-${langName}` : '',
-					!useHljs ? 'shiki' : 'hljs'].filter(Boolean).join(' ')
+					!useHljs ? 'shiki' : 'hljs',
+					isFocus ? 'use-focus' : ''].filter(Boolean).join(' ')
 				],
 			]
 		}
