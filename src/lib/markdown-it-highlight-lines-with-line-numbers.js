@@ -172,7 +172,6 @@ export default (md) => {
 				.split(',')
 				.map(v => v.split('-').map(v => parseInt(v, 10)));
 			cleanInfo = cleanInfo.replace(FOCUS, '').trim();
-			console.log(focusLines)
 		}
 
 		const lineNumbers = RE.exec(cleanInfo)[1]
