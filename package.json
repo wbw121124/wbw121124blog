@@ -41,6 +41,7 @@
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^6.0.1",
 		"autoprefixer": "^10.5.0",
+		"postcss-font-display": "^0.3.0",
 		"postcss-nesting": "^14.0.0",
 		"unplugin-auto-import": "^21.0.0",
 		"unplugin-vue-components": "^31.0.0",

@@ -96,7 +96,8 @@ export default defineConfig({
 		postcss: {
 			plugins: [
 				postcssNesting(),
-				autoprefixer()
+				autoprefixer(),
+				require('postcss-font-display')({ display: 'swap' })
 			]
 		}
 	},
