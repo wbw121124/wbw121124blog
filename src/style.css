@@ -214,9 +214,13 @@ p:last-child {
 	top: 10px;
 	height: 12px;
 	left: 72px;
-	content: attr(code-language) ':' counter(step) '行';
+	content: counter(step) '行';
 	line-height: 12px;
 	font-size: 12px;
+}
+
+.mkd pre code[code-language]:not([code-language=""])::after {
+	content: attr(code-language) '·' counter(step) '行';
 }
 
 /* markdown 渲染样式 */
