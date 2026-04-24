@@ -117,7 +117,7 @@ p:last-child {
 
 /* 代码样式 */
 .mkd pre code {
-	display: block;
+	display: grid;
 	font-family: Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
 	line-height: 1.5;
@@ -128,6 +128,22 @@ p:last-child {
 	margin-block-start: 1em;
 	margin-block-end: 1em;
 	background-color: var(--color-code-bg) !important;
+	counter-reset: step;
+}
+
+.mkd .line:before {
+	content: counter(step);
+	counter-increment: step;
+	width: 2em;
+	display: inline-block;
+	text-align: right;
+	color: var(--color-text-light);
+	user-select: none;
+	position: absolute;
+	left: 10px;
+	top: 0;
+	padding-right: 5px;
+	border-right: 1px solid var(--color-text-light);
 }
 
 .mkd .highlighted-line {
@@ -145,9 +161,10 @@ p:last-child {
 }
 
 .mkd .line {
+	position: relative;
 	display: block;
 	margin: 0 -10px;
-	padding: 0 10px;
+	padding: 0 10px 0 calc(15px + 2em);
 }
 
 /* copy button placed inside code blocks */
@@ -190,6 +207,16 @@ p:last-child {
 	content: ' ';
 	height: 12px;
 	width: 12px;
+}
+
+.mkd pre code::after {
+	position: absolute;
+	top: 10px;
+	height: 12px;
+	left: 72px;
+	content: attr(code-language) ':' counter(step) '行';
+	line-height: 12px;
+	font-size: 12px;
 }
 
 /* markdown 渲染样式 */

@@ -155,6 +155,11 @@ export default (md) => {
 		const [tokens, idx, options, , self] = args
 		const token = tokens[idx]
 
+		// 去除最后一个换行符
+		if (token.content.endsWith('\n')) {
+			token.content = token.content.slice(0, -1);
+		}
+
 		if (!token.info || !RE.test(token.info)) {
 			token.info = (token.info || '') + ' {0}'
 		}
@@ -233,6 +238,7 @@ export default (md) => {
 					!useHljs ? 'shiki' : 'hljs',
 					isFocus ? 'use-focus' : ''].filter(Boolean).join(' ')
 				],
+				['code-language', langName || '']
 			]
 		}
 		const attrs = self.renderAttrs(tmpToken)
