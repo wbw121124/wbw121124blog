@@ -201,8 +201,9 @@ p:last-child {
 .mkd pre code::before {
 	background: #fc625d;
 	box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
-	margin-top: -14px;
 	position: absolute;
+	top: 10px;
+	left: 10px;
 	border-radius: 50%;
 	content: ' ';
 	height: 12px;
