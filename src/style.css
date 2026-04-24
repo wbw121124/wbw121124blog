@@ -218,6 +218,7 @@ p:last-child {
 	content: counter(step) '行';
 	line-height: 12px;
 	font-size: 12px;
+	color: var(--el-color-primary);
 }
 
 .mkd pre code[code-language]:not([code-language=""])::after {
