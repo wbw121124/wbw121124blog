@@ -1,6 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { defineProps } from 'vue';
+import { ref, onMounted, computed, nextTick, defineProps } from 'vue';
 import Fuse from 'fuse.js';
 const props = defineProps({
 	props: { type: Object, required: true }
@@ -122,6 +121,15 @@ function doSearch() {
 		results.value = [];
 	}
 	page.value = 1;
+	// 同时更新 URL 查询参数
+	const params = new URLSearchParams(window.location.search);
+	if (q) {
+		params.set('keys', encodeURIComponent(q));
+	} else {
+		params.delete('keys');
+	}
+	const newUrl = `${window.location.pathname}?${params.toString()}`;
+	window.history.replaceState({}, '', newUrl);
 }
 
 // import data from '../assets/postlist.json';
@@ -155,8 +163,10 @@ onMounted(async () => {
 		threshold: 0.4
 	});
 	if (props.props.keys) {
-		query.value = decodeURIComponent(props.props.keys);
-		doSearch();
+		nextTick(() => {
+			query.value = decodeURIComponent(props.props.keys);
+			doSearch();
+		});
 	}
 });
 </script>

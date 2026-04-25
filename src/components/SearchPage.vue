@@ -1,6 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { defineProps } from 'vue';
+import { ref, onMounted, computed, nextTick, defineProps } from 'vue';
 import Fuse from 'fuse.js';
 const props = defineProps({
 	props: { type: Object, required: true }
@@ -89,15 +88,18 @@ onMounted(async () => {
 		threshold: 0.4
 	});
 	if (props.props.keys) {
-		query.value = decodeURIComponent(props.props.keys);
-		runSearch(query.value);
+		nextTick(() => {
+			query.value = decodeURIComponent(props.props.keys);
+			runSearch(query.value);
+		});
 	}
 });
 
 function doSearch() {
 	if (query.value.trim()) {
 		const k = encodeURIComponent(query.value.trim());
-		window.location.href = `?path=/search/${k}`;
+		window.history.replaceState({}, '', `${window.location.pathname}?path=/search/${k}`);
+		runSearch(query.value);
 	}
 }
 </script>
