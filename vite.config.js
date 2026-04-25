@@ -1,14 +1,10 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import tailwindcss from '@tailwindcss/vite'
 import { rp2h } from './scripts/rp2h.js'
 import { resolve } from 'path';
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import postcssNesting from 'postcss-nesting'
-import autoprefixer from 'autoprefixer'
-import postcssFontDisplay from 'postcss-font-display'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 
@@ -18,7 +14,6 @@ console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}, ${process.env.NODE_E
 export default defineConfig({
 	plugins: [
 		vue(),
-		tailwindcss(),
 		AutoImport({
 			imports: ['vue'],
 			resolvers: [
@@ -110,15 +105,6 @@ export default defineConfig({
 		},
 		cssCodeSplit: true,
 		chunkSizeWarningLimit: 1024
-	},
-	css: {
-		postcss: {
-			plugins: [
-				postcssNesting(),
-				autoprefixer(),
-				postcssFontDisplay({ display: 'swap', replace: true })
-			]
-		}
 	},
 	// 设置基础路径，适用于部署到子路径的情况，注意测试时要注释
 	base: '/wbw121124blog/'
