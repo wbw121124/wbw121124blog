@@ -1,2 +1,1 @@
 import{o as s,c as a,w as o,a as p,M as t,b as r,d as e,u as n,z as c,E as m,f as l}from"./style-0C4A5JRb.js";import u from"./404-DkIerlMd.js";import"./copy-tex.min-DUk_q1JE.js";const i={class:"mx-auto px-4 pb-8"};l({__name:"App",setup(l){const d={component:"404",props:{},path:new URLSearchParams(window.location.search).get("path")||"/"};return(l,f)=>{const h=m;return s(),a(h,{locale:n(c)},{default:o(()=>[p(t),r("div",i,[p(u,{props:d.props},null,8,["props"])]),p(e)]),_:1},8,["locale"])}}}).mount("#app");
-//# sourceMappingURL=notFound-B81Gy-05.js.map
