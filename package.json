@@ -7,7 +7,7 @@
 		"dev": "npm run render-posts && vite",
 		"prebuild": "npm run render-posts",
 		"build": "vite build",
-		"preview": "vite preview",
+		"preview": "npm run prebuild && cross-env NODE_ENV=development vite preview",
 		"br": "npm run build && npx serve deploy",
 		"render-posts": "node ./scripts/renderPostsToHtml.js",
 		"post": "node ./scripts/addPost.js"
@@ -42,6 +42,7 @@
 		"@iconify-json/ep": "^1.2.4",
 		"@vitejs/plugin-vue": "^6.0.1",
 		"autoprefixer": "^10.5.0",
+		"cross-env": "^10.1.0",
 		"postcss-font-display": "^0.3.0",
 		"postcss-nesting": "^14.0.0",
 		"unplugin-auto-import": "^21.0.0",

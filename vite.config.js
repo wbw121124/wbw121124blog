@@ -12,6 +12,8 @@ import postcssFontDisplay from 'postcss-font-display'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 
+console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}, ${process.env.NODE_ENV === 'production' ? false : true}`);
+
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [
@@ -82,7 +84,8 @@ export default defineConfig({
 	},
 	build: {
 		minify: 'terser',
-		sourcemap: true,
+		// 只有 preview 时才 sourcemap: true
+		sourcemap: process.env.NODE_ENV === 'production' ? false : true,
 		rollupOptions: {
 			output: {
 				manualChunks: {
