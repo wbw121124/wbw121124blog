@@ -8,6 +8,7 @@ import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import postcssNesting from 'postcss-nesting'
 import autoprefixer from 'autoprefixer'
+import postcssFontDisplay from 'postcss-font-display'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -97,7 +98,7 @@ export default defineConfig({
 			plugins: [
 				postcssNesting(),
 				autoprefixer(),
-				require('postcss-font-display')({ display: 'swap' })
+				postcssFontDisplay({ display: 'swap', replace: true })
 			]
 		}
 	},
