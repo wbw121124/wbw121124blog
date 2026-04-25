@@ -42,7 +42,7 @@ export default {
 						<template #append>
 							<el-button size="default" @click="doSearch" aria-label="搜索">
 								<el-icon>
-									<Search />
+									<i-ep-search />
 								</el-icon>
 							</el-button>
 						</template>

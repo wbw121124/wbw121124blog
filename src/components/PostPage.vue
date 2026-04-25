@@ -10,8 +10,6 @@ const props = defineProps({
 	}
 });
 import { onMounted, onUnmounted, ref, watch, nextTick, h, createApp } from 'vue';
-import { CopyDocument } from '@element-plus/icons-vue';
-// import { loadMarkdownIt } from '/src/main.js';
 const postContent = ref('加载中...');
 const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
@@ -100,27 +98,9 @@ onMounted(async () => {
 			data = await response.text();
 		if (response.ok && isJSON(data)) {
 			data = JSON.parse(data);
-		} /*else {
-			// 兼容旧版：还没渲染时回退到 md
-			const mdResp = await fetch(`./posts/${postName}.md`);
-			if (!mdResp.ok) {
-				postContent.value = '文章未找到。';
-				isLoading.value = false;
-				return;
-			}
-			const text = await mdResp.text();
-			const { metadata: _metadata, content: markdown } = parseFrontmatter(text, postName);
-			rawMarkdown.value = markdown;
-			await window.loadMarkdownIt();
-			console.log('Markdown-it module loaded');
-			const module = window.markdownItModule;
-			const mdit = await module.initMarkdownIt();
-			postContent.value = mdit.render(markdown);
-			_metadata.ready = true;
-			metadata.value = _metadata;
-			isLoading.value = false;
-			return;
-		}*/
+		} else {
+			throw new Error('文章预渲染数据加载失败: ' + response.status + ' ' + response.statusText);
+		}
 
 		if (!data) {
 			throw new Error('文章预渲染数据加载失败');
@@ -169,16 +149,13 @@ function addCopyButtons() {
 			// 生成一个挂载容器，用于 Vue 挂载组件
 			const wrapper = document.createElement('div');
 			const btn = document.createElement('button');
-			const codeElem = pre.querySelector('code');
-			const codeText = codeElem ? codeElem.innerText : pre.innerText;
 			btn.className = "el-button el-button--default copy-btn text-sm px-3 py-1";
 			btn.ariaLabel = "复制代码";
 			btn.ariaDisabled = false;
 			btn.innerHTML = `<i class="el-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="M768 832a128 128 0 0 1-128 128H192A128 128 0 0 1 64 832V384a128 128 0 0 1 128-128v64a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64z"></path><path fill="currentColor" d="M384 128a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64zm0-64h448a128 128 0 0 1 128 128v448a128 128 0 0 1-128 128H384a128 128 0 0 1-128-128V192A128 128 0 0 1 384 64"></path></svg></i>`;
 
-			// 点击逻辑抽成函数，作用于当前 pre
-			const copyCode = () => {
-				navigator.clipboard.writeText(codeText).then(() => {
+			btn.addEventListener('click', () => {
+				navigator.clipboard.writeText(btn.parentElement.querySelector('code').innerText).then(() => {
 					ElNotification({
 						title: '代码已复制到剪贴板',
 						type: 'success',
@@ -193,9 +170,7 @@ function addCopyButtons() {
 						message: e.message + e.stack
 					})
 				});
-			};
-
-			btn.onclick = copyCode;
+			});
 			wrapper.appendChild(btn);
 			pre.appendChild(wrapper);
 		});
@@ -257,12 +232,12 @@ watch(postContent, () => {
 				<el-button @click="copyMarkdown" class="text-sm px-3 py-1" circle type="success"
 					aria-label="复制 Markdown">
 					<el-icon>
-						<copy-document />
+						<i-ep-copy-document />
 					</el-icon>
 				</el-button>
 				<el-button @click="editMarkdown" class="text-sm px-3 py-1" circle type="primary" aria-label="编辑">
 					<el-icon>
-						<Edit />
+						<i-ep-edit />
 					</el-icon>
 				</el-button>
 			</div>

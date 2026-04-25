@@ -9,6 +9,8 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import postcssNesting from 'postcss-nesting'
 import autoprefixer from 'autoprefixer'
 import postcssFontDisplay from 'postcss-font-display'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,11 +21,18 @@ export default defineConfig({
 			imports: ['vue'],
 			resolvers: [
 				ElementPlusResolver(),
+				IconsResolver({
+					prefix: 'Icon',
+				}),
 			],
 		}),
 		Components({
 			resolvers: [
 				ElementPlusResolver(),
+				// 自动注册图标组件
+				IconsResolver({
+					enabledCollections: ['ep'], // Element Plus 图标
+				}),
 			],
 		}),
 		{
@@ -43,6 +52,12 @@ export default defineConfig({
 				// 返回 undefined 表示使用默认行为
 			}
 		},
+		Icons({
+			autoInstall: true,
+			scale: 1,
+			defaultClass: 'inline-block',
+			compiler: 'vue3',
+		}),
 	],
 	define: {
 		process: { env: {} }

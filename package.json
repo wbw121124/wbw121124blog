@@ -8,7 +8,7 @@
 		"prebuild": "npm run render-posts",
 		"build": "vite build",
 		"preview": "vite preview",
-		"br": "npm run build && npx serve dist",
+		"br": "npm run build && npx serve deploy",
 		"render-posts": "node ./scripts/renderPostsToHtml.js",
 		"post": "node ./scripts/addPost.js"
 	},
@@ -39,11 +39,13 @@
 		"vue": "^3.5.30"
 	},
 	"devDependencies": {
+		"@iconify-json/ep": "^1.2.4",
 		"@vitejs/plugin-vue": "^6.0.1",
 		"autoprefixer": "^10.5.0",
 		"postcss-font-display": "^0.3.0",
 		"postcss-nesting": "^14.0.0",
 		"unplugin-auto-import": "^21.0.0",
+		"unplugin-icons": "^23.0.1",
 		"unplugin-vue-components": "^31.0.0",
 		"vite": "^7.2.4"
 	},

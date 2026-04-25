@@ -151,7 +151,7 @@ p:last-child {
 }
 
 .mkd .use-focus .line:not(.focus) {
-	transition: opacity .0625s, filter .0625s, background-color .0625s;
+	transition: opacity .125s, filter .125s, background-color .125s;
 }
 
 .mkd .use-focus:not(:has(.line:not(.focus):hover)) .line:not(.focus) {
@@ -178,9 +178,15 @@ p:last-child {
 	position: absolute;
 	top: 8px;
 	right: 8px;
+	transition: opacity 0.3s;
+	opacity: 0;
 	/* remove custom colors/edges when el-button is applied */
 	/* padding: 2px 6px; */
 	/* font-size: 1rem; */
+}
+
+.mkd pre:hover .copy-btn {
+	opacity: 1;
 }
 
 .mkd .copy-btn:hover {

@@ -112,7 +112,7 @@ function doSearch() {
 					<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
 						@click="doSearch" aria-label="搜索">
 						<el-icon>
-							<Search />
+							<i-ep-search />
 						</el-icon>
 					</el-button>
 				</template>

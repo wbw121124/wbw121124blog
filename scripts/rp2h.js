@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { initMarkdownIt, disposeMarkdownIt } from '../src/lib/mkd-it.js';
+import { initMarkdownIt, disposeMarkdownIt } from '../lib/mkd-it.js';
 import pangu from 'pangu/browser';
 import { JSDOM } from 'jsdom';
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
@@ -117,8 +117,10 @@ function generateSummary(content, maxLength = 200) {
 	const firstIndex = plainText.indexOf('\n');
 	// 从第一个 \n 后面开始找第二个 \n
 	const secondIndex = plainText.indexOf('\n', firstIndex + 1);
-	if (firstIndex != -1 && secondIndex != -1)
-		maxLength = Math.min(maxLength, secondIndex - 1)
+	// 第三个 \n 的位置
+	const thirdIndex = plainText.indexOf('\n', secondIndex + 1);
+	if (firstIndex != -1 && secondIndex != -1 && thirdIndex != -1)
+		maxLength = Math.min(maxLength, thirdIndex - 1)
 
 	if (plainText.length <= maxLength) {
 		return plainText;
