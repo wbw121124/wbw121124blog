@@ -15,6 +15,9 @@
 	"dependencies": {
 		"@octokit/oauth-app": "^8.0.3",
 		"@octokit/rest": "^22.0.1",
+		"@shikijs/colorized-brackets": "^4.0.2",
+		"@shikijs/transformers": "^4.0.2",
+		"@shikijs/twoslash": "^4.0.2",
 		"@tailwindcss/postcss": "^4.2.4",
 		"element-plus": "^2.13.5",
 		"fuse.js": "^7.2.0",
@@ -35,13 +38,17 @@
 		"postcss": "^8.5.10",
 		"postcss-import": "^16.1.1",
 		"sanitize.css": "^13.0.0",
+		"sass": "^1.99.0",
 		"shiki": "^4.0.2",
 		"tailwindcss": "^4.1.18",
+		"twoslash-eslint": "^0.3.8",
 		"vite-ssg": "^28.2.2",
 		"vue": "^3.5.30"
 	},
 	"devDependencies": {
 		"@iconify-json/ep": "^1.2.4",
+		"@olets/markdown-it-wrapperless-fence-rule": "^1.2.1",
+		"@shikijs/markdown-it": "^4.0.2",
 		"@vitejs/plugin-vue": "^6.0.1",
 		"autoprefixer": "^10.5.0",
 		"cross-env": "^10.1.0",

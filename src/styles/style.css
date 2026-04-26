@@ -3,12 +3,13 @@
 @import "katex/dist/katex.min.css";
 @import "./hljs/light-plus.css";
 @import "medium-zoom/dist/style.css";
+@import "@shikijs/twoslash/style-rich.css";
 
 :root {
 	color-scheme: light !important;
 	scroll-behavior: smooth;
-	--color-primary: #646cff;
-	--color-primary-hover: #535bf2;
+	--color-primary: var(--el-color-primary);
+	--color-primary-hover: var(--el-color-primary-dark-2);
 	--color-heading: #213547;
 	--color-text: #333;
 	--color-text-light: #666;
@@ -25,8 +26,6 @@
 
 	:root {
 		color-scheme: dark !important;
-		--color-primary: #646cff;
-		--color-primary-hover: #747bff;
 		--color-heading: rgba(255, 255, 255, 0.87);
 		--color-text: rgba(255, 255, 255, 0.87);
 		--color-text-light: rgba(255, 255, 255, 0.6);
@@ -70,7 +69,6 @@
 	.shiki,
 	.shiki span {
 		color: var(--shiki-dark) !important;
-		background-color: var(--shiki-dark-bg) !important;
 	}
 }
 
@@ -116,7 +114,50 @@ p:last-child {
 }
 
 /* 代码样式 */
-.mkd pre code {
+.twoslash-popup-container {
+	background-color: var(--color-code-bg) !important;
+	border: 1px solid var(--el-color-primary) !important;
+}
+
+.twoslash-popup-container:hover {
+	border: 1px solid var(--el-color-primary-dark-2) !important;
+}
+
+.twoslash-popup-container {
+	background-color: transparent;
+}
+
+[class="twoslash-*"] {
+	z-index: 1145 !important;
+}
+
+pre.shiki .tab,
+pre.shiki .space {
+	position: relative;
+}
+
+pre.shiki .tab::before,
+pre.shiki .space::before {
+	color: var(--color-text-light);
+	opacity: 0.3;
+}
+
+pre.shiki .tab::before {
+	content: '⇥';
+	position: absolute;
+}
+
+pre.shiki .space::before {
+	content: '·';
+	position: absolute;
+}
+
+.mkd pre {
+	background-color: transparent !important;
+	overflow: visible !important;
+}
+
+.mkd pre>code {
 	display: grid;
 	font-family: Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
@@ -129,48 +170,100 @@ p:last-child {
 	margin-block-end: 1em;
 	background-color: var(--color-code-bg) !important;
 	counter-reset: step;
+	overflow: visible !important;
 }
 
-.mkd .line:before {
+.mkd .line::before {
 	content: counter(step);
 	counter-increment: step;
-	width: 2em;
+	width: 2.5em;
 	display: inline-block;
 	text-align: right;
 	color: var(--color-text-light);
 	user-select: none;
 	position: absolute;
-	left: 10px;
+	left: calc(10px + .5em);
 	top: 0;
 	padding-right: 5px;
 	border-right: 1px solid var(--color-text-light);
 }
 
-.mkd .highlighted-line {
-	background-color: var(--color-tag-bg) !important;
+.mkd .line.diff {
+	&.add::after {
+		content: '+';
+		color: var(--el-color-success) !important;
+	}
+
+	&.remove::after {
+		content: '- ';
+		color: var(--el-color-error) !important;
+	}
+
+	&::after {
+		display: inline-block;
+		user-select: none;
+		position: absolute;
+		left: 10px;
+		top: 0;
+	}
 }
 
-.mkd .use-focus .line:not(.focus) {
+.mkd .highlighted-word {
+	outline: 1px solid var(--el-color-info);
+	border-radius: 4px;
+}
+
+.mkd .highlighted.error {
+	--color-code-bg-alt: var(--el-color-error-light-7) !important;
+	--color-code-border: var(--el-color-error) !important;
+}
+
+.mkd .highlighted.warning {
+	--color-code-bg-alt: var(--el-color-warning-light-7) !important;
+	--color-code-border: var(--el-color-warning) !important;
+}
+
+.mkd .highlighted {
+	--color-code-bg-alt: var(--el-color-primary-light-7);
+	--color-code-border: var(--el-color-primary);
+	background-color: var(--color-code-bg-alt) !important;
+	border-left: 10px solid var(--color-code-border) !important;
+	padding-left: calc(5px + 3em) !important;
+}
+
+.mkd .highlighted::before {
+	left: .5em !important;
+}
+
+.mkd .has-focused>.line:not(.focused) {
 	transition: opacity .125s, filter .125s, background-color .125s;
 }
 
-.mkd .use-focus:not(:has(.line:not(.focus):hover)) .line:not(.focus) {
+.mkd .has-focused:not(:has(.line:not(.focused):hover)) .line:not(.focused) {
 	opacity: .6;
 	filter: blur(2px);
 	background-color: transparent !important;
+
+	& * {
+		background-color: transparent !important;
+	}
 }
 
 .mkd .line {
 	position: relative;
 	display: block;
 	margin: 0 -10px;
-	padding: 0 10px 0 calc(15px + 2em);
+	padding: 0 10px 0 calc(15px + 3em);
 }
 
 /* copy button placed inside code blocks */
 .mkd pre {
 	position: relative;
 	background-color: transparent;
+}
+
+.mkd pre:hover {
+	z-index: 1000 !important;
 }
 
 .mkd .copy-btn {
@@ -204,7 +297,7 @@ p:last-child {
 	background-color: var(--color-bg-alt-alt);
 }
 
-.mkd pre code::before {
+.mkd pre>code::before {
 	background: #fc625d;
 	box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
 	position: absolute;
@@ -216,7 +309,7 @@ p:last-child {
 	width: 12px;
 }
 
-.mkd pre code::after {
+.mkd pre>code::after {
 	position: absolute;
 	top: 10px;
 	height: 12px;
@@ -227,7 +320,7 @@ p:last-child {
 	color: var(--el-color-primary);
 }
 
-.mkd pre code[code-language]:not([code-language=""])::after {
+.mkd pre>code[code-language]:not([code-language=""])::after {
 	content: attr(code-language) '·' counter(step) '行';
 }
 

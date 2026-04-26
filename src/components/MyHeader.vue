@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-	<header class="shadow-sm mb-8 p-4" style="position: sticky; top: 0; z-index: 1;">
+	<header class="shadow-sm mb-8 p-4" style="position: sticky; top: 0; z-index: 1001;">
 		<nav class="mx-auto">
 			<ul class="flex space-x-4 flex-row items-center">
 				<li
