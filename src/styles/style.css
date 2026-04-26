@@ -157,7 +157,7 @@ pre.shiki .space::before {
 	overflow: visible !important;
 }
 
-.mkd pre>code {
+:not(.twoslash-popup-code)>pre>code {
 	display: grid;
 	font-family: Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
@@ -173,7 +173,7 @@ pre.shiki .space::before {
 	overflow: visible !important;
 }
 
-.mkd .line::before {
+:not(.twoslash-popup-code)>pre>code>.line::before {
 	content: counter(step);
 	counter-increment: step;
 	width: 2.5em;
@@ -188,7 +188,7 @@ pre.shiki .space::before {
 	border-right: 1px solid var(--color-text-light);
 }
 
-.mkd .line.diff {
+:not(.twoslash-popup-code)>pre>code>.line.diff {
 	&.add::after {
 		content: '+';
 		color: var(--el-color-success) !important;
@@ -239,7 +239,7 @@ pre.shiki .space::before {
 	transition: opacity .125s, filter .125s, background-color .125s;
 }
 
-.mkd .has-focused:not(:has(.line:not(.focused):hover)) .line:not(.focused) {
+.mkd .has-focused:not(:has(.line:not(.focused):hover))>.line:not(.focused) {
 	opacity: .6;
 	filter: blur(2px);
 	background-color: transparent !important;
@@ -249,20 +249,21 @@ pre.shiki .space::before {
 	}
 }
 
-.mkd .line {
+:not(.twoslash-popup-code)>pre>code>.line {
 	position: relative;
 	display: block;
 	margin: 0 -10px;
 	padding: 0 10px 0 calc(15px + 3em);
+	min-height: 1.5em;
 }
 
 /* copy button placed inside code blocks */
-.mkd pre {
+:not(.twoslash-popup-code)>pre {
 	position: relative;
 	background-color: transparent;
 }
 
-.mkd pre:hover {
+:not(.twoslash-popup-code)>pre>code>pre:hover {
 	z-index: 1000 !important;
 }
 
@@ -297,7 +298,7 @@ pre.shiki .space::before {
 	background-color: var(--color-bg-alt-alt);
 }
 
-.mkd pre>code::before {
+:not(.twoslash-popup-code)>pre>code::before {
 	background: #fc625d;
 	box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
 	position: absolute;
@@ -309,7 +310,7 @@ pre.shiki .space::before {
 	width: 12px;
 }
 
-.mkd pre>code::after {
+:not(.twoslash-popup-code)>pre>code::after {
 	position: absolute;
 	top: 10px;
 	height: 12px;
@@ -320,8 +321,43 @@ pre.shiki .space::before {
 	color: var(--el-color-primary);
 }
 
-.mkd pre>code[code-language]:not([code-language=""])::after {
+:not(.twoslash-popup-code)>pre>code[code-language]:not([code-language=""])::after {
 	content: attr(code-language) '·' counter(step) '行';
+}
+
+.twoslash-hover>.twoslash-popup-container {
+	display: none;
+}
+
+.twoslash-hover:hover>.twoslash-popup-container {
+	display: flex;
+}
+
+.twoslash-error-hover>.twoslash-popup-container {
+	display: none;
+}
+
+.twoslash-error-hover:hover>.twoslash-popup-container {
+	display: flex;
+}
+
+.twoslash-popup-container {
+	--x: 0;
+	--x1: 100vw;
+	left: var(--x);
+	--top: 0px;
+	top: var(--top);
+	position: fixed !important;
+	white-space: pre;
+	max-width: calc(100vw - var(--x) - var(--spacing) * 8);
+	/* box-sizing: border-box; */
+	overflow-x: auto;
+	height: auto;
+}
+
+:not(.twoslash-popup-code)>pre>code>.line {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
 }
 
 /* markdown 渲染样式 */

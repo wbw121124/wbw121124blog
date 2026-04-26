@@ -144,7 +144,7 @@ function addCopyButtons() {
 		const container = document.querySelector('.mkd.component');
 		if (!container) return;
 
-		container.querySelectorAll('pre:has(code)').forEach(pre => {
+		container.querySelectorAll(':not(.twoslash-popup-code)>pre:has(code)').forEach(pre => {
 			if (pre.querySelector('.copy-btn')) return; // 避免重复添加
 			// 生成一个挂载容器，用于 Vue 挂载组件
 			const wrapper = document.createElement('div');
@@ -174,6 +174,44 @@ function addCopyButtons() {
 			wrapper.appendChild(btn);
 			pre.appendChild(wrapper);
 		});
+		// 为所有 .twoslash-popup-container 元素添加事件监听
+		document.querySelectorAll('.twoslash-popup-container').forEach(container => {
+			// 方式1：鼠标移入时计算（父元素触发）
+			const trigger = container.parentElement; // 通常是触发hover的父元素
+
+			trigger.addEventListener('mouseenter', () => {
+				// 获取元素相对于 body 的位置
+				const rect = trigger.getClientRects()[0];
+				const distanceToLeft = rect.left,
+					distanceToRight = window.innerWidth - rect.right,
+					distanceToTop = rect.top;
+
+				// 设置 CSS 变量 --x
+				container.style.setProperty('--x', `${distanceToLeft}px`);
+				// 设置 CSS 变量 --x1
+				container.style.setProperty('--x1', `${distanceToRight}px`);
+				// 设置 CSS 变量 --top
+				container.style.setProperty('--top', `${distanceToTop}px`);
+			});
+		});
+
+		// body 滚动时更新全部
+		document.addEventListener('scroll', () => {
+			document.querySelectorAll('.twoslash-popup-container').forEach(container => {
+				const trigger = container.parentElement;
+				const rect = trigger.getClientRects()[0];
+				const distanceToLeft = rect.left,
+					distanceToRight = window.innerWidth - rect.right,
+					distanceToTop = rect.top;
+
+				// 设置 CSS 变量 --x
+				container.style.setProperty('--x', `${distanceToLeft}px`);
+				// 设置 CSS 变量 --x1
+				container.style.setProperty('--x1', `${distanceToRight}px`);
+				// 设置 CSS 变量 --top
+				container.style.setProperty('--top', `${distanceToTop}px`);
+			});
+		})
 	});
 }
 

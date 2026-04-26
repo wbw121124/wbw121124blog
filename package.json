@@ -41,7 +41,6 @@
 		"sass": "^1.99.0",
 		"shiki": "^4.0.2",
 		"tailwindcss": "^4.1.18",
-		"twoslash-eslint": "^0.3.8",
 		"vite-ssg": "^28.2.2",
 		"vue": "^3.5.30"
 	},
