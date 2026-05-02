@@ -4,6 +4,7 @@
 @import "./hljs/light-plus.css";
 @import "medium-zoom/dist/style.css";
 @import "@shikijs/twoslash/style-rich.css";
+@import "./fira-code/fira_code.css";
 
 :root {
 	color-scheme: light !important;
@@ -170,7 +171,7 @@ pre.shiki .space::before {
 
 :not(.twoslash-popup-code)>pre>code {
 	display: grid;
-	font-family: Consolas, 'Courier New', Fira Code, monospace;
+	font-family: 'Fira Code', Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
 	line-height: 1.5;
 	padding: 10px;
@@ -561,6 +562,12 @@ table {
 	margin-bottom: 1rem;
 	background: var(--color-code-bg);
 	border-radius: var(--table-border-radius);
+	box-shadow: var(--shadow-md);
+	transition: box-shadow 0.2s ease-in-out;
+}
+
+table:hover {
+	box-shadow: var(--shadow-lg);
 }
 
 table>:last-child>:last-child>:last-child {
