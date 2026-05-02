@@ -237,17 +237,17 @@ pre.shiki .space::before {
 
 .mkd .highlighted.error {
 	--color-code-bg-alt: var(--el-color-error-light-8) !important;
-	--color-code-border: var(--el-color-error) !important;
+	--color-code-border: var(--el-color-error-light-5) !important;
 }
 
 .mkd .highlighted.warning {
 	--color-code-bg-alt: var(--el-color-warning-light-8) !important;
-	--color-code-border: var(--el-color-warning) !important;
+	--color-code-border: var(--el-color-warning-light-5) !important;
 }
 
 .mkd .highlighted {
 	--color-code-bg-alt: var(--el-color-primary-light-8);
-	--color-code-border: var(--el-color-primary);
+	--color-code-border: var(--el-color-primary-light-5);
 	background-color: var(--color-code-bg-alt) !important;
 	border-left: 10px solid var(--color-code-border) !important;
 	padding-left: calc(15px + 3.5em) !important;
@@ -301,12 +301,15 @@ pre.shiki .space::before {
 	/* font-size: 1rem; */
 }
 
-.mkd pre:hover .copy-btn {
+.mkd pre:hover .copy-btn,
+.mkd .copy-btn:focus,
+.mkd pre:focus .copy-btn {
 	opacity: 1;
 	box-shadow: var(--shadow-md);
 }
 
-.mkd .copy-btn:hover {
+.mkd .copy-btn:hover,
+.mkd .copy-btn:focus {
 	background-color: var(--color-bg-alt-alt);
 	box-shadow: var(--shadow-lg);
 }
