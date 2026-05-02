@@ -452,6 +452,14 @@ pre.shiki .space::before {
 	border-bottom: 1px solid var(--link-hover-color);
 }
 
+.tag {
+	box-shadow: var(--shadow-md);
+}
+
+.tag:hover {
+	box-shadow: var(--shadow-lg);
+}
+
 /* header-anchor 的动画 */
 .header-anchor {
 	opacity: 0;
@@ -845,4 +853,12 @@ nav ul .el-input:focus-within {
 
 .custom-container pre:has(code) {
 	margin-top: calc(var(--spacing) * 4);
+}
+
+.el-button {
+	box-shadow: var(--shadow-md);
+}
+
+.el-button:hover {
+	box-shadow: var(--shadow-lg);
 }
