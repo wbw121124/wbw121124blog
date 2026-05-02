@@ -1,5 +1,5 @@
 <script setup>
-import '../katex/copy-tex.min.js';
+import 'katex/dist/contrib/copy-tex.mjs';
 // 获取组件 props
 // import { defineProps } from 'vue';
 // 定义 Props
