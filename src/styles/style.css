@@ -115,11 +115,14 @@ p:last-child {
 
 /* 代码样式 */
 .twoslash-popup-container {
+	transition: box-shadow 0.2s, border-color 0.2s;
+	box-shadow: var(--shadow-md);
 	background-color: var(--color-code-bg) !important;
 	border: 1px solid var(--el-color-primary) !important;
 }
 
 .twoslash-popup-container:hover {
+	box-shadow: var(--shadow-lg);
 	border: 1px solid var(--el-color-primary-dark-2) !important;
 }
 
@@ -171,21 +174,28 @@ pre.shiki .space::before {
 	background-color: var(--color-code-bg) !important;
 	counter-reset: step;
 	overflow: visible !important;
+	border: var(--color-border) 1px solid !important;
+	transition: box-shadow 0.2s, border-color 0.2s;
+	box-shadow: var(--shadow-md);
+}
+
+:not(.twoslash-popup-code)>pre>code:hover {
+	box-shadow: var(--shadow-lg);
 }
 
 :not(.twoslash-popup-code)>pre>code>.line::before {
 	content: counter(step);
 	counter-increment: step;
-	width: 2.5em;
+	width: 3em;
 	display: inline-block;
 	text-align: right;
-	color: var(--color-text-light);
+	color: var(--color-text);
 	user-select: none;
 	position: absolute;
-	left: calc(10px + .5em);
+	left: calc(15px + .5em);
 	top: 0;
-	padding-right: 5px;
-	border-right: 1px solid var(--color-text-light);
+	padding-right: 10px;
+	border-right: 1px solid var(--color-border);
 }
 
 :not(.twoslash-popup-code)>pre>code>.line.diff {
@@ -203,9 +213,13 @@ pre.shiki .space::before {
 		display: inline-block;
 		user-select: none;
 		position: absolute;
-		left: 10px;
+		left: 15px;
 		top: 0;
 	}
+}
+
+:not(.twoslash-popup-code)>pre>code>.line.diff.highlighted::after {
+	left: 5px;
 }
 
 .mkd .highlighted-word {
@@ -228,11 +242,11 @@ pre.shiki .space::before {
 	--color-code-border: var(--el-color-primary);
 	background-color: var(--color-code-bg-alt) !important;
 	border-left: 10px solid var(--color-code-border) !important;
-	padding-left: calc(5px + 3em) !important;
+	padding-left: calc(15px + 3.5em) !important;
 }
 
 .mkd .highlighted::before {
-	left: .5em !important;
+	left: calc(5px + .5em) !important;
 }
 
 .mkd .has-focused>.line:not(.focused) {
@@ -253,7 +267,7 @@ pre.shiki .space::before {
 	position: relative;
 	display: block;
 	margin: 0 -10px;
-	padding: 0 10px 0 calc(15px + 3em);
+	padding: 0 10px 0 calc(25px + 3.5em);
 	min-height: 1.5em;
 }
 
@@ -272,7 +286,7 @@ pre.shiki .space::before {
 	position: absolute;
 	top: 8px;
 	right: 8px;
-	transition: opacity 0.3s;
+	transition: opacity 0.3s, box-shadow 0.3s;
 	opacity: 0;
 	/* remove custom colors/edges when el-button is applied */
 	/* padding: 2px 6px; */
@@ -281,10 +295,12 @@ pre.shiki .space::before {
 
 .mkd pre:hover .copy-btn {
 	opacity: 1;
+	box-shadow: var(--shadow-md);
 }
 
 .mkd .copy-btn:hover {
 	background-color: var(--color-bg-alt-alt);
+	box-shadow: var(--shadow-lg);
 }
 
 .btn-copy-md {
@@ -691,6 +707,15 @@ nav ul .el-input:focus-within {
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-lg);
 	margin-block: calc(var(--spacing) * 4);
+	box-shadow: var(--shadow-md);
+	transition: box-shadow 0.2s;
+}
+
+.custom-container:hover,
+.custom-container:focus-within,
+.custom-container:focus-visible,
+.custom-container:focus {
+	box-shadow: var(--shadow-lg);
 }
 
 .custom-container>* {
