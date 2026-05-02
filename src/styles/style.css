@@ -1,6 +1,6 @@
 @import 'sanitize.css';
 @import "tailwindcss";
-@import "katex/dist/katex.min.css";
+@import "./katex-swap.css";
 @import "./hljs/light-plus.css";
 @import "medium-zoom/dist/style.css";
 @import "@shikijs/twoslash/style-rich.css";
@@ -214,17 +214,17 @@ pre.shiki .space::before {
 }
 
 .mkd .highlighted.error {
-	--color-code-bg-alt: var(--el-color-error-light-7) !important;
+	--color-code-bg-alt: var(--el-color-error-light-8) !important;
 	--color-code-border: var(--el-color-error) !important;
 }
 
 .mkd .highlighted.warning {
-	--color-code-bg-alt: var(--el-color-warning-light-7) !important;
+	--color-code-bg-alt: var(--el-color-warning-light-8) !important;
 	--color-code-border: var(--el-color-warning) !important;
 }
 
 .mkd .highlighted {
-	--color-code-bg-alt: var(--el-color-primary-light-7);
+	--color-code-bg-alt: var(--el-color-primary-light-8);
 	--color-code-border: var(--el-color-primary);
 	background-color: var(--color-code-bg-alt) !important;
 	border-left: 10px solid var(--color-code-border) !important;
