@@ -198,7 +198,7 @@ onMounted(async () => {
 				<p v-else class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
 			</div>
 			<el-pagination class="mt-4" background size="small" :page-size="pageSize" :current-page="page"
-				:total="total" hide-on-single-page="true" @current-change="page = $event" />
+				:total="total" :hide-on-single-page="true" @current-change="page = $event" />
 		</div>
 	</main>
 </template>

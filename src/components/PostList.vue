@@ -44,6 +44,6 @@ const pagedPosts = computed(() => {
 	<!-- 分页控件 -->
 	<div class="mt-8 flex justify-center">
 		<el-pagination background size="small" :page-size="perPage" :current-page="currentPage" :total="posts.length"
-			hide-on-single-page="true" @current-change="currentPage = $event" />
+			:hide-on-single-page="true" @current-change="currentPage = $event" />
 	</div>
 </template>
