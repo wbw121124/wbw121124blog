@@ -871,3 +871,12 @@ nav ul .el-input:focus-within {
 .el-button:hover {
 	box-shadow: var(--shadow-lg);
 }
+
+.acsii-art ::after,
+.acsii-art ::before {
+	display: none !important;
+}
+
+.acsii-art code {
+	padding: 10px !important;
+}
