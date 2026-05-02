@@ -12,7 +12,7 @@ const PostList = defineAsyncComponent(() => import('./PostList.vue'));
 		<p class="text-gray-600 dark:text-gray-400 mb-4">这是一个基于 Vue 3 和 Vite 构建的博客网站。</p>
 		<div class="mkd acsii-art"
 			style="align-items: center; justify-content: center; display: flex; margin-top: 2rem;">
-			<pre class="text-primary font-black" style="line-height: 1.25 !important; overflow-x: auto !important;"><code style="font-size: 14px !important;line-height: 1.25 !important; width: max-content;">           _               _  ____   _  _  ____   _  _    _      _               
+			<pre class="text-primary font-black" style="line-height: 1.25 !important; overflow-x: auto !important;"><code style="font-size: 13px !important;line-height: 1.25 !important; width: max-content;">           _               _  ____   _  _  ____   _  _    _      _               
 __      __| |__ __      __/ ||___ \ / |/ ||___ \ | || |  | |__  | |  ___    __ _ 
 \ \ /\ / /| '_ \\ \ /\ / /| |  __) || || |  __) || || |_ | '_ \ | | / _ \  / _` |
  \ V  V / | |_) |\ V  V / | | / __/ | || | / __/ |__   _|| |_) || || (_) || (_| |
