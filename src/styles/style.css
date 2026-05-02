@@ -1,7 +1,6 @@
 @import 'sanitize.css';
 @import "tailwindcss";
 @import "./katex-swap.css";
-@import "./hljs/light-plus.css";
 @import "medium-zoom/dist/style.css";
 @import "@shikijs/twoslash/style-rich.css";
 @import "./fira-code/fira_code.css";
@@ -68,8 +67,6 @@
 		--link-hover-color: #fff;
 		--blockquote-color: #bbb;
 	}
-
-	@import "./hljs/dark-plus.css";
 
 	.shiki,
 	.shiki span {
