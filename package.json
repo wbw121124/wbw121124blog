@@ -6,11 +6,12 @@
 	"scripts": {
 		"dev": "npm run render-posts && vite",
 		"prebuild": "npm run render-posts",
-		"build": "vite build",
+		"build": "npm run clean && cross-env NODE_ENV=production vite build",
 		"preview": "npm run prebuild && cross-env NODE_ENV=development vite preview",
 		"br": "npm run build && npx serve deploy",
 		"render-posts": "node ./scripts/renderPostsToHtml.js",
-		"post": "node ./scripts/addPost.js"
+		"post": "node ./scripts/addPost.js",
+		"clean": "node scripts/clean.js"
 	},
 	"dependencies": {
 		"@octokit/oauth-app": "^8.0.3",
@@ -51,6 +52,7 @@
 		"@vitejs/plugin-vue": "^6.0.1",
 		"autoprefixer": "^10.5.0",
 		"cross-env": "^10.1.0",
+		"del": "^8.0.1",
 		"postcss-font-display": "^0.3.0",
 		"postcss-nesting": "^14.0.0",
 		"unplugin-auto-import": "^21.0.0",

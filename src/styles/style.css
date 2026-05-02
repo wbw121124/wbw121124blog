@@ -3,7 +3,7 @@
 @import "./katex-swap.css";
 @import "medium-zoom/dist/style.css";
 @import "@shikijs/twoslash/style-rich.css";
-@import "./fira-code/fira_code.css";
+@import "./fira_code.css";
 
 :root {
 	color-scheme: light !important;
