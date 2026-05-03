@@ -12,6 +12,17 @@
       "summary": "::: info == 快去点个 star:star:！== {open} emoji: : :100: :satellite:\n采用 GNU 通用公共许可证 GPL 第 3 版 授权。详见 LICENSE.md https://github.com/wbw121124/wbw121124blog/blob/master/LICENSE.md 文件..."
     },
     {
+      "id": "题解：CF87E Mogohu-Rea Idol",
+      "title": "题解：CF87E Mogohu-Rea Idol",
+      "date": "2026-04-14",
+      "tags": [
+        "编程",
+        "凸包",
+        "闵科夫斯基和"
+      ],
+      "summary": "此题目等价于求一个点是否在三个凸多边形的闵科夫斯基和的内部……"
+    },
+    {
       "id": "树链剖分",
       "title": "树链剖分",
       "date": "2026-03-01",
