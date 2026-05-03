@@ -210,8 +210,7 @@ async function rp2h(list = []) {
 				id,
 				metadata: post,
 				markdown: content,
-				html,
-				text: content
+				html
 			};
 
 			await fs.writeFile(
