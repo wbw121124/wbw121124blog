@@ -168,6 +168,7 @@ pre.shiki .space::before {
 
 :not(.twoslash-popup-code)>pre>code {
 	display: grid;
+	font-weight: 400;
 	font-family: 'Fira Code', Consolas, 'Courier New', Fira Code, monospace;
 	font-size: 14px;
 	line-height: 1.5;
