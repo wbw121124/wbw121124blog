@@ -866,7 +866,7 @@ nav ul .el-input:focus-within {
 
 	& ::after,
 	::before {
-		color: var(--el-danger-error);
+		color: var(--el-color-danger);
 	}
 }
 
