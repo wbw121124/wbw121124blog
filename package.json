@@ -21,6 +21,7 @@
 		"@shikijs/twoslash": "^4.0.2",
 		"@tailwindcss/postcss": "^4.2.4",
 		"element-plus": "^2.13.5",
+		"fontaine": "^0.8.0",
 		"fuse.js": "^7.2.0",
 		"highlight.js": "^11.11.1",
 		"jsdom": "^29.0.1",

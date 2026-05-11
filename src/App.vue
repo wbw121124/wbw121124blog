@@ -109,7 +109,8 @@ const MyComponent = defineAsyncComponent(() => import(`./components/${routeInfo.
 	<el-config-provider :locale="zhCn">
 		<MyHeader />
 		<!-- 主内容区域 - 设置min-height防止footer布局偏移 -->
-		<div class="mx-auto px-4 pb-8" style="min-height: calc(100vh - var(--spacing) * 18 - 1.25em); max-width: 1200px;">
+		<div class="mx-auto px-4 pb-8"
+			style="min-height: calc(100vh - var(--spacing) * 18 - 1.25em); max-width: 1200px;">
 			<MyComponent :props="routeInfo.props" />
 		</div>
 		<MyFooter />

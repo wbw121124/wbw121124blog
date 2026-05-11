@@ -5,8 +5,22 @@ import { resolve } from 'path';
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite';
+import IconsResolver from 'unplugin-icons/resolver';
+import { FontaineTransform } from 'fontaine';
+
+const fontaineOptions = {
+	fallbacks: {
+		'Fira Code': ['Consolas', 'Courier New', 'monospace']
+	},
+	resolvePath: (id) => {
+		// id 会是 'woff2/FiraCode.woff2' 这样的值
+		// 拼接成完整的文件系统路径
+		const fullPath = resolve(__dirname, 'src/styles', id);
+		console.log(`${id}:${fullPath}`);
+		return fullPath;
+	},
+}
 
 console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}, ${process.env.NODE_ENV === 'production' ? false : true}`);
 
@@ -55,6 +69,7 @@ export default defineConfig({
 			defaultClass: 'inline-block',
 			compiler: 'vue3',
 		}),
+		FontaineTransform.vite(fontaineOptions),
 	],
 	define: {
 		process: { env: {} }
@@ -106,6 +121,9 @@ export default defineConfig({
 		cssCodeSplit: true,
 		chunkSizeWarningLimit: 1024
 	},
+	css: {
+		devSourcemap: process.env.NODE_ENV === 'production' ? false : true,
+	},
 	// 设置基础路径，适用于部署到子路径的情况，注意测试时要注释
-	base: '/wbw121124blog/'
+	base: '/wbw121124blog/',
 })
