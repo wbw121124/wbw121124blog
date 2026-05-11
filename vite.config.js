@@ -11,8 +11,8 @@ import { FontaineTransform } from 'fontaine';
 
 const fontaineOptions = {
 	fallbacks: {
-		'Fira Code': ['Consolas', 'Courier New', 'monospace'],
-		'Fira Code VF': ['Consolas', 'Courier New', 'monospace'],
+		'Fira Code': ["SF Mono", "Monaco", "Cascadia Code", "Consolas", "Liberation Mono", "Menlo", "monospace"],
+		'Fira Code VF': ["SF Mono", "Monaco", "Cascadia Code", "Consolas", "Liberation Mono", "Menlo", "monospace"],
 	},
 	resolvePath: (id) => {
 		// id 会是 'woff2/FiraCode.woff2' 这样的值
