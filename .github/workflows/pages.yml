@@ -19,13 +19,28 @@ jobs:
 
       - name: Setup Fontist
         uses: fontist/setup-fontist@v2
+        with:
+          cache: true
       
-      - name: Install Consolas and Courier New
+      - name: Install fallback fonts with Fontist
         run: |
-          fontist install "Consolas" --accept-all-licenses || true
-          fontist install "Courier New" --accept-all-licenses || true
-          fontist install "Times New Roman" --accept-all-licenses || true
-          fontist install "Arial" --accept-all-licenses || true
+          # 微软 Core 字体（大部分 fallback 需要）
+          fontist install "Consolas" --accept-all-licenses --hide-licenses
+          fontist install "Courier New" --accept-all-licenses --hide-licenses
+          fontist install "Times New Roman" --accept-all-licenses --hide-licenses
+          fontist install "Arial" --accept-all-licenses --hide-licenses
+          fontist install "Georgia" --accept-all-licenses --hide-licenses
+          fontist install "Comic Sans MS" --accept-all-licenses --hide-licenses
+          
+          # 开源等宽字体
+          fontist install "Cascadia Code" --accept-all-licenses --hide-licenses || true
+          fontist install "Liberation Mono" --accept-all-licenses --hide-licenses || true
+          fontist install "DejaVu Sans" --accept-all-licenses --hide-licenses || true
+          
+      - name: Verify fonts installed
+        run: |
+          echo "=== Fonts available for fallback ==="
+          fc-list | grep -E "Consolas|Courier|Times|Arial|Georgia|Comic|Cascadia|Liberation|DejaVu" | head -20
 
       - name: Install
         run: |
