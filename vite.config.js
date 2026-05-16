@@ -33,18 +33,18 @@ const fontaineOptions = {
 			'Liberation Mono',
 			'monospace'
 		],
-	  // 'KaTeX_Main': ['Times New Roman', 'Georgia', 'serif'],
-	  // 'KaTeX_SansSerif': ['Arial', 'sans-serif'],
-	  // 'KaTeX_Typewriter': ['Courier New', 'monospace'],
-	  // 'KaTeX_Math': ['Times New Roman', 'Georgia', 'serif'],
-	  // 'KaTeX_Caligraphic': ['cursive'],
-	  // 'KaTeX_Fraktur': ['Georgia', 'Times New Roman', 'serif'],
-	  // 'KaTeX_Script': ['cursive'],
-	  // 'KaTeX_AMS': ['Times New Roman', 'Arial', 'sans-serif'],
-	  // 'KaTeX_Size1': ['DejaVu Sans', 'Arial', 'sans-serif'],
-	  // 'KaTeX_Size2': ['DejaVu Sans', 'Arial', 'sans-serif'],
-	  // 'KaTeX_Size3': ['DejaVu Sans', 'Arial', 'sans-serif'],
-	  // 'KaTeX_Size4': ['DejaVu Sans', 'Arial', 'sans-serif'],
+		// 'KaTeX_Main': ['Times New Roman', 'Georgia', 'serif'],
+		// 'KaTeX_SansSerif': ['Arial', 'sans-serif'],
+		// 'KaTeX_Typewriter': ['Courier New', 'monospace'],
+		// 'KaTeX_Math': ['Times New Roman', 'Georgia', 'serif'],
+		// 'KaTeX_Caligraphic': ['cursive'],
+		// 'KaTeX_Fraktur': ['Georgia', 'Times New Roman', 'serif'],
+		// 'KaTeX_Script': ['cursive'],
+		// 'KaTeX_AMS': ['Times New Roman', 'Arial', 'sans-serif'],
+		// 'KaTeX_Size1': ['DejaVu Sans', 'Arial', 'sans-serif'],
+		// 'KaTeX_Size2': ['DejaVu Sans', 'Arial', 'sans-serif'],
+		// 'KaTeX_Size3': ['DejaVu Sans', 'Arial', 'sans-serif'],
+		// 'KaTeX_Size4': ['DejaVu Sans', 'Arial', 'sans-serif'],
 	},
 	resolvePath: (id) => {
 		// id 会是 'woff2/FiraCode.woff2' 这样的值
@@ -53,6 +53,11 @@ const fontaineOptions = {
 		console.log(`${id}:${fullPath}`);
 		return fullPath;
 	},
+	// 如果是 KaTeX 的字体，直接跳过，不要生成 override
+	skipFontFaceGeneration: (fallbackName) => {
+		// 如果检测到是 KaTeX 的字体，返回 true 以跳过
+		return fallbackName.includes('KaTeX');
+	}
 }
 
 console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}, ${process.env.NODE_ENV === 'production' ? false : true}`);
