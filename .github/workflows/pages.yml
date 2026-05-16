@@ -19,6 +19,8 @@ jobs:
 
       - name: Setup Fontist
         uses: fontist/setup@v1
+        with:
+          fetch-formulas: false  
 
       - name: Install Fonts
         run: |
