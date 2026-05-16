@@ -17,12 +17,15 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install Microsoft Core Fonts
+      - name: Setup Fontist
+        uses: fontist/setup-fontist@v2
+      
+      - name: Install Consolas and Courier New
         run: |
-          sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ttf-mscorefonts-installer
-        env:
-          ACCEPT_MS_EULA: "y"
+          fontist install "Consolas" --accept-all-licenses || true
+          fontist install "Courier New" --accept-all-licenses || true
+          fontist install "Times New Roman" --accept-all-licenses || true
+          fontist install "Arial" --accept-all-licenses || true
 
       - name: Install
         run: |
