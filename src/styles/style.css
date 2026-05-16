@@ -165,7 +165,7 @@ pre.shiki .space::before {
 }
 
 code {
-	font-weight: 350;
+	font-weight: 300;
 	font-family: 'Fira Code VF';
 	font-feature-settings: "cv02", "zero", "cv01", "cv06", "ss01", "ss05", "ss03", "cv30", "ss08";
 	font-size: 14px;
