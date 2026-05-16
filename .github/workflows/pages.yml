@@ -20,8 +20,9 @@ jobs:
       - name: Install Microsoft Core Fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y ttf-mscorefonts-installer
-          sudo fc-cache -fv
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ttf-mscorefonts-installer
+        env:
+          ACCEPT_MS_EULA: "y"
 
       - name: Install
         run: |
