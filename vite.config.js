@@ -11,20 +11,40 @@ import { FontaineTransform } from 'fontaine';
 
 const fontaineOptions = {
 	fallbacks: {
-		'Fira Code': ["Consolas", "Courier New", "SF Mono", "Monaco", "Cascadia Code", "Liberation Mono", "Menlo", "monospace"],
-		'Fira Code VF': ["Consolas", "Courier New", "SF Mono", "Monaco", "Cascadia Code", "Liberation Mono", "Menlo", "monospace"],
-		'KaTeX_Main': ['Times New Roman', 'Georgia', 'serif'],          // 衬线类回退
-		'KaTeX_SansSerif': ['Arial', 'Helvetica', 'sans-serif'],        // 无衬线类回退
-		'KaTeX_Typewriter': ['Courier New', 'Monaco', 'monospace'],      // 等宽类回退
-		'KaTeX_Math': ['Times New Roman', 'Georgia', 'serif'],           // 数学斜体用衬线回退
-		'KaTeX_Caligraphic': ['Zapfino', 'Brush Script MT', 'cursive'], // 花体回退
-		'KaTeX_Fraktur': ['Georgia', 'Times New Roman', 'serif'],        // 德文尖角体用衬线回退
-		'KaTeX_Script': ['Apple Chancery', 'Comic Sans MS', 'cursive'],  // 手写体回退
-		'KaTeX_AMS': ['Times New Roman', 'Arial', 'sans-serif'],         // AMS符号回退
-		'KaTeX_Size1': ['DejaVu Sans', 'Arial', 'sans-serif'],           // 尺寸符号
-		'KaTeX_Size2': ['DejaVu Sans', 'Arial', 'sans-serif'],
-		'KaTeX_Size3': ['DejaVu Sans', 'Arial', 'sans-serif'],
-		'KaTeX_Size4': ['DejaVu Sans', 'Arial', 'sans-serif'],
+		'Fira Code': [
+			'JetBrains Mono',
+			'Cascadia Code',
+			'Source Code Pro',
+			'Hack',
+			'Fira Mono',
+			'Roboto Mono',
+			'Courier New',
+			'Liberation Mono',
+			'monospace'
+		],
+		'Fira Code VF': [
+			'JetBrains Mono',
+			'Cascadia Code',
+			'Source Code Pro',
+			'Hack',
+			'Fira Mono',
+			'Roboto Mono',
+			'Courier New',
+			'Liberation Mono',
+			'monospace'
+		],
+	  'KaTeX_Main': ['Times New Roman', 'Georgia', 'serif'],
+	  'KaTeX_SansSerif': ['Arial', 'sans-serif'],
+	  'KaTeX_Typewriter': ['Courier New', 'monospace'],
+	  'KaTeX_Math': ['Times New Roman', 'Georgia', 'serif'],
+	  'KaTeX_Caligraphic': ['cursive'],
+	  'KaTeX_Fraktur': ['Georgia', 'Times New Roman', 'serif'],
+	  'KaTeX_Script': ['cursive'],
+	  'KaTeX_AMS': ['Times New Roman', 'Arial', 'sans-serif'],
+	  'KaTeX_Size1': ['DejaVu Sans', 'Arial', 'sans-serif'],
+	  'KaTeX_Size2': ['DejaVu Sans', 'Arial', 'sans-serif'],
+	  'KaTeX_Size3': ['DejaVu Sans', 'Arial', 'sans-serif'],
+	  'KaTeX_Size4': ['DejaVu Sans', 'Arial', 'sans-serif'],
 	},
 	resolvePath: (id) => {
 		// id 会是 'woff2/FiraCode.woff2' 这样的值
