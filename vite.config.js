@@ -12,7 +12,7 @@ import { FontaineTransform } from 'fontaine';
 const fontaineOptions = {
 	fallbacks: {
 		'Fira Code': ["Consolas", "Courier New", "SF Mono", "Monaco", "Cascadia Code", "Liberation Mono", "Menlo", "monospace"],
-		// 'Fira Code VF': ["Consolas", "Courier New", "SF Mono", "Monaco", "Cascadia Code", "Liberation Mono", "Menlo", "monospace"],
+		'Fira Code VF': ["Consolas", "Courier New", "SF Mono", "Monaco", "Cascadia Code", "Liberation Mono", "Menlo", "monospace"],
 		// 'KaTeX_Main': ['Times New Roman', 'Georgia', 'serif'],          // 衬线类回退
 		// 'KaTeX_SansSerif': ['Arial', 'Helvetica', 'sans-serif'],        // 无衬线类回退
 		// 'KaTeX_Typewriter': ['Courier New', 'Monaco', 'monospace'],      // 等宽类回退
