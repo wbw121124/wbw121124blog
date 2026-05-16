@@ -6,7 +6,7 @@
 
 ~~light mode 让我眼睛瞎了~~
 
-支持 shiki 和 hljs，但是 deepseek 实现的 hljs 样式有点鬼畜，所以默认 shiki（虽然没有我的 cast 的一些功能）。
+这个 fontaine 不支持 @import :(
 
 ## Star History
 
