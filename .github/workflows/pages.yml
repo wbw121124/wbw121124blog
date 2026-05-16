@@ -17,33 +17,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup Fontist
-        uses: fontist/setup@v1
-        with:
-          fetch-formulas: false  
-
-      - name: Install Fonts
+      - name: Install Microsoft Core Fonts
         run: |
-          # 安装等宽字体族
-          fontist install "Consolas" || exit 0
-          fontist install "Courier New" || exit 0
-          fontist install "Menlo" || exit 0
-          fontist install "Liberation Mono" || exit 0
-          fontist install "Cascadia Code" || exit 0 # Fontist 公式库里可能有，若无则需手动
-          
-          # 安装衬线、无衬线等字体
-          fontist install "Times New Roman" || exit 0
-          fontist install "Arial" || exit 0
-          fontist install "Georgia" || exit 0
-          fontist install "Helvetica" || exit 0 # 安装无衬线体
-          
-          # 安装手写体等装饰字体
-          fontist install "Comic Sans MS" || exit 0
-          
-          # 可选：安装其他常用等宽字体，以备回退链其他选择
-          fontist install "DejaVu Sans Mono"  || exit 0
-          fontist install "Noto Sans Mono" || exit 0
-          fontist install "SF Mono" || exit 0 # 若公式库支持
+          sudo apt-get update
+          sudo apt-get install -y ttf-mscorefonts-installer
+          sudo fc-cache -fv
 
       - name: Install
         run: |
