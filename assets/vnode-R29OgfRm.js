@@ -1,0 +1,1 @@
+import{C as e,ft as r}from"./runtime-core.esm-bundler-B26NoEzz.js";var s=p=>{const n=r(p)?p:[p],o=[];return n.forEach(p=>{r(p)?o.push(...s(p)):e(p)&&p.component?.subTree?o.push(p,...s(p.component.subTree)):e(p)&&r(p.children)?o.push(...s(p.children)):e(p)&&2===p.shapeFlag?o.push(...s(p.type())):o.push(p)}),o};export{s as t};
