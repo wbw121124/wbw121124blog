@@ -136,17 +136,6 @@ export default defineConfig({
 		sourcemap: process.env.NODE_ENV === 'production' ? false : true,
 		rollupOptions: {
 			output: {
-				manualChunks: {
-					// markdown: [
-					// 	'markdown-it',
-					// 	'markdown-it-emoji/lib/bare.mjs',
-					// 	'markdown-it-footnote',
-					// 	'markdown-it-math',
-					// 	'markdown-it-anchor',
-					// 	'markdown-it-highlightjs',
-					// 	'katex'
-					// ],
-				},
 				chunkFileNames: 'assets/[name]-[hash].js',
 				entryFileNames: 'assets/[name]-[hash].js',
 				assetFileNames: 'assets/[name]-[hash].[ext]'
