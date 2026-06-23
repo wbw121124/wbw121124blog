@@ -41,6 +41,14 @@ onMounted(async () => {
 						<div v-for="post in posts" :key="post.id">
 							<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
 							<span class="text-gray-500">（{{ post.date }}）</span>
+							<span v-if="post.tags">
+								:
+								<span class="inline-flex flex-wrap gap-1">
+									<span v-for="tag in post.tags" :key="tag" class="tag">
+										<a :href="`?path=/tag/${encodeURIComponent(tag)}`">{{ tag }}</a>
+									</span>
+								</span>
+							</span>
 						</div>
 					</el-card>
 				</el-timeline-item>
