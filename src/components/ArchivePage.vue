@@ -33,15 +33,18 @@ onMounted(async () => {
 <template>
 	<main class="component">
 		<h2 class="text-2xl font-bold mb-6">文章归档</h2>
-		<div v-for="(months, year) in grouped" :key="year" class="mb-6">
+		<div v-for="(months, year) in grouped" :key="year">
 			<h3 class="text-xl font-semibold">{{ -year }}</h3>
-			<div v-for="(posts, ym) in months" :key="ym" class="ml-4 mb-4">
-				<h4 class="text-lg font-medium">{{ ym }}</h4>
-				<div v-for="post in posts" :key="post.id" class="mt-1 ml-4">
-					<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
-					<span class="text-gray-500">（{{ post.date }}）</span>
-				</div>
-			</div>
+			<el-timeline mode="start" class="pt-2">
+				<el-timeline-item v-for="(posts, ym) in months" :key="ym" placement="top" :timestamp="ym">
+					<el-card shadow="hover">
+						<div v-for="post in posts" :key="post.id" class="mt-1 ml-4">
+							<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
+							<span class="text-gray-500">（{{ post.date }}）</span>
+						</div>
+					</el-card>
+				</el-timeline-item>
+			</el-timeline>
 		</div>
 	</main>
 </template>
