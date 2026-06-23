@@ -24,20 +24,20 @@ const pagedPosts = computed(() => {
 
 <template>
 	<div v-for="post in pagedPosts" :key="post.id" class="transition-shadow duration-300 mt-6">
-		<a :href="`?path=/post/${post.id}`" class="block component transition-colors">
+		<div class="block component transition-colors">
 			<h3 class="LXGWNeoXiHeiPlus text-xl font-bold text-primary mb-2">
-				{{ post.title }}
+				<a :href="`?path=/post/${post.id}`">{{ post.title }}</a>
 			</h3>
 			<p class="text-gray-600 dark:text-gray-300 mb-3 line-clamp-3">{{ post.summary }}</p>
 			<div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
 				<span>{{ post.date }}</span>
 				<div class="flex flex-wrap gap-1">
 					<span v-for="tag in post.tags" :key="tag" class="tag">
-						{{ tag }}
+						<a :href="`?path=/tag/${encodeURIComponent(tag)}`">{{ tag }}</a>
 					</span>
 				</div>
 			</div>
-		</a>
+		</div>
 	</div>
 
 

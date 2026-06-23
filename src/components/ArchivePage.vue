@@ -38,7 +38,7 @@ onMounted(async () => {
 			<el-timeline mode="start" class="pt-2">
 				<el-timeline-item v-for="(posts, ym) in months" :key="ym" placement="top" :timestamp="ym">
 					<el-card shadow="hover">
-						<div v-for="post in posts" :key="post.id" class="mt-1 ml-4">
+						<div v-for="post in posts" :key="post.id">
 							<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
 							<span class="text-gray-500">（{{ post.date }}）</span>
 						</div>
