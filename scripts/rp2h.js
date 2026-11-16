@@ -1,3 +1,5 @@
+// rp2h.js：把 public/posts/*.md 渲染为 public/posts-html/*.json 及 postlist/tags/statistics 等数据文件
+// 渲染失败的文章会在全部写盘完成后以退出码 1 退出（CI 变红），而不是仅告警后继续、产物静默缺文章
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -169,6 +171,8 @@ async function rp2h(list = []) {
 
 	const md = await initMarkdownIt();
 	const posts = [];
+	// 渲染失败的文章先收集到这里，待循环与全部写盘完成后统一报告并置非零退出码
+	const failedPosts = [];
 	const statistics = {
 		total: 0,
 		count: 0,
@@ -223,7 +227,10 @@ async function rp2h(list = []) {
 			);
 			console.log(`Generated posts-html/${id}.json`);
 		} catch (err) {
-			console.warn(`Warning: failed rendering post ${id}:`, err.message + err.stack || err);
+			// 修正错误信息拼接：原写法 err.message + err.stack || err 中左侧恒为真值（undefined 时拼出 "undefinedundefined"），|| err 永不生效
+			const errMsg = err && (err.stack || err.message || String(err));
+			console.warn(`Warning: failed rendering post ${id}:`, errMsg);
+			failedPosts.push({ id, error: errMsg });
 		}
 	}
 
@@ -262,6 +269,13 @@ async function rp2h(list = []) {
 		let tagJsonPath = path.join(__dirname, `../public/tag/${encodeURIComponent(tag)}.json`);
 		await fs.writeFile(tagJsonPath, JSON.stringify(hasTagPosts, null, 2) + '\n', 'utf-8');
 		console.log(`Generated tag/${encodeURIComponent(tag)}.json with ${hasTagPosts.posts.length} posts`);
+	}
+	// 渲染失败的文章：全部写盘完成后统一报告，置退出码 1 让 CI 变红
+	// 用 process.exitCode 而非 process.exit(1)，保证 disposeMarkdownIt 等收尾逻辑先执行完再以非零码退出
+	if (failedPosts.length) {
+		console.error(`rp2h: ${failedPosts.length} post(s) failed to render:`);
+		failedPosts.forEach(f => console.error(`  - ${f.id}: ${f.error}`));
+		process.exitCode = 1;
 	}
 	console.log('Finished renderPostsToHtml.');
 	disposeMarkdownIt();
