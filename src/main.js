@@ -59,10 +59,13 @@ function smoothScrollToElement(element, duration = 500) {
 		scrollAnimCancel = null;
 	}
 
-	// 用户按下滚轮/触摸屏时终止当前动画
+	// 用户按下滚轮/触摸屏时终止当前动画（具名函数：取消 rAF 并移除两个打断监听）
 	function cancelScrollAnim() {
 		if (scrollAnimRafId) cancelAnimationFrame(scrollAnimRafId);
 		scrollAnimRafId = null;
+		// once 已触发的那条移除是防御性 no-op，另一条必须主动移除，避免遗留监听误杀下一次动画
+		window.removeEventListener('wheel', cancelScrollAnim);
+		window.removeEventListener('touchstart', cancelScrollAnim);
 	}
 
 	// 动画启动时注册一次性打断监听，用具名函数引用以便成对移除
@@ -86,13 +89,9 @@ function smoothScrollToElement(element, duration = 500) {
 			// 继续下一帧
 			scrollAnimRafId = requestAnimationFrame(animation);
 		} else {
-			// 动画自然结束：清空句柄并移除打断监听
-			scrollAnimRafId = null;
-			if (scrollAnimCancel) {
-				window.removeEventListener('wheel', scrollAnimCancel);
-				window.removeEventListener('touchstart', scrollAnimCancel);
-				scrollAnimCancel = null;
-			}
+			// 动画自然结束：同样走 cancelScrollAnim 统一清理（once 已触发者 remove 无副作用）
+			cancelScrollAnim();
+			scrollAnimCancel = null;
 		}
 	}
 

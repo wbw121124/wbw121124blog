@@ -165,7 +165,6 @@ function addCopyButtons() {
 					})
 				}).catch((e) => {
 					console.error(e);
-					console.info(e.message, e.stack);
 					ElNotification({
 						title: '错误',
 						type: 'error',
@@ -240,7 +239,6 @@ function copyMarkdown() {
 		})
 	}).catch((e) => {
 		console.error(e);
-		console.info(e.message, e.stack);
 		ElNotification({
 			title: '错误',
 			type: 'error',
