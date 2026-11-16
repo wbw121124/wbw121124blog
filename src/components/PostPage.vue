@@ -9,7 +9,7 @@ const props = defineProps({
 		required: true  // 必需的 Props
 	}
 });
-import { onMounted, onUnmounted, ref, watch, nextTick, h, createApp } from 'vue';
+import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 const postContent = ref('加载中...');
 const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
@@ -77,6 +77,9 @@ function parseFrontmatter(content, postName) {
 
 	return { metadata, content: body }
 }
+
+// GitHub 仓库常量：编辑链接与仓库地址统一维护
+const GITHUB_REPO = 'wbw121124/wbw121124blog';
 
 function isJSON(str) {
 	if (typeof str !== 'string') return false;
@@ -160,14 +163,13 @@ function addCopyButtons() {
 						title: '代码已复制到剪贴板',
 						type: 'success',
 					})
-					console.log("代码已复制到剪贴板");
 				}).catch((e) => {
 					console.error(e);
 					console.info(e.message, e.stack);
 					ElNotification({
 						title: '错误',
 						type: 'error',
-						message: e.message + e.stack
+						message: e.message || '复制失败，请检查浏览器剪贴板权限'
 					})
 				});
 			});
@@ -176,44 +178,58 @@ function addCopyButtons() {
 		});
 		// 为所有 .twoslash-popup-container 元素添加事件监听
 		document.querySelectorAll('.twoslash-popup-container').forEach(container => {
-			// 方式1：鼠标移入时计算（父元素触发）
 			const trigger = container.parentElement; // 通常是触发hover的父元素
+			// dataset 防重：watch 每次触发 addCopyButtons 都会对同批元素重复绑定，这里跳过已绑定的
+			if (!container || !trigger || trigger.dataset.popupBound) return;
+			trigger.dataset.popupBound = '1';
 
+			// 方式1：鼠标移入时计算（父元素触发）
 			trigger.addEventListener('mouseenter', () => {
-				// 获取元素相对于 body 的位置
-				const rect = trigger.getClientRects()[0];
-				const distanceToLeft = rect.left,
-					distanceToRight = window.innerWidth - rect.right,
-					distanceToTop = rect.top;
-
-				// 设置 CSS 变量 --x
-				container.style.setProperty('--x', `${distanceToLeft}px`);
-				// 设置 CSS 变量 --x1
-				container.style.setProperty('--x1', `${distanceToRight}px`);
-				// 设置 CSS 变量 --top
-				container.style.setProperty('--top', `${distanceToTop}px`);
+				updateTwoslashPopupPositions();
 			});
 		});
-
-		// body 滚动时更新全部
-		document.addEventListener('scroll', () => {
-			document.querySelectorAll('.twoslash-popup-container').forEach(container => {
-				const trigger = container.parentElement;
-				const rect = trigger.getClientRects()[0];
-				const distanceToLeft = rect.left,
-					distanceToRight = window.innerWidth - rect.right,
-					distanceToTop = rect.top;
-
-				// 设置 CSS 变量 --x
-				container.style.setProperty('--x', `${distanceToLeft}px`);
-				// 设置 CSS 变量 --x1
-				container.style.setProperty('--x1', `${distanceToRight}px`);
-				// 设置 CSS 变量 --top
-				container.style.setProperty('--top', `${distanceToTop}px`);
-			});
-		})
 	});
 }
+
+// 计算 twoslash 弹窗触发元素相对视口的位置，写入 CSS 变量（供 mouseenter 与 scroll 共用）
+function updateTwoslashPopupPositions() {
+	document.querySelectorAll('.twoslash-popup-container').forEach(container => {
+		const trigger = container.parentElement;
+		if (!trigger) return;
+		const rect = trigger.getClientRects()[0];
+		if (!rect) return;
+		const distanceToLeft = rect.left,
+			distanceToRight = window.innerWidth - rect.right,
+			distanceToTop = rect.top;
+
+		// 设置 CSS 变量 --x
+		container.style.setProperty('--x', `${distanceToLeft}px`);
+		// 设置 CSS 变量 --x1
+		container.style.setProperty('--x1', `${distanceToRight}px`);
+		// 设置 CSS 变量 --top
+		container.style.setProperty('--top', `${distanceToTop}px`);
+	});
+}
+
+// scroll 的 rAF 节流包装：滚动触发时若已有 pending 帧则跳过，帧内统一更新弹窗位置
+let rafId = null;
+function onScrollRaf() {
+	if (rafId !== null) return;
+	rafId = requestAnimationFrame(() => {
+		rafId = null;
+		updateTwoslashPopupPositions();
+	});
+}
+
+// 挂载时注册滚动监听（passive，不阻塞滚动合成线程），卸载时成对移除
+onMounted(() => {
+	document.addEventListener('scroll', onScrollRaf, { passive: true });
+});
+
+onUnmounted(() => {
+	document.removeEventListener('scroll', onScrollRaf);
+	if (rafId !== null) cancelAnimationFrame(rafId);
+});
 
 function copyMarkdown() {
 	if (!rawMarkdown.value) return;
@@ -222,21 +238,20 @@ function copyMarkdown() {
 			title: 'Markdown 已复制到剪贴板',
 			type: 'success',
 		})
-		console.log("Markdown 已复制到剪贴板");
 	}).catch((e) => {
 		console.error(e);
 		console.info(e.message, e.stack);
 		ElNotification({
 			title: '错误',
 			type: 'error',
-			message: e.message + e.stack
+			message: e.message || '复制失败，请检查浏览器剪贴板权限'
 		})
 	});
 }
 
 function editMarkdown() {
 	const postName = props.props.name;
-	window.open('https://github.com/wbw121124/wbw121124blog/edit/master/public/posts/' + postName + '.md');
+	window.open('https://github.com/' + GITHUB_REPO + '/edit/master/public/posts/' + postName + '.md');
 }
 
 watch(postContent, () => {
