@@ -114,7 +114,7 @@ export default defineConfig({
 		FontaineTransform.vite(fontaineOptions),
 	],
 	define: {
-		process: { env: {} }
+		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
 	},
 	optimizeDeps: {
 		include: [

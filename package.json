@@ -57,6 +57,7 @@
 		"cross-env": "^10.1.0",
 		"del": "^8.0.1",
 		"postcss-font-display": "^0.3.0",
+		"terser": "^5.3.9",
 		"postcss-nesting": "^14.0.0",
 		"unplugin-auto-import": "^21.0.0",
 		"unplugin-icons": "^23.0.1",
