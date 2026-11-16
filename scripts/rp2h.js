@@ -187,6 +187,8 @@ async function rp2h(list = []) {
 			await new Promise(resolve => setTimeout(resolve, 0));
 			spacingTextNodes(document.body);
 			html = document.body.innerHTML;
+			// 从渲染结果中提取纯文本（空白折叠），供全文搜索使用；必须在 body 被下一篇文章覆盖前读取
+			const text = document.body.textContent.replace(/\s+/g, ' ').trim();
 			metadata.title = pangu.spacingText(metadata.title);
 
 			// 生成 post 对象
@@ -210,7 +212,8 @@ async function rp2h(list = []) {
 				id,
 				metadata: post,
 				markdown: content,
-				html
+				html,
+				text
 			};
 
 			await fs.writeFile(

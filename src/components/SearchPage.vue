@@ -12,13 +12,35 @@ const page = ref(1);
 const pageSize = 5;
 let fuse = null;
 
+// HTML 转义（与 PostPage.vue 的转义写法保持一致，& 必须放最前避免二次转义）
+function escapeHtml(str) {
+	return str.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
+}
+
+// 单字符转义：给 highlightByMatches 按字符拼接时用，不改变其余索引逻辑
+function escapeHtmlChar(ch) {
+	switch (ch) {
+		case '&': return '&amp;';
+		case '<': return '&lt;';
+		case '>': return '&gt;';
+		case '"': return '&quot;';
+		case '\'': return '&#39;';
+		default: return ch;
+	}
+}
+
 function highlight(text) {
 	if (!text) return '';
 	const k = query.value.trim().replace(/ /g, '');
-	if (!k) return text;
+	if (!k) return escapeHtml(text);
 	const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	const regex = new RegExp(`(${esc})`, 'gi');
-	return text.replace(/ /g, '').replace(regex, '<mark>$1</mark>');
+	// 先做 HTML 转义再匹配高亮，防止标题/摘要里的 <、>、& 被浏览器当标签吞掉
+	return escapeHtml(text).replace(/ /g, '').replace(regex, '<mark>$1</mark>');
 }
 
 function highlightByMatches(text, matchObj) {
@@ -36,7 +58,8 @@ function highlightByMatches(text, matchObj) {
 	for (let i = 0; i < chars.length; i++) {
 		if (markers[i] && !inMark) { out += '<mark>'; inMark = true; }
 		if (!markers[i] && inMark) { out += '</mark>'; inMark = false; }
-		out += chars[i];
+		// 逐字符转义后再拼接：整体先转义会改变长度，导致 match 索引错位
+		out += escapeHtmlChar(chars[i]);
 	}
 	if (inMark) out += '</mark>';
 	return out;
@@ -65,7 +88,7 @@ function runSearch(keys) {
 	}
 	try {
 		let res = fuse.search(k);
-		res = res.sort((a, b) => (b.score ?? 1) - (a.score ?? 1));
+		// fuse 返回结果已按相关性排序（score 越小越相关），不要反向排序
 		results.value = res.map(r => ({ ...r.item, _score: r.score, _matches: r.matches || [] }));
 	} catch (e) {
 		results.value = [];
