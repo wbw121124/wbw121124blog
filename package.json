@@ -6,11 +6,13 @@
 	"scripts": {
 		"dev": "npm run render-posts && vite",
 		"prebuild": "npm run render-posts",
-		"build": "npm run clean && cross-env NODE_ENV=production vite build",
+		"build": "npm run clean && cross-env NODE_ENV=production vite build && node ./scripts/buildPages.js",
+		"build:gh": "npm run clean:gh && cross-env NODE_ENV=production GH_PAGES=1 vite build && cross-env GH_PAGES=1 node ./scripts/buildPages.js",
+		"clean:gh": "node -e \"fs.rmSync('dist-gh',{recursive:true,force:true})\"",
 		"preview": "npm run prebuild && cross-env NODE_ENV=development vite preview",
-		"br": "npm run build && npx serve deploy",
+		"br": "npm run build && npx serve dist",
 		"render-posts": "node ./scripts/renderPostsToHtml.js",
-		"post": "node ./scripts/addPost.js",
+		"post": "node ./scripts/addPost.cjs",
 		"clean": "node scripts/clean.js"
 	},
 	"dependencies": {
