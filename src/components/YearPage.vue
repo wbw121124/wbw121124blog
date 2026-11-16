@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { defineProps } from 'vue';
+import { withBase } from '../lib/withBase.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -12,7 +13,7 @@ const grouped = ref({});
 // import data from '../assets/postlist.json';
 
 onMounted(async () => {
-	const data = await fetch('./postlist.json').then(r => r.json());
+	const data = await fetch(withBase('postlist.json')).then(r => r.json());
 	let arr = data.posts.sort((a, b) => b.date.localeCompare(a.date));
 	if (props.props.year) {
 		year.value = props.props.year;
@@ -40,7 +41,7 @@ onMounted(async () => {
 		<div v-for="(posts, month) in grouped" :key="month" class="mb-6">
 			<h3 class="text-xl font-semibold">{{ month }}</h3>
 			<div v-for="post in posts" :key="post.id" class="mt-2">
-				<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
+				<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="href hover:underline">{{ post.title }}</a>
 				<span class="text-gray-500">（{{ post.date }}）</span>
 			</div>
 		</div>

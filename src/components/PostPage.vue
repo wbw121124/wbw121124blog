@@ -10,6 +10,7 @@ const props = defineProps({
 	}
 });
 import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
+import { withBase } from '../lib/withBase.js';
 const postContent = ref('加载中...');
 const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
@@ -96,7 +97,7 @@ onMounted(async () => {
 	try {
 		const postName = props.props.name;
 		let data;
-		const response = await fetch(`./posts-html/${postName}.json`);
+		const response = await fetch(withBase(`posts-html/${postName}.json`));
 		if (response.ok)
 			data = await response.text();
 		if (response.ok && isJSON(data)) {
@@ -115,6 +116,8 @@ onMounted(async () => {
 		_metadata.ready = true;
 		metadata.value = _metadata;
 		isLoading.value = false;
+		// 浏览器标题跟随文章（SEO 与历史记录可读性）
+		if (_metadata.title) document.title = `${_metadata.title} - wbw121124's blog`;
 		// 跳转到锚点
 		nextTick(() => {
 			const hash = window.location.hash;
@@ -263,7 +266,7 @@ watch(postContent, () => {
 			<h2 class="LXGWNeoXiHeiPlus">{{ metadata.title }}</h2>
 			<div v-if="metadata.tags && metadata.tags.length" class="flex flex-wrap gap-1 mt-1" key="tags">
 				<span v-for="t in metadata.tags" :key="t" class="tag">
-					<a :href="`?path=/tag/${encodeURIComponent(t)}`">{{ t }}</a>
+					<a :href="withBase(`/tag/${encodeURIComponent(t)}/`)">{{ t }}</a>
 				</span>
 			</div>
 			<p>作者: {{ metadata.author || 'wbw121124' }}</p>

@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
+import { withBase } from '../lib/withBase.js';
 
 const posts = ref([]);
 const perPage = 10; // 默认每页10个
@@ -10,7 +11,7 @@ const currentPage = ref(1);
 // posts.value = postlist.posts || [];
 
 // load data
-fetch('./postlist.json')
+fetch(withBase('postlist.json'))
 	.then(res => res.json())
 	.then(data => {
 		posts.value = data.posts || [];
@@ -26,14 +27,14 @@ const pagedPosts = computed(() => {
 	<div v-for="post in pagedPosts" :key="post.id" class="transition-shadow duration-300 mt-6">
 		<div class="block component transition-colors">
 			<h3 class="LXGWNeoXiHeiPlus text-xl font-bold text-primary mb-2">
-				<a :href="`?path=/post/${post.id}`">{{ post.title }}</a>
+				<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)">{{ post.title }}</a>
 			</h3>
 			<p class="text-gray-600 dark:text-gray-300 mb-3 line-clamp-3">{{ post.summary }}</p>
 			<div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
 				<span>{{ post.date }}</span>
 				<div class="flex flex-wrap gap-1">
 					<span v-for="tag in post.tags" :key="tag" class="tag">
-						<a :href="`?path=/tag/${encodeURIComponent(tag)}`">{{ tag }}</a>
+						<a :href="withBase(`/tag/${encodeURIComponent(tag)}/`)">{{ tag }}</a>
 					</span>
 				</div>
 			</div>

@@ -24,3 +24,4 @@ deploy/wbw121124blog/*
 *.njsproj
 *.sln
 *.sw?
+dist-gh/

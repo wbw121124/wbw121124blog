@@ -3,10 +3,10 @@
 		<div class="border-t border-t-gray-100 py-4 px-6 flex justify-between items-center text-gray-600 dark:text-gray-400">
 			<div class="left">
 				<nav class="links" aria-label="footer links">
-					<a href="?path=/">首页</a>
-					<a href="?path=/archive">归档</a>
-					<a href="?path=/tags">标签</a>
-					<a href="?path=/about">关于</a>
+					<a :href="withBase('/')">首页</a>
+					<a :href="withBase('/archive/')">归档</a>
+					<a :href="withBase('/tags/')">标签</a>
+					<a :href="withBase('/about/')">关于</a>
 					<a href="https://github.com/wbw121124" target="_blank" rel="noopener">GitHub</a>
 				</nav>
 			</div>
@@ -24,6 +24,7 @@
 
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
+import { withBase } from '../lib/withBase.js';
 
 const year = new Date().getFullYear();
 

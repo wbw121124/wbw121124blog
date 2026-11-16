@@ -142,11 +142,8 @@ function main() {
 	console.log(`[buildPages] 变体：${isGh ? 'GitHub Pages (GH_PAGES=1)' : 'Cloudflare Workers (默认)'}`);
 	console.log(`[buildPages] 输出目录：${outDir}，canonical 站点：${siteUrl}，base：${base}`);
 
-	// GH 变体：先整目录强删旧产物再写（clean:gh 也会删，这里双保险）
-	if (isGh && existsSync(outDir)) {
-		rmSync(outDir, { recursive: true, force: true });
-	}
-
+	// 注意：GH 变体的旧目录清理由 package.json 的 clean:gh 在 vite build 之前完成，
+	// 这里不再 rmSync，避免误删 vite 刚把 public/ 数据拷进 dist-gh 的 postlist.json/tags.json。
 	// 读取数据文件（vite 已把 public/postlist.json、public/tags.json 拷进产物目录）
 	const postlistPath = join(outDir, 'postlist.json');
 	const tagsPath = join(outDir, 'tags.json');

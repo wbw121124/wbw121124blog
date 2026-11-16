@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, nextTick, defineProps } from 'vue';
 import Fuse from 'fuse.js';
+import { withBase } from '../lib/withBase.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -144,21 +145,19 @@ function doSearch() {
 		results.value = [];
 	}
 	page.value = 1;
-	// 把关键词写进 path 查询参数（路由真源），刷新页面时才能还原查询
+	// 把关键词写进 ?q= 查询参数，刷新页面时才能还原查询
 	if (q) {
-		const params = new URLSearchParams(window.location.search);
-		params.set('path', '/searchd/' + encodeURIComponent(q));
-		window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+		window.history.replaceState({}, '', withBase('/searchd/?q=' + encodeURIComponent(q)));
 	}
 }
 
 // import data from '../assets/postlist.json';
 
 onMounted(async () => {
-	const data = await fetch('./postlist.json').then(r => r.json());
+	const data = await fetch(withBase('postlist.json')).then(r => r.json());
 	for (const p of data.posts || []) {
 		try {
-			const resp = await fetch(`./posts-html/${p.id}.json`);
+			const resp = await fetch(withBase(`posts-html/${p.id}.json`));
 			if (!resp.ok) {
 				posts.value.push({ ...p, text: '' });
 				continue;
@@ -182,9 +181,12 @@ onMounted(async () => {
 		includeMatches: true,
 		threshold: 0.4
 	});
-	if (props.props.keys) {
+	// 关键词来源优先级：?q= 查询参数（静态页直链）> 路由参数 :keys（旧链接兼容）
+	const qParam = new URLSearchParams(window.location.search).get('q');
+	const initialKeys = qParam ?? (props.props.keys ? decodeURIComponent(props.props.keys) : '');
+	if (initialKeys) {
 		nextTick(() => {
-			query.value = decodeURIComponent(props.props.keys);
+			query.value = initialKeys;
 			doSearch();
 		});
 	}
@@ -212,7 +214,7 @@ onMounted(async () => {
 		</div>
 		<div v-else>
 			<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
-				<a :href="`?path=/post/${post.id}`" class="text-primary hover:underline" v-html="post.title"></a>
+				<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="text-primary hover:underline" v-html="post.title"></a>
 				<span class="text-gray-500">（{{ post.date }}）</span>
 				<p v-if="post.snippet" class="text-gray-600 line-clamp-2" v-html="post.snippet"></p>
 				<p v-else class="text-gray-600 line-clamp-2" v-html="post.summary"></p>

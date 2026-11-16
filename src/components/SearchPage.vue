@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, nextTick, defineProps } from 'vue';
 import Fuse from 'fuse.js';
+import { withBase } from '../lib/withBase.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -98,7 +99,7 @@ function runSearch(keys) {
 // import data from '../assets/postlist.json';
 
 onMounted(async () => {
-	const data = await fetch('./postlist.json').then(res => res.json());
+	const data = await fetch(withBase('postlist.json')).then(res => res.json());
 	posts.value = data.posts.sort((a, b) => b.date.localeCompare(a.date));
 	fuse = new Fuse(posts.value, {
 		keys: [
@@ -110,9 +111,12 @@ onMounted(async () => {
 		includeMatches: true,
 		threshold: 0.4
 	});
-	if (props.props.keys) {
+	// 关键词来源优先级：?q= 查询参数（静态页直链）> 路由参数 :keys（旧链接兼容）
+	const qParam = new URLSearchParams(window.location.search).get('q');
+	const initialKeys = qParam ?? (props.props.keys ? decodeURIComponent(props.props.keys) : '');
+	if (initialKeys) {
 		nextTick(() => {
-			query.value = decodeURIComponent(props.props.keys);
+			query.value = initialKeys;
 			runSearch(query.value);
 		});
 	}
@@ -120,8 +124,8 @@ onMounted(async () => {
 
 function doSearch() {
 	if (query.value.trim()) {
-		const k = encodeURIComponent(query.value.trim());
-		window.history.replaceState({}, '', `${window.location.pathname}?path=/search/${k}`);
+		// 关键词写入 ?q=，刷新页面时才能还原查询
+		window.history.replaceState({}, '', withBase('/search/?q=' + encodeURIComponent(query.value.trim())));
 		runSearch(query.value);
 	}
 }
@@ -142,7 +146,7 @@ function doSearch() {
 					</el-button>
 				</template>
 			</el-input>
-			<a v-if="query" :href="`?path=/searchd/${encodeURIComponent(query)}`"
+			<a v-if="query" :href="withBase(`/searchd/?q=${encodeURIComponent(query)}`)"
 				class="text-sm href hover:underline">全文搜索</a>
 		</div>
 		<div v-if="results.length === 0">
@@ -150,7 +154,7 @@ function doSearch() {
 		</div>
 		<div v-else>
 			<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
-				<a :href="`?path=/post/${post.id}`" class="text-primary hover:underline" v-html="post.title"></a>
+				<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="text-primary hover:underline" v-html="post.title"></a>
 				<span class="text-gray-500">（{{ post.date }}）</span>
 				<p class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
 			</div>

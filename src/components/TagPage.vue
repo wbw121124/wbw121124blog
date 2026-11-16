@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { defineProps } from 'vue';
+import { withBase } from '../lib/withBase.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -9,7 +10,7 @@ const posts = ref([]);
 const tagName = ref('');
 
 onMounted(async () => {
-	const data = await fetch('./postlist.json').then(r => r.json());
+	const data = await fetch(withBase('postlist.json')).then(r => r.json());
 	posts.value = data.posts.sort((a, b) => b.date.localeCompare(a.date));
 	if (props.props.name) {
 		tagName.value = decodeURIComponent(props.props.name);
@@ -23,7 +24,7 @@ onMounted(async () => {
 		<h2 class="text-2xl font-bold mb-6">标签：{{ tagName }}</h2>
 		<div v-if="posts.length === 0" class="text-gray-600">暂无相关文章。</div>
 		<div v-for="post in posts" :key="post.id" class="mt-4">
-			<a :href="`?path=/post/${post.id}`" class="href hover:underline">{{ post.title }}</a>
+			<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="href hover:underline">{{ post.title }}</a>
 			<span class="text-gray-500">（{{ post.date }}）</span>
 		</div>
 	</main>
