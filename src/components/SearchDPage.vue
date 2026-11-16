@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted, computed, nextTick, defineProps } from 'vue';
+import { ref, onMounted, computed, nextTick, defineProps, watch } from 'vue';
 import Fuse from 'fuse.js';
 import { withBase } from '../lib/withBase.js';
+import fetchJson from '../lib/fetchJson.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -12,6 +13,9 @@ const results = ref([]);
 const page = ref(1);
 const pageSize = 5;
 let fuse = null;
+
+const state = ref('loading');
+const errorMsg = ref('');
 
 // HTML 转义（与 PostPage.vue 的转义写法保持一致，& 必须放最前避免二次转义）
 function escapeHtml(str) {
@@ -111,30 +115,12 @@ const highlightedResults = computed(() =>
 	}))
 );
 
-function parseFrontmatter(content) {
-	if (!content.startsWith("\<!--"))
-		return { metadata: {}, content };
-	const end = content.indexOf("--\>");
-	if (end === -1) return { metadata: {}, content };
-	const front = content.substring(4, end).trim();
-	const body = content.substring(end + 3).trim();
-	const md = {};
-	front.split('\n').forEach(line => {
-		const [key, ...vals] = line.split(':');
-		if (key && vals.length) md[key.trim()] = vals.join(':').trim();
-	});
-	if (md.tags) {
-		try { md.tags = JSON.parse(md.tags.replace(/'/g, '"')); }
-		catch { md.tags = md.tags.replace(/\[|\]/g, '').split(/\s*,\s*/).filter(Boolean); }
-	}
-	return { metadata: md, content: body };
-}
-
-function doSearch() {
-	const q = query.value.trim();
+function runSearch(keys) {
+	const q = keys.trim();
 	if (!q || !fuse) {
 		results.value = [];
 		page.value = 1;
+		state.value = results.value.length === 0 ? 'empty' : 'success';
 		return;
 	}
 	try {
@@ -145,82 +131,149 @@ function doSearch() {
 		results.value = [];
 	}
 	page.value = 1;
-	// 把关键词写进 ?q= 查询参数，刷新页面时才能还原查询
-	if (q) {
-		window.history.replaceState({}, '', withBase('/searchd/?q=' + encodeURIComponent(q)));
+	state.value = results.value.length === 0 ? 'empty' : 'success';
+}
+
+// 从 URL 读取 ?page= 初始化分页（缺失或非正整数则 1）
+function setPageFromURL() {
+	const urlPage = new URLSearchParams(window.location.search).get('page');
+	const initPage = parseInt(urlPage, 10);
+	if (Number.isInteger(initPage) && initPage >= 1) {
+		page.value = initPage;
 	}
+}
+
+// 把关键词与页码写入 ?q= 与 ?page=，刷新页面时才能还原查询与分页
+function writePageURL() {
+	window.history.replaceState({}, '', withBase('/searchd/?q=' + encodeURIComponent(query.value.trim()) + '&page=' + page.value));
+}
+
+function doSearch() {
+	const q = query.value.trim();
+	if (!q || !fuse) {
+		results.value = [];
+		page.value = 1;
+		state.value = results.value.length === 0 ? 'empty' : 'success';
+		return;
+	}
+	try {
+		let res = fuse.search(q);
+		// fuse 返回结果已按相关性排序（score 越小越相关），不要反向排序
+		results.value = res.map(r => ({ ...r.item, _score: r.score, _matches: r.matches || [] }));
+	} catch (e) {
+		results.value = [];
+	}
+	page.value = 1;
+	// 把关键词与页码写进 ?q= 与 ?page= 查询参数，刷新页面时才能还原查询与分页
+	if (q) {
+		writePageURL();
+	}
+	state.value = results.value.length === 0 ? 'empty' : 'success';
 }
 
 // import data from '../assets/postlist.json';
 
 onMounted(async () => {
-	const data = await fetch(withBase('postlist.json')).then(r => r.json());
-	for (const p of data.posts || []) {
-		try {
-			const resp = await fetch(withBase(`posts-html/${p.id}.json`));
-			if (!resp.ok) {
+	state.value = 'loading';
+	try {
+		const data = await fetchJson(withBase('postlist.json'));
+		let articleFetchErr = null;
+		for (const p of data.posts || []) {
+			try {
+				const json = await fetchJson(withBase(`posts-html/${p.id}.json`));
+				const metadata = json.metadata || {};
+				posts.value.push({ ...p, ...metadata, text: json.text || '' });
+			} catch (e) {
+				// 任一文章 fetchJson 抛错：记入错误，已加载的文章保留，继续加载其余文章
+				if (!articleFetchErr) {
+					articleFetchErr = e.message || String(e);
+				}
 				posts.value.push({ ...p, text: '' });
-				continue;
 			}
-			const json = await resp.json();
-			const metadata = json.metadata || {};
-			posts.value.push({ ...p, ...metadata, text: json.text || '' });
-		} catch (e) {
-			posts.value.push({ ...p, text: '' });
 		}
-	}
-	posts.value.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-	fuse = new Fuse(posts.value, {
-		keys: [
-			{ name: 'title', weight: 0.6 },
-			{ name: 'summary', weight: 0.15 },
-			{ name: 'tags', weight: 0.05 },
-			{ name: 'text', weight: 0.2 }
-		],
-		includeScore: true,
-		includeMatches: true,
-		threshold: 0.4
-	});
-	// 关键词来源优先级：?q= 查询参数（静态页直链）> 路由参数 :keys（旧链接兼容）
-	const qParam = new URLSearchParams(window.location.search).get('q');
-	const initialKeys = qParam ?? (props.props.keys ? decodeURIComponent(props.props.keys) : '');
-	if (initialKeys) {
-		nextTick(() => {
-			query.value = initialKeys;
-			doSearch();
+		posts.value.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+		fuse = new Fuse(posts.value, {
+			keys: [
+				{ name: 'title', weight: 0.6 },
+				{ name: 'summary', weight: 0.15 },
+				{ name: 'tags', weight: 0.05 },
+				{ name: 'text', weight: 0.2 }
+			],
+			includeScore: true,
+			includeMatches: true,
+			threshold: 0.4
 		});
+		setPageFromURL();
+		// 关键词来源优先级：?q= 查询参数（静态页直链）> 路由参数 :keys（旧链接兼容）
+		const qParam = new URLSearchParams(window.location.search).get('q');
+		const initialKeys = qParam ?? (props.props.keys ? decodeURIComponent(props.props.keys) : '');
+		if (initialKeys) {
+			nextTick(() => {
+				query.value = initialKeys;
+				doSearch();
+			});
+		}
+		if (articleFetchErr) {
+			state.value = 'error';
+			errorMsg.value = articleFetchErr;
+		} else {
+			state.value = results.value.length === 0 ? 'empty' : 'success';
+		}
+	} catch (err) {
+		state.value = 'error';
+		errorMsg.value = err.message || String(err);
 	}
+});
+
+// 分页变化时把页码写入 URL，保持 q 与 page 并存
+watch(page, (newPage) => {
+	writePageURL();
 });
 </script>
 
 <template>
 	<main class="component">
-		<h2 class="text-2xl font-bold mb-4">全文搜索："{{ query }}"</h2>
-		<div class="mb-6">
-			<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="default"
-				@keyup.enter.native="doSearch" @blur="doSearch">
-				<template #append>
-					<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
-						@click="doSearch" aria-label="搜索">
-						<el-icon>
-							<i-ep-search />
-						</el-icon>
-					</el-button>
-				</template>
-			</el-input>
+		<!-- loading -->
+		<div v-if="state === 'loading'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
+			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
 		</div>
-		<div v-if="results.length === 0">
-			<p class="text-gray-600">没有找到匹配的文章。</p>
+		<!-- empty（数据加载成功但无内容） -->
+		<div v-else-if="state === 'empty'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
+			没有找到匹配的文章。
 		</div>
+		<!-- error -->
+		<div v-else-if="state === 'error'" class="text-red-600 flex items-center justify-center min-h-[300px]">
+			加载失败：{{ errorMsg }}
+		</div>
+		<!-- success -->
 		<div v-else>
-			<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
-				<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="text-primary hover:underline" v-html="post.title"></a>
-				<span class="text-gray-500">（{{ post.date }}）</span>
-				<p v-if="post.snippet" class="text-gray-600 line-clamp-2" v-html="post.snippet"></p>
-				<p v-else class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
+			<h2 class="text-2xl font-bold mb-4">全文搜索："{{ query }}"</h2>
+			<div class="mb-6">
+				<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="default"
+					@keyup.enter.native="doSearch" @blur="doSearch">
+					<template #append>
+						<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+							@click="doSearch" aria-label="搜索">
+							<el-icon>
+								<i-ep-search />
+							</el-icon>
+						</el-button>
+					</template>
+				</el-input>
 			</div>
-			<el-pagination class="mt-4" background size="small" :page-size="pageSize" :current-page="page"
-				:total="total" :hide-on-single-page="true" @current-change="page = $event" />
+			<div v-if="results.length === 0">
+				<p class="text-gray-600">没有找到匹配的文章。</p>
+			</div>
+			<div v-else>
+				<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
+					<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="text-primary hover:underline" v-html="post.title"></a>
+					<span class="text-gray-500">（{{ post.date }}）</span>
+					<p v-if="post.snippet" class="text-gray-600 line-clamp-2" v-html="post.snippet"></p>
+					<p v-else class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
+				</div>
+				<el-pagination class="mt-4" background size="small" :page-size="pageSize" :current-page="page"
+					:total="total" :hide-on-single-page="true" @current-change="page = $event" />
+			</div>
 		</div>
 	</main>
 </template>
