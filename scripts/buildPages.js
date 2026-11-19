@@ -42,6 +42,13 @@ function fail(message) {
 	process.exitCode = 1;
 }
 
+// JSON 嵌入 <script type="application/json"> 数据块的安全处理：< 转义为 \u003c，防止内容里的 </script> 提前闭合
+// CSP 合规：<script type="application/json"> 是数据块不是可执行脚本，CSP script-src 'self' 不拦截；
+// 正文/markdown 里可能出现 </script> 字样，不转义 < 会提前闭合数据块导致页面 HTML 结构被破坏
+function safeJsonForScript(value) {
+	return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
 // 读取 JSON 数据文件，失败时报错并返回 null
 function readJson(file) {
 	try {
@@ -82,6 +89,8 @@ function stripInjected(html) {
 		if (/<title[^>]*>/i.test(line)) passedTitle = true;
 		// 兼容剥离旧版本内联 script 方式注入的 __ROUTE__（对未重建的旧产物幂等）
 		if (/<script>window\.__ROUTE__ = /.test(line)) return false;
+		// 剥离本脚本注入的文章数据块（JSON.stringify 输出恒为单行，按行匹配即可），重跑不叠加
+		if (/<script type="application\/json" id="post-data">/.test(line)) return false;
 		if (/<meta\s+property="og:(title|type|url)"/.test(line)) return false;
 		if (/<link\s+rel="canonical"/.test(line)) return false;
 		// 仅剥离 title 之后由本脚本注入的 description，保留模板自带的（在 title 之前）
@@ -90,12 +99,14 @@ function stripInjected(html) {
 	}).join('\n');
 }
 
-// 基于产物模板生成单页 HTML，两处差异：
+// 基于产物模板生成单页 HTML，三处差异：
 // 	a) head 增强：<title> 内容改为页面标题（keepTitle 为 true 时保持原标题，根页用），
 // 		并在其后插入 og:*/canonical/description（hasExistingDescription 为 true 时跳过 description，模板已有）
 // 	b) 路由数据注入：<html> 标签追加 data-route 属性（props 与 path 均用未编码的原始值，前端直接使用）
 // 	routePath 为编码后的 URL 路径（canonical / og:url 用），rawPath 为原始路径（data-route 的 path 用）
-function buildPage(template, { routePath, rawPath = routePath, component, props, title, ogType, description, keepTitle = false, hasExistingDescription = false }) {
+// 	c) 文章数据嵌入：embedData 非 null 时在 </body> 前插入 <script type="application/json" id="post-data">
+// 		数据块（仅文章页传入），PostPage 从该块同步初始化，不再运行时 fetch posts-html/<id>.json
+function buildPage(template, { routePath, rawPath = routePath, component, props, title, ogType, description, keepTitle = false, hasExistingDescription = false, embedData = null }) {
 	const canonical = canonicalFor(routePath);
 	const metaLines = [
 		`\t<meta property="og:title" content="${escapeHtmlAttr(title)}">`,
@@ -127,6 +138,16 @@ function buildPage(template, { routePath, rawPath = routePath, component, props,
 		});
 	} else {
 		fail(`模板缺少 <html> 标签，路由数据未注入：${routePath}`);
+	}
+	// 文章数据嵌入（仅文章页）：在 </body> 前插入数据块行。
+	// CSP 合规：<script type="application/json"> 是数据块而非可执行脚本，CSP script-src 'self' 不拦截；
+	// 内容经 safeJsonForScript 的 \u003c 转义，防止正文里的 </script> 提前闭合数据块
+	if (embedData) {
+		if (/<\/body>/i.test(html)) {
+			html = html.replace(/<\/body>/i, (m) => `\t<script type="application/json" id="post-data">${safeJsonForScript(embedData)}</script>\n${m}`);
+		} else {
+			fail(`模板缺少 </body> 标签，文章数据未嵌入：${routePath}`);
+		}
 	}
 	return html;
 }
@@ -225,6 +246,25 @@ function main() {
 			continue;
 		}
 		const routePath = `/post/${encodeURIComponent(post.id)}/`;
+		// 读取该文章的渲染数据（vite 已把 public/posts-html/<id>.json 拷入产物目录），
+		// 嵌入进页面供 PostPage 同步初始化；文件缺失则警告并跳过嵌入——页面照常生成，
+		// PostPage 会回退到运行时 fetch posts-html/<id>.json
+		const postJsonPath = join(outDir, 'posts-html', `${post.id}.json`);
+		let embedData = null;
+		if (existsSync(postJsonPath)) {
+			const postJson = readJson(postJsonPath);
+			if (postJson) {
+				embedData = {
+					id: post.id,
+					metadata: postJson.metadata,
+					markdown: postJson.markdown,
+					html: postJson.html,
+				};
+			}
+			// postJson 为 null 说明 JSON 解析失败（readJson 内部已 fail() 报错置退出码），跳过嵌入照常生成页面
+		} else {
+			console.warn(`[buildPages] 警告：未找到 ${postJsonPath}，跳过数据嵌入（PostPage 将回退运行时 fetch）`);
+		}
 		const html = buildPage(template, {
 			routePath,
 			rawPath: `/post/${post.id}/`, // data-route 的 path 用原始 id
@@ -233,6 +273,7 @@ function main() {
 			title: post.title ?? post.id,
 			ogType: 'article',
 			description: post.summary || post.title || post.id,
+			embedData, // 非 null 时在 </body> 前嵌入 post-data 数据块
 		});
 		const filePath = join(outDir, 'post', post.id, 'index.html');
 		writePage(filePath, html);
