@@ -171,6 +171,9 @@ async function rp2h(list = []) {
 
 	const md = await initMarkdownIt();
 	const posts = [];
+	// 全文搜索索引条目：与 posts 数组同源同序（仅收录未 hide 的文章，随后统一按日期降序），
+	// 最终聚合写入 public/posts-search.json，供 SearchDPage 单请求全文搜索
+	const postsSearch = [];
 	// 渲染失败的文章先收集到这里，待循环与全部写盘完成后统一报告并置非零退出码
 	const failedPosts = [];
 	const statistics = {
@@ -191,6 +194,10 @@ async function rp2h(list = []) {
 			await new Promise(resolve => setTimeout(resolve, 0));
 			spacingTextNodes(document.body);
 			html = document.body.innerHTML;
+			// 后处理：给未带 loading 属性的 <img> 追加 loading="lazy" decoding="async"（Lighthouse CLS/LCP：文章内容图延迟加载）
+			// 负向前瞻 (?![^>]*\sloading=) 保证已带 loading 属性的标签不重复添加，重跑幂等；
+			// 只作用于 markdown 渲染出的文章内容图，站点自身资源不经此路径
+			html = html.replace(/<img(?![^>]*\sloading=)/gi, '<img loading="lazy" decoding="async"');
 			// 从渲染结果中提取纯文本（空白折叠），供全文搜索使用；必须在 body 被下一篇文章覆盖前读取
 			const text = document.body.textContent.replace(/\s+/g, ' ').trim();
 			metadata.title = pangu.spacingText(metadata.title);
@@ -210,6 +217,16 @@ async function rp2h(list = []) {
 				statistics.total += content.length;
 				statistics.count += content.replace(/\s/g, '').length;
 				posts.push(post);
+				// 同步收集全文搜索条目：title/date/tags/summary 与 postlist 同源（都派生自 metadata），
+				// text 用上面已算好的纯文本字段；hide 文章不收录，避免全文泄露
+				postsSearch.push({
+					id: post.id,
+					title: post.title,
+					date: post.date,
+					tags: post.tags,
+					summary: post.summary,
+					text
+				});
 			}
 			// 生成文章 JSON 文件
 			const out = {
@@ -235,7 +252,10 @@ async function rp2h(list = []) {
 	}
 
 	// 按日期降序排序（最新的在前面）
+	// postsSearch 用同一 comparator 排序：两数组元素插入顺序相同，JS sort 稳定，
+	// 因此 posts-search.json 与 postlist.json 的文章顺序严格一致
 	posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+	postsSearch.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 	// 生成 postlist.json
 	const postlist = { posts };
@@ -255,6 +275,15 @@ async function rp2h(list = []) {
 	await fs.writeFile(postlistPath, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
 	// await fs.writeFile(postlistPath2, JSON.stringify(postlist, null, 2) + '\n', 'utf-8');
 	console.log(`Generated postlist.json with ${posts.length} posts`);
+	// 生成 posts-search.json：单请求全文搜索索引（SearchDPage 一次 fetch 拿到全部文章纯文本，替代逐篇 fetch posts-html/<id>.json）
+	// 排序与 postlist.json 一致（上方已按日期降序）；await 写盘失败会向上抛出，
+	// 由 renderPostsToHtml.js 捕获并置退出码 1，与其他输出的失败处理一致，不让构建静默通过
+	await fs.writeFile(
+		path.join(__dirname, '../public/posts-search.json'),
+		JSON.stringify({ posts: postsSearch }, null, 2) + '\n',
+		'utf-8'
+	);
+	console.log(`Generated posts-search.json with ${postsSearch.length} posts`);
 	await fs.writeFile(statisticsPath, JSON.stringify(statistics, null, 2) + '\n', 'utf-8');
 	await fs.writeFile(statisticsPath1, JSON.stringify(statistics, null, 2) + '\n', 'utf-8');
 	console.log(`Generated statistics.json with ${posts.length} posts`);

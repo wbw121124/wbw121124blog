@@ -46,7 +46,9 @@ onMounted(async () => {
 	<main class="component">
 		<!-- loading -->
 		<div v-if="state === 'loading'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
-			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+			<!-- 等宽四边框保证旋转层对称，修复圆心漂移；motion-reduce 下停止动画 -->
+			<!-- 颜色走内联样式：--color-primary 在 :root 而非 @theme，border-primary/25 不会生成 CSS -->
+			<div class="animate-spin rounded-full h-8 w-8 border-2 motion-reduce:animate-none" style="border-color: color-mix(in srgb, var(--color-primary) 25%, transparent); border-bottom-color: var(--color-primary);" role="status" aria-label="加载中"></div>
 		</div>
 		<!-- empty（数据加载成功但无内容） -->
 		<div v-else-if="state === 'empty'" class="text-gray-600 flex items-center justify-center min-h-[300px]">

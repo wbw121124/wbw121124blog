@@ -25,3 +25,4 @@ deploy/wbw121124blog/*
 *.sln
 *.sw?
 dist-gh/
+reports/
