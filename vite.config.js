@@ -151,7 +151,10 @@ export default defineConfig({
 				notFound: resolve(__dirname, '404.html')
 			}
 		},
-		cssCodeSplit: true,
+		// false：全部 CSS 合并到同步 <link>，不进异步 JS chunk
+		// （cssCodeSplit: true 时 Element Plus/KaTeX 样式随异步组件被打进 style-*.js，
+		// 变成 JS 注入样式，Lighthouse 实测该 chunk 主线程开销 2.3-5.3s，是 TBT 元凶）
+		cssCodeSplit: false,
 		chunkSizeWarningLimit: 1024
 	},
 	css: {

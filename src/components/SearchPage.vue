@@ -136,13 +136,13 @@ watch(page, (newPage) => {
 		</div>
 		<!-- 四状态只作用于结果区 -->
 		<!-- loading -->
-		<div v-if="state === 'loading'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
+		<div v-if="state === 'loading'" class="text-gray-600 dark:text-gray-300 flex items-center justify-center min-h-[300px]">
 			<!-- 等宽四边框保证旋转层对称，修复圆心漂移；motion-reduce 下停止动画 -->
 			<!-- 颜色走内联样式：--color-primary 在 :root 而非 @theme，border-primary/25 不会生成 CSS -->
 			<div class="animate-spin rounded-full h-8 w-8 border-2 motion-reduce:animate-none" style="border-color: color-mix(in srgb, var(--color-primary) 25%, transparent); border-bottom-color: var(--color-primary);" role="status" aria-label="加载中"></div>
 		</div>
 		<!-- empty（无关键词提示开始搜索；有关键词但无结果提示未找到） -->
-		<div v-else-if="state === 'empty'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
+		<div v-else-if="state === 'empty'" class="text-gray-600 dark:text-gray-300 flex items-center justify-center min-h-[300px]">
 			<p>{{ query.trim() ? '没有找到匹配的文章。' : '输入关键词开始搜索。' }}</p>
 		</div>
 		<!-- error -->
@@ -152,13 +152,13 @@ watch(page, (newPage) => {
 		<!-- success -->
 		<div v-else>
 			<div v-if="results.length === 0">
-				<p class="text-gray-600">没有找到匹配的文章。</p>
+				<p class="text-gray-600 dark:text-gray-300">没有找到匹配的文章。</p>
 			</div>
 			<div v-else>
 				<div v-for="post in highlightedResults" :key="post.id" class="mt-4">
 					<a :href="withBase(`/post/${encodeURIComponent(post.id)}/`)" class="text-primary hover:underline" v-html="post.title"></a>
-					<span class="text-gray-500">（{{ post.date }}）</span>
-					<p class="text-gray-600 line-clamp-2" v-html="post.summary"></p>
+					<span class="text-gray-500 dark:text-gray-400">（{{ post.date }}）</span>
+					<p class="text-gray-600 dark:text-gray-300 line-clamp-2" v-html="post.summary"></p>
 				</div>
 				<el-pagination class="mt-4" background size="small" :page-size="pageSize" :current-page="page"
 					:total="total" :hide-on-single-page="true" @current-change="page = $event" />
