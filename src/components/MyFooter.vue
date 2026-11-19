@@ -193,8 +193,10 @@ onMounted(() => {
 		};
 	}
 
-	window.initUniverse = initUniverse;
-	
+	if (typeof window.initUniverse === 'undefined') {
+		window.initUniverse = initUniverse;
+	}
+
 	cleanupUniverse = initUniverse();
 });
 
