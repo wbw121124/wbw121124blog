@@ -11,7 +11,7 @@ const props = defineProps({
 });
 import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 import { withBase } from '../lib/withBase.js';
-import parseFrontmatter from '../lib/frontmatter.js';
+import fetchJson from '../lib/fetchJson.js';
 const postContent = ref('加载中...');
 const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
@@ -21,29 +21,62 @@ const metadata = ref({ ready: false });
 // GitHub 仓库常量：编辑链接与仓库地址统一维护
 const GITHUB_REPO = 'wbw121124/wbw121124blog';
 
-function isJSON(str) {
-	if (typeof str !== 'string') return false;
+// 读取构建期嵌入的文章数据（buildPages 注入的 post-data 数据块）；dev 模式无此块返回 null
+// <script type="application/json"> 是数据块不是可执行脚本，CSP script-src 'self' 不拦截
+function readEmbeddedPost() {
+	const el = document.getElementById('post-data');
+	if (!el) return null;
 	try {
-		const obj = JSON.parse(str);
-		return typeof obj === 'object' && obj !== null;
+		return JSON.parse(el.textContent || '');
 	} catch (e) {
-		return false;
+		console.error('post-data 数据块解析失败，回退运行时 fetch', e);
+		return null;
 	}
 }
 
-// 异步加载文章内容（使用服务端预渲染结果）
+// setup 顶部同步读取嵌入数据（必须发生在任何 await 之前）：静态页直接用构建期 HTML，消除加载闪烁
+const embeddedPost = readEmbeddedPost();
+
+if (embeddedPost) {
+	// 同步消费嵌入数据，不等挂载、不发网络请求
+	postContent.value = embeddedPost.html || '文章内容为空。';
+	rawMarkdown.value = embeddedPost.markdown || '';
+	const _metadata = { ...(embeddedPost.metadata || {}), ready: true };
+	metadata.value = _metadata;
+	isLoading.value = false;
+	// 浏览器标题跟随文章（SEO 与历史记录可读性）
+	if (_metadata.title) document.title = `${_metadata.title} - wbw121124's blog`;
+}
+
+// 滚动到 URL hash 对应的锚点（嵌入与 fetch 两条路径共用；延迟等待渲染与图片布局稳定）
+function scrollToHash() {
+	nextTick(() => {
+		const hash = window.location.hash;
+		if (hash) {
+			setTimeout(() => {
+				const target = document.querySelector(hash.replace(/%/g, '\\%'));
+				if (target) {
+					window.smoothScrollToElement(target);
+				}
+			}, 500);
+		}
+	});
+}
+
+// 异步加载文章内容（使用服务端预渲染结果）；构建期已嵌入数据时整体跳过 fetch
 onMounted(async () => {
+	// 静态页：嵌入数据已在 setup 顶部同步消费，这里只需补挂复制按钮并处理锚点跳转
+	if (embeddedPost) {
+		// watch(postContent) 非 immediate，嵌入场景赋值发生在 watch 注册前不会再触发，需手动补一次
+		addCopyButtons();
+		scrollToHash();
+		return;
+	}
+
+	// dev 模式回退：运行时 fetch 文章 JSON（fetchJson 统一封装：res.ok 校验 + 超时 + 重试）
 	try {
 		const postName = props.props.name;
-		let data;
-		const response = await fetch(withBase(`posts-html/${postName}.json`));
-		if (response.ok)
-			data = await response.text();
-		if (response.ok && isJSON(data)) {
-			data = JSON.parse(data);
-		} else {
-			throw new Error('文章预渲染数据加载失败: ' + response.status + ' ' + response.statusText);
-		}
+		const data = await fetchJson(withBase(`posts-html/${postName}.json`));
 
 		if (!data) {
 			throw new Error('文章预渲染数据加载失败');
@@ -57,21 +90,13 @@ onMounted(async () => {
 		isLoading.value = false;
 		// 浏览器标题跟随文章（SEO 与历史记录可读性）
 		if (_metadata.title) document.title = `${_metadata.title} - wbw121124's blog`;
+
+		addCopyButtons();
 		// 跳转到锚点
-		nextTick(() => {
-			const hash = window.location.hash;
-			if (hash) {
-				setTimeout(() => {
-					const target = document.querySelector(hash.replace(/%/g, '\\%'));
-					console.log(hash.replace(/%/g, '\\%'), target);
-					if (target) {
-						window.smoothScrollToElement(target);
-					}
-				}, 500);
-			}
-		});
+		scrollToHash();
 	} catch (error) {
-		const message = error instanceof Error ? error.message + '\n' + error.stack : String(error);
+		// 只向用户展示错误消息，不泄露堆栈
+		const message = error instanceof Error ? error.message : String(error);
 		const escapedMessage = message.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
 			.replace(/>/g, '&gt;')
@@ -215,8 +240,10 @@ watch(postContent, () => {
 						metadata.license || 'BY-SA' }}&ThinSpace;4.0</a></p>
 		</div>
 		<div v-if="isLoading" class="text-center py-8" key="loading">
-			<div
-				class="animate-spin rounded-full h-8 w-8 border-2 border-transparent border-b-gray-900 dark:border-b-white mx-auto">
+			<!-- 等宽四边框保证旋转层对称，修复圆心漂移；颜色用内联 color-mix（Tailwind v4 CSS-first 下 :root 变量不生成颜色工具类） -->
+			<div class="animate-spin rounded-full h-8 w-8 border-2 mx-auto"
+				style="border-color: color-mix(in srgb, var(--color-primary) 25%, transparent); border-bottom-color: var(--color-primary);"
+				role="status" aria-label="加载中">
 			</div>
 			<p class="mt-2 text-gray-600 dark:text-gray-400">正在加载文章...</p>
 		</div>
