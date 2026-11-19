@@ -2,6 +2,7 @@
 import MyHeader from './components/MyHeader.vue';
 import MyFooter from './components/MyFooter.vue';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import { withBase } from './lib/withBase.js';
 
 const MyRoutes = [
 	{
@@ -95,10 +96,33 @@ function resolveRoute(path) {
 	};
 }
 
-// 获取 ?path=... 查询参数
-const urlParams = new URLSearchParams(window.location.search);
-const path = urlParams.get('path') || '/';
-const routeInfo = resolveRoute(path);
+// 路由真源三级回退：
+// 1) ?path= 查询参数（旧链接兼容，显式优先）
+// 2) 静态生成页注入的 data-route 属性（构建期 buildPages.js 写入）
+// 3) 解析 location.pathname（vite dev 与 GH Pages 直链场景）
+function getRouteInfo() {
+	const pathParam = new URLSearchParams(window.location.search).get('path');
+	if (pathParam) return resolveRoute(pathParam);
+
+	const injected = document.documentElement.dataset.route;
+	if (injected) {
+		try {
+			return JSON.parse(injected);
+		} catch {
+			// data-route 解析失败时落到 pathname 解析
+		}
+	}
+
+	let path = window.location.pathname;
+	// 剥离部署 base（GH 变体在 /wbw121124blog/ 下）
+	const deployBase = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
+	if (deployBase && path.startsWith(deployBase)) path = path.slice(deployBase.length) || '/';
+	// 归一化：保证以 / 开头、去尾部斜杠（路由表按无尾斜杠匹配）
+	if (!path.startsWith('/')) path = '/' + path;
+	if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+	return resolveRoute(path);
+}
+const routeInfo = getRouteInfo();
 
 // 动态按需导入 routeInfo.component，并创建异步组件
 import { defineAsyncComponent } from 'vue';

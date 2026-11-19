@@ -9,6 +9,10 @@ import Icons from 'unplugin-icons/vite';
 import IconsResolver from 'unplugin-icons/resolver';
 import { FontaineTransform } from 'fontaine';
 
+// 双变体：默认构建 Cloudflare 变体（根路径，输出 dist）
+// GH_PAGES=1 时构建 GitHub Pages 变体（/wbw121124blog/ 子路径，输出 dist-gh）
+const isGh = process.env.GH_PAGES === '1';
+
 const fontaineOptions = {
 	fallbacks: {
 		'Fira Code': [
@@ -110,7 +114,7 @@ export default defineConfig({
 		FontaineTransform.vite(fontaineOptions),
 	],
 	define: {
-		process: { env: {} }
+		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
 	},
 	optimizeDeps: {
 		include: [
@@ -131,6 +135,8 @@ export default defineConfig({
 		exclude: ['vite-ssg', 'vite-router'], // 排除不需要预构建的包
 	},
 	build: {
+		outDir: isGh ? 'dist-gh' : 'dist',
+		emptyOutDir: true,
 		minify: 'terser',
 		// 只有 preview 时才 sourcemap: true
 		sourcemap: process.env.NODE_ENV === 'production' ? false : true,
@@ -151,6 +157,5 @@ export default defineConfig({
 	css: {
 		devSourcemap: process.env.NODE_ENV === 'production' ? false : true,
 	},
-	// 设置基础路径，适用于部署到子路径的情况，注意测试时要注释
-	base: '/wbw121124blog/',
+	base: isGh ? '/wbw121124blog/' : '/',
 })

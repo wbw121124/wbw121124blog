@@ -9,74 +9,17 @@ const props = defineProps({
 		required: true  // 必需的 Props
 	}
 });
-import { onMounted, onUnmounted, ref, watch, nextTick, h, createApp } from 'vue';
+import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
+import { withBase } from '../lib/withBase.js';
+import parseFrontmatter from '../lib/frontmatter.js';
 const postContent = ref('加载中...');
 const rawMarkdown = ref(''); // 保存原始 markdown 文本
 const isLoading = ref(true);
 // start with empty metadata; 'ready' flag will be added after parsing
 const metadata = ref({ ready: false });
 
-// 解析 frontmatter
-function parseFrontmatter(content, postName) {
-	if (!content.startsWith("\<!--"))
-		return { metadata: { title: postName }, content };
-
-	// kmp 算法
-	function getNext(pattern) {
-		const next = Array(pattern.length).fill(0)
-		for (let i = 1, j = 0; i < pattern.length; i++) {
-			while (j > 0 && pattern[i] !== pattern[j]) {
-				j = next[j - 1]
-			}
-			if (pattern[i] === pattern[j]) {
-				j++
-			}
-			next[i] = j
-		}
-		return next
-	}
-
-	const pattern = "--\>";
-	const next = getNext(pattern)
-	let j = 0
-	let endIndex = -1
-	for (let i = 0; i < content.length; i++) {
-		while (j > 0 && content[i] !== pattern[j]) {
-			j = next[j - 1]
-		}
-		if (content[i] === pattern[j]) {
-			j++
-		}
-		if (j === pattern.length) {
-			endIndex = i + 1
-			break
-		}
-	}
-
-	const frontmatter = content.substring(4, endIndex - 3).trim()
-	const body = content.substring(endIndex).trim()
-	const metadata = {}
-
-	frontmatter.split('\n').forEach(line => {
-		const [key, ...values] = line.split(':')
-		if (key && values.length) {
-			metadata[key.trim()] = values.join(':').trim()
-		}
-	})
-
-	// convert tags string to array if present
-	if (metadata.tags) {
-		try {
-			// assume JSON-like list
-			metadata.tags = JSON.parse(metadata.tags.replace(/'/g, '"'))
-		} catch (e) {
-			// fallback comma split
-			metadata.tags = metadata.tags.replace(/\[|\]/g, '').split(/\s*,\s*/).filter(Boolean)
-		}
-	}
-
-	return { metadata, content: body }
-}
+// GitHub 仓库常量：编辑链接与仓库地址统一维护
+const GITHUB_REPO = 'wbw121124/wbw121124blog';
 
 function isJSON(str) {
 	if (typeof str !== 'string') return false;
@@ -93,7 +36,7 @@ onMounted(async () => {
 	try {
 		const postName = props.props.name;
 		let data;
-		const response = await fetch(`./posts-html/${postName}.json`);
+		const response = await fetch(withBase(`posts-html/${postName}.json`));
 		if (response.ok)
 			data = await response.text();
 		if (response.ok && isJSON(data)) {
@@ -112,6 +55,8 @@ onMounted(async () => {
 		_metadata.ready = true;
 		metadata.value = _metadata;
 		isLoading.value = false;
+		// 浏览器标题跟随文章（SEO 与历史记录可读性）
+		if (_metadata.title) document.title = `${_metadata.title} - wbw121124's blog`;
 		// 跳转到锚点
 		nextTick(() => {
 			const hash = window.location.hash;
@@ -160,14 +105,12 @@ function addCopyButtons() {
 						title: '代码已复制到剪贴板',
 						type: 'success',
 					})
-					console.log("代码已复制到剪贴板");
 				}).catch((e) => {
 					console.error(e);
-					console.info(e.message, e.stack);
 					ElNotification({
 						title: '错误',
 						type: 'error',
-						message: e.message + e.stack
+						message: e.message || '复制失败，请检查浏览器剪贴板权限'
 					})
 				});
 			});
@@ -176,44 +119,58 @@ function addCopyButtons() {
 		});
 		// 为所有 .twoslash-popup-container 元素添加事件监听
 		document.querySelectorAll('.twoslash-popup-container').forEach(container => {
-			// 方式1：鼠标移入时计算（父元素触发）
 			const trigger = container.parentElement; // 通常是触发hover的父元素
+			// dataset 防重：watch 每次触发 addCopyButtons 都会对同批元素重复绑定，这里跳过已绑定的
+			if (!container || !trigger || trigger.dataset.popupBound) return;
+			trigger.dataset.popupBound = '1';
 
+			// 方式1：鼠标移入时计算（父元素触发）
 			trigger.addEventListener('mouseenter', () => {
-				// 获取元素相对于 body 的位置
-				const rect = trigger.getClientRects()[0];
-				const distanceToLeft = rect.left,
-					distanceToRight = window.innerWidth - rect.right,
-					distanceToTop = rect.top;
-
-				// 设置 CSS 变量 --x
-				container.style.setProperty('--x', `${distanceToLeft}px`);
-				// 设置 CSS 变量 --x1
-				container.style.setProperty('--x1', `${distanceToRight}px`);
-				// 设置 CSS 变量 --top
-				container.style.setProperty('--top', `${distanceToTop}px`);
+				updateTwoslashPopupPositions();
 			});
 		});
-
-		// body 滚动时更新全部
-		document.addEventListener('scroll', () => {
-			document.querySelectorAll('.twoslash-popup-container').forEach(container => {
-				const trigger = container.parentElement;
-				const rect = trigger.getClientRects()[0];
-				const distanceToLeft = rect.left,
-					distanceToRight = window.innerWidth - rect.right,
-					distanceToTop = rect.top;
-
-				// 设置 CSS 变量 --x
-				container.style.setProperty('--x', `${distanceToLeft}px`);
-				// 设置 CSS 变量 --x1
-				container.style.setProperty('--x1', `${distanceToRight}px`);
-				// 设置 CSS 变量 --top
-				container.style.setProperty('--top', `${distanceToTop}px`);
-			});
-		})
 	});
 }
+
+// 计算 twoslash 弹窗触发元素相对视口的位置，写入 CSS 变量（供 mouseenter 与 scroll 共用）
+function updateTwoslashPopupPositions() {
+	document.querySelectorAll('.twoslash-popup-container').forEach(container => {
+		const trigger = container.parentElement;
+		if (!trigger) return;
+		const rect = trigger.getClientRects()[0];
+		if (!rect) return;
+		const distanceToLeft = rect.left,
+			distanceToRight = window.innerWidth - rect.right,
+			distanceToTop = rect.top;
+
+		// 设置 CSS 变量 --x
+		container.style.setProperty('--x', `${distanceToLeft}px`);
+		// 设置 CSS 变量 --x1
+		container.style.setProperty('--x1', `${distanceToRight}px`);
+		// 设置 CSS 变量 --top
+		container.style.setProperty('--top', `${distanceToTop}px`);
+	});
+}
+
+// scroll 的 rAF 节流包装：滚动触发时若已有 pending 帧则跳过，帧内统一更新弹窗位置
+let rafId = null;
+function onScrollRaf() {
+	if (rafId !== null) return;
+	rafId = requestAnimationFrame(() => {
+		rafId = null;
+		updateTwoslashPopupPositions();
+	});
+}
+
+// 挂载时注册滚动监听（passive，不阻塞滚动合成线程），卸载时成对移除
+onMounted(() => {
+	document.addEventListener('scroll', onScrollRaf, { passive: true });
+});
+
+onUnmounted(() => {
+	document.removeEventListener('scroll', onScrollRaf);
+	if (rafId !== null) cancelAnimationFrame(rafId);
+});
 
 function copyMarkdown() {
 	if (!rawMarkdown.value) return;
@@ -222,21 +179,19 @@ function copyMarkdown() {
 			title: 'Markdown 已复制到剪贴板',
 			type: 'success',
 		})
-		console.log("Markdown 已复制到剪贴板");
 	}).catch((e) => {
 		console.error(e);
-		console.info(e.message, e.stack);
 		ElNotification({
 			title: '错误',
 			type: 'error',
-			message: e.message + e.stack
+			message: e.message || '复制失败，请检查浏览器剪贴板权限'
 		})
 	});
 }
 
 function editMarkdown() {
 	const postName = props.props.name;
-	window.open('https://github.com/wbw121124/wbw121124blog/edit/master/public/posts/' + postName + '.md');
+	window.open('https://github.com/' + GITHUB_REPO + '/edit/master/public/posts/' + postName + '.md');
 }
 
 watch(postContent, () => {
@@ -250,7 +205,7 @@ watch(postContent, () => {
 			<h2 class="LXGWNeoXiHeiPlus">{{ metadata.title }}</h2>
 			<div v-if="metadata.tags && metadata.tags.length" class="flex flex-wrap gap-1 mt-1" key="tags">
 				<span v-for="t in metadata.tags" :key="t" class="tag">
-					<a :href="`?path=/tag/${encodeURIComponent(t)}`">{{ t }}</a>
+					<a :href="withBase(`/tag/${encodeURIComponent(t)}/`)">{{ t }}</a>
 				</span>
 			</div>
 			<p>作者: {{ metadata.author || 'wbw121124' }}</p>

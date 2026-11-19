@@ -1,39 +1,39 @@
 name: Optimized Blog CI/CD
- 
 on:
   workflow_dispatch:  # 允许手动触发
   push:
-    branches: [main,master]
- 
+    branches: [main, master]
+
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
- 
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          
+          node-version: '24'
+          cache: 'npm'  # 缓存 node_modules，加速后续构建
+
       - name: Install Dependencies
         run: |
-          npm install
-        
-      - name: Build Site
+          npm ci  # 严格按 package-lock.json 安装，CI 更稳妥
+
+      - name: Build Site (GH Pages variant)
         run: |
-          npm run build
- 
+          npm run build:gh  # 构建 GH_PAGES=1 变体，输出到 dist-gh，base 为 /wbw121124blog/
+
       - name: Add .nojekyll
-        run: echo "" > dist/.nojekyll 
- 
+        run: echo "" > dist-gh/.nojekyll  # 避免 GitHub Pages 对 dist-gh 当作 Jekyll 站点处理
+
       - name: Deploy to Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.DEPLOY_TOKEN }}
           external_repository: wbw121124/wbw121124blog
           publish_branch: gh-pages
-          publish_dir: ./dist
+          publish_dir: ./dist-gh  # 发布构建出的 GH Pages 变体目录
           commit_message: "Deploy: ${{ github.sha }}"
 

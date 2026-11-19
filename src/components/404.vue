@@ -10,8 +10,10 @@
 </template>
 
 <script setup>
+import { withBase } from '../lib/withBase.js';
+
 const goHome = () => {
-	window.location.href = '/';
+	window.location.href = withBase('/');
 };
 const goBack = () => {
 	window.history.back();

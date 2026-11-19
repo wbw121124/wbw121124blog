@@ -3,10 +3,10 @@
 		<div class="border-t border-t-gray-100 py-4 px-6 flex justify-between items-center text-gray-600 dark:text-gray-400">
 			<div class="left">
 				<nav class="links" aria-label="footer links">
-					<a href="?path=/">首页</a>
-					<a href="?path=/archive">归档</a>
-					<a href="?path=/tags">标签</a>
-					<a href="?path=/about">关于</a>
+					<a :href="withBase('/')">首页</a>
+					<a :href="withBase('/archive/')">归档</a>
+					<a :href="withBase('/tags/')">标签</a>
+					<a :href="withBase('/about/')">关于</a>
 					<a href="https://github.com/wbw121124" target="_blank" rel="noopener">GitHub</a>
 				</nav>
 			</div>
@@ -23,7 +23,13 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
+import { withBase } from '../lib/withBase.js';
+
 const year = new Date().getFullYear();
+
+// 星空动画的清理函数（initUniverse 的返回值）
+let cleanupUniverse = null;
 
 onMounted(() => {
 	/*
@@ -36,7 +42,7 @@ onMounted(() => {
 		window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 		
 		const canvas = document.getElementById("universe");
-		if (!canvas) return;
+		if (!canvas) return null;
 		
 		let n, e, i, h;
 		const t = 0.05;
@@ -45,6 +51,10 @@ onMounted(() => {
 		const r = "226,225,142";
 		const d = "226,225,224";
 		const c = [];
+
+		// 动画运行标志与 rAF 句柄：暂停/停止时置 false 并取消帧
+		let running = true;
+		let rafId = null;
 		
 		function f() {
 			n = window.innerWidth;
@@ -152,15 +162,47 @@ onMounted(() => {
 		}
 		u();
 		
+		// 动画循环：停止时不再调度下一帧
 		function animate() {
+			if (!running) return;
 			u();
-			window.requestAnimationFrame(animate);
+			rafId = window.requestAnimationFrame(animate);
 		}
 		animate();
+
+		// 页面隐藏时暂停动画，重新可见时恢复
+		const onVis = () => {
+			if (document.hidden) {
+				running = false;
+				if (rafId) cancelAnimationFrame(rafId);
+				rafId = null;
+			} else {
+				running = true;
+				rafId = window.requestAnimationFrame(animate);
+			}
+		};
+		document.addEventListener("visibilitychange", onVis);
+
+		// 返回清理函数：停止动画并成对移除监听
+		return function cleanup() {
+			running = false;
+			if (rafId) cancelAnimationFrame(rafId);
+			rafId = null;
+			window.removeEventListener("resize", f);
+			document.removeEventListener("visibilitychange", onVis);
+		};
 	}
 
-	window.initUniverse = initUniverse;
-	
-	initUniverse();
+	if (typeof window.initUniverse === 'undefined') {
+		window.initUniverse = initUniverse;
+	}
+
+	cleanupUniverse = initUniverse();
+});
+
+onUnmounted(() => {
+	// 组件卸载时停止星空动画并移除监听（防御未来 SPA 化）
+	if (cleanupUniverse) cleanupUniverse();
+	cleanupUniverse = null;
 });
 </script>
