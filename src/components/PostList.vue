@@ -42,7 +42,8 @@ onMounted(async () => {
 </script>
 
 <template>
-	<main class="component">
+	<!-- 首页第二个 main：不加 component class，避免与 HomePage 的卡片容器叠双层样式 -->
+	<main>
 		<!-- loading -->
 		<div v-if="state === 'loading'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
 			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
