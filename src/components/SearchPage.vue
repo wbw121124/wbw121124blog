@@ -3,6 +3,8 @@ import { ref, onMounted, computed, nextTick, defineProps, watch } from 'vue';
 import Fuse from 'fuse.js';
 import { withBase } from '../lib/withBase.js';
 import fetchJson from '../lib/fetchJson.js';
+// 高亮工具与 SearchDPage 共用，query 由调用方显式传入
+import { highlightByMatches } from '../lib/searchHighlight.js';
 const props = defineProps({
 	props: { type: Object, required: true }
 });
@@ -17,59 +19,6 @@ let fuse = null;
 const state = ref('loading');
 const errorMsg = ref('');
 
-// HTML 转义（与 PostPage.vue 的转义写法保持一致，& 必须放最前避免二次转义）
-function escapeHtml(str) {
-	return str.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#39;');
-}
-
-// 单字符转义：给 highlightByMatches 按字符拼接时用，不改变其余索引逻辑
-function escapeHtmlChar(ch) {
-	switch (ch) {
-		case '&': return '&amp;';
-		case '<': return '&lt;';
-		case '>': return '&gt;';
-		case '"': return '&quot;';
-		case '\'': return '&#39;';
-		default: return ch;
-	}
-}
-
-function highlight(text) {
-	if (!text) return '';
-	const k = query.value.trim().replace(/ /g, '');
-	if (!k) return escapeHtml(text);
-	const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	const regex = new RegExp(`(${esc})`, 'gi');
-	// 先做 HTML 转义再匹配高亮，防止标题/摘要里的 <、>、& 被浏览器当标签吞掉
-	return escapeHtml(text).replace(/ /g, '').replace(regex, '<mark>$1</mark>');
-}
-
-function highlightByMatches(text, matchObj) {
-	if (!text) return '';
-	if (!matchObj || !matchObj.indices || !matchObj.indices.length) {
-		return highlight(text);
-	}
-	const chars = Array.from(text);
-	const markers = new Array(chars.length).fill(false);
-	for (const [s, e] of matchObj.indices) {
-		for (let i = s; i <= e && i < markers.length; i++) markers[i] = true;
-	}
-	let out = '';
-	let inMark = false;
-	for (let i = 0; i < chars.length; i++) {
-		if (markers[i] && !inMark) { out += '<mark>'; inMark = true; }
-		if (!markers[i] && inMark) { out += '</mark>'; inMark = false; }
-		// 逐字符转义后再拼接：整体先转义会改变长度，导致 match 索引错位
-		out += escapeHtmlChar(chars[i]);
-	}
-	if (inMark) out += '</mark>';
-	return out;
-}
-
 const pagedResults = computed(() => {
 	const start = (page.value - 1) * pageSize;
 	return results.value.slice(start, start + pageSize);
@@ -78,8 +27,8 @@ const pagedResults = computed(() => {
 const highlightedResults = computed(() =>
 	pagedResults.value.map(p => ({
 		...p,
-		title: highlightByMatches(p.title, (p._matches || []).find(m => m.key === 'title')),
-		summary: highlightByMatches(p.summary, (p._matches || []).find(m => m.key === 'summary'))
+		title: highlightByMatches(p.title, (p._matches || []).find(m => m.key === 'title'), query.value),
+		summary: highlightByMatches(p.summary, (p._matches || []).find(m => m.key === 'summary'), query.value)
 	}))
 );
 
@@ -168,13 +117,33 @@ watch(page, (newPage) => {
 
 <template>
 	<main class="component">
+		<h2 class="text-2xl font-bold mb-4">搜索："{{ query }}"</h2>
+		<!-- 搜索框：任何状态下始终可见（空结果/加载中/出错都要能改关键词重搜） -->
+		<div class="mb-6 flex items-center gap-2">
+			<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="default"
+				@keyup.enter.native="doSearch" @blur="doSearch">
+				<template #append>
+					<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+						@click="doSearch" aria-label="搜索">
+						<el-icon>
+							<i-ep-search />
+						</el-icon>
+					</el-button>
+				</template>
+			</el-input>
+			<a v-if="query" :href="withBase(`/searchd/?q=${encodeURIComponent(query)}`)"
+				class="text-sm href hover:underline">全文搜索</a>
+		</div>
+		<!-- 四状态只作用于结果区 -->
 		<!-- loading -->
 		<div v-if="state === 'loading'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
-			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+			<!-- 等宽四边框保证旋转层对称，修复圆心漂移；motion-reduce 下停止动画 -->
+			<!-- 颜色走内联样式：--color-primary 在 :root 而非 @theme，border-primary/25 不会生成 CSS -->
+			<div class="animate-spin rounded-full h-8 w-8 border-2 motion-reduce:animate-none" style="border-color: color-mix(in srgb, var(--color-primary) 25%, transparent); border-bottom-color: var(--color-primary);" role="status" aria-label="加载中"></div>
 		</div>
-		<!-- empty（数据加载成功但无内容） -->
+		<!-- empty（无关键词提示开始搜索；有关键词但无结果提示未找到） -->
 		<div v-else-if="state === 'empty'" class="text-gray-600 flex items-center justify-center min-h-[300px]">
-			没有找到匹配的文章。
+			<p>{{ query.trim() ? '没有找到匹配的文章。' : '输入关键词开始搜索。' }}</p>
 		</div>
 		<!-- error -->
 		<div v-else-if="state === 'error'" class="text-red-600 flex items-center justify-center min-h-[300px]">
@@ -182,22 +151,6 @@ watch(page, (newPage) => {
 		</div>
 		<!-- success -->
 		<div v-else>
-			<h2 class="text-2xl font-bold mb-4">搜索："{{ query }}"</h2>
-			<div class="mb-6 flex items-center gap-2">
-				<el-input v-model="query" placeholder="请输入关键词" class="w-full max-w-md" size="default"
-					@keyup.enter.native="doSearch" @blur="doSearch">
-					<template #append>
-						<el-button size="default" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
-							@click="doSearch" aria-label="搜索">
-							<el-icon>
-								<i-ep-search />
-							</el-icon>
-						</el-button>
-					</template>
-				</el-input>
-				<a v-if="query" :href="withBase(`/searchd/?q=${encodeURIComponent(query)}`)"
-					class="text-sm href hover:underline">全文搜索</a>
-			</div>
 			<div v-if="results.length === 0">
 				<p class="text-gray-600">没有找到匹配的文章。</p>
 			</div>
