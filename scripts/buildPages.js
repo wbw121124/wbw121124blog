@@ -214,8 +214,10 @@ function main() {
 		written.push(filePath);
 	}
 
-	// 3) 文章页：目录名用 encodeURIComponent(原始 id)（% 不做二次编码），
-	// 	props.name 用原始 id（前端要拿它拼 fetch URL），两者分离
+	// 3) 文章页：canonical/og:url 用 encodeURIComponent 编码路径；
+	// 	磁盘目录用原始 id——静态服务器（Workers Assets / GitHub Pages / preview）收到
+	// 	%E4%BA%8C... 这类请求会先 URL 解码再查文件，编码目录名会导致 404 回落根页；
+	// 	public/ 下 vite 原样拷贝的中文名目录（posts-html/<id>.json 等）同理
 	let postCount = 0;
 	for (const post of posts) {
 		if (!post || typeof post.id !== 'string' || post.id.length === 0) {
@@ -225,33 +227,33 @@ function main() {
 		const routePath = `/post/${encodeURIComponent(post.id)}/`;
 		const html = buildPage(template, {
 			routePath,
-			rawPath: `/post/${post.id}/`, // __ROUTE__.path 用原始 id
+			rawPath: `/post/${post.id}/`, // data-route 的 path 用原始 id
 			component: 'PostPage',
 			props: { name: post.id }, // 原始 id，未编码
 			title: post.title ?? post.id,
 			ogType: 'article',
 			description: post.summary || post.title || post.id,
 		});
-		const filePath = join(outDir, routePath, 'index.html');
+		const filePath = join(outDir, 'post', post.id, 'index.html');
 		writePage(filePath, html);
 		written.push(filePath);
 		postCount++;
 	}
 
-	// 4) 标签页：目录名用 encodeURIComponent(原始标签名)，props.name 用原始标签名
+	// 4) 标签页：canonical 用编码路径，磁盘目录用原始标签名（理由同文章页）
 	let tagCount = 0;
 	for (const tagName of Object.keys(tags)) {
 		const routePath = `/tag/${encodeURIComponent(tagName)}/`;
 		const html = buildPage(template, {
 			routePath,
-			rawPath: `/tag/${tagName}/`, // __ROUTE__.path 用原始标签名
+			rawPath: `/tag/${tagName}/`, // data-route 的 path 用原始标签名
 			component: 'TagPage',
 			props: { name: tagName }, // 原始标签名，未编码
 			title: `标签：${tagName}`,
 			ogType: 'website',
 			description: `标签「${tagName}」下的全部文章`,
 		});
-		const filePath = join(outDir, routePath, 'index.html');
+		const filePath = join(outDir, 'tag', tagName, 'index.html');
 		writePage(filePath, html);
 		written.push(filePath);
 		tagCount++;
